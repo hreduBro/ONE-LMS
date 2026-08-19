@@ -14,7 +14,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-5">
           <div class="flex items-center gap-2.5">
-            <div class="w-9 h-9 rounded-xl bg-tenant-50 dark:bg-tenant-200/10 flex items-center justify-center text-tenant-600">
+            <div class="w-9 h-9 rounded-xl bg-tenant-50 dark:bg-tenant-500/20 flex items-center justify-center text-tenant-600 dark:text-tenant-300">
               <span class="material-symbols-outlined text-xl">dashboard_customize</span>
             </div>
             <div>
@@ -40,13 +40,13 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                 (click)="setNavigationMode('sidebar')"
                 class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
                 [class]="prefs().navigationMode === 'sidebar' 
-                  ? 'border-tenant-500 bg-tenant-50/50 dark:bg-tenant-200/10 ring-2 ring-tenant-500/30' 
+                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
-                    <span class="material-symbols-outlined text-lg" [class.text-tenant-600]="prefs().navigationMode === 'sidebar'">dock_to_left</span>
+                    <span class="material-symbols-outlined text-lg" [class]="prefs().navigationMode === 'sidebar' ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary'">dock_to_left</span>
                     @if (prefs().navigationMode === 'sidebar') {
-                      <span class="material-symbols-outlined text-sm text-tenant-600">check_circle</span>
+                      <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check_circle</span>
                     }
                   </div>
                   <div class="font-bold text-xs text-text-primary">Classic Sidebar</div>
@@ -60,13 +60,13 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                 (click)="setNavigationMode('top_menu')"
                 class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
                 [class]="prefs().navigationMode === 'top_menu' 
-                  ? 'border-tenant-500 bg-tenant-50/50 dark:bg-tenant-200/10 ring-2 ring-tenant-500/30' 
+                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
-                    <span class="material-symbols-outlined text-lg" [class.text-tenant-600]="prefs().navigationMode === 'top_menu'">horizontal_split</span>
+                    <span class="material-symbols-outlined text-lg" [class]="prefs().navigationMode === 'top_menu' ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary'">horizontal_split</span>
                     @if (prefs().navigationMode === 'top_menu') {
-                      <span class="material-symbols-outlined text-sm text-tenant-600">check_circle</span>
+                      <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check_circle</span>
                     }
                   </div>
                   <div class="font-bold text-xs text-text-primary">Top Navigation</div>
@@ -80,13 +80,13 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                 (click)="setNavigationMode('compact_rail')"
                 class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
                 [class]="prefs().navigationMode === 'compact_rail' 
-                  ? 'border-tenant-500 bg-tenant-50/50 dark:bg-tenant-200/10 ring-2 ring-tenant-500/30' 
+                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
-                    <span class="material-symbols-outlined text-lg" [class.text-tenant-600]="prefs().navigationMode === 'compact_rail'">view_compact</span>
+                    <span class="material-symbols-outlined text-lg" [class]="prefs().navigationMode === 'compact_rail' ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary'">view_compact</span>
                     @if (prefs().navigationMode === 'compact_rail') {
-                      <span class="material-symbols-outlined text-sm text-tenant-600">check_circle</span>
+                      <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check_circle</span>
                     }
                   </div>
                   <div class="font-bold text-xs text-text-primary">Compact Rail</div>
@@ -107,14 +107,14 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                   type="button"
                   (click)="setHeaderDensity('comfortable')"
                   class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all"
-                  [class]="prefs().headerDensity === 'comfortable' ? 'bg-base-100 text-tenant-600 shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
+                  [class]="prefs().headerDensity === 'comfortable' ? 'bg-tenant-500 text-white shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
                   Comfortable (64px)
                 </button>
                 <button
                   type="button"
                   (click)="setHeaderDensity('compact')"
                   class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all"
-                  [class]="prefs().headerDensity === 'compact' ? 'bg-base-100 text-tenant-600 shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
+                  [class]="prefs().headerDensity === 'compact' ? 'bg-tenant-500 text-white shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
                   Compact (48px)
                 </button>
               </div>
@@ -129,14 +129,14 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                   type="button"
                   (click)="setContentWidth('fluid')"
                   class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all"
-                  [class]="prefs().contentWidth === 'fluid' ? 'bg-base-100 text-tenant-600 shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
+                  [class]="prefs().contentWidth === 'fluid' ? 'bg-tenant-500 text-white shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
                   Fluid (Full 100%)
                 </button>
                 <button
                   type="button"
                   (click)="setContentWidth('constrained')"
                   class="flex-1 py-1.5 px-2 rounded-lg text-xs font-medium transition-all"
-                  [class]="prefs().contentWidth === 'constrained' ? 'bg-base-100 text-tenant-600 shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
+                  [class]="prefs().contentWidth === 'constrained' ? 'bg-tenant-500 text-white shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary'">
                   Standard (max-w-7xl)
                 </button>
               </div>

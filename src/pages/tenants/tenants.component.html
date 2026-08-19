@@ -3,7 +3,7 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60">
           Super Admin Console
         </span>
         <span class="text-xs text-text-secondary">Multi-Tenant Partition Architecture</span>
@@ -119,11 +119,11 @@
 
             <div class="flex flex-col items-end gap-1">
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                    [class]="tenant.plan === 'Enterprise' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'">
+                    [class]="tenant.plan === 'Enterprise' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border dark:border-emerald-800/60'">
                 {{ tenant.plan }}
               </span>
               <span class="text-[10px] font-medium px-2 py-0.5 rounded-full"
-                    [class]="tenant.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30'">
+                    [class]="tenant.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border dark:border-emerald-800/60' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-200 dark:border dark:border-rose-800/60'">
                 {{ tenant.status }}
               </span>
             </div>

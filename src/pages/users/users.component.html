@@ -3,7 +3,7 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30">
           {{ lms.activeTenant().name }} Directory
         </span>
         <span class="text-xs text-text-secondary font-mono">
@@ -120,7 +120,7 @@
               <!-- Role -->
               <td class="px-4 py-3.5">
                 <span class="px-2 py-0.5 rounded-md font-semibold text-[10px] uppercase tracking-wider"
-                      [class]="user.role === 'tenant_admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300' : user.role === 'instructor' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' : 'bg-base-200 text-text-secondary'">
+                      [class]="user.role === 'tenant_admin' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60' : user.role === 'instructor' ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/80 dark:text-amber-200 dark:border dark:border-amber-800/60' : 'bg-base-200 text-text-secondary'">
                   {{ user.role.replace('_', ' ') }}
                 </span>
               </td>
@@ -128,7 +128,7 @@
               <!-- Compliance Status -->
               <td class="px-4 py-3.5">
                 <span class="px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1"
-                      [class]="user.complianceStatus === 'Compliant' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30' : user.complianceStatus === 'At Risk' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/30' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30'">
+                      [class]="user.complianceStatus === 'Compliant' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border dark:border-emerald-800/60' : user.complianceStatus === 'At Risk' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-200 dark:border dark:border-amber-800/60' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-200 dark:border dark:border-rose-800/60'">
                   <span class="w-1.5 h-1.5 rounded-full"
                         [class]="user.complianceStatus === 'Compliant' ? 'bg-emerald-500' : user.complianceStatus === 'At Risk' ? 'bg-amber-500' : 'bg-rose-500'"></span>
                   {{ user.complianceStatus }}
@@ -142,7 +142,7 @@
 
               <!-- Mastery XP -->
               <td class="px-4 py-3.5">
-                <span class="font-bold text-tenant-600 font-mono">{{ user.points }} XP</span>
+                <span class="font-bold text-tenant-600 dark:text-tenant-300 font-mono">{{ user.points }} XP</span>
               </td>
 
               <!-- Last Active -->

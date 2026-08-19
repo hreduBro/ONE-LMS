@@ -32,7 +32,7 @@
               {{ lms.activeTenant().name }}
             </span>
             <span class="text-[10px] px-1.5 py-0.2 rounded-full font-medium"
-                  [class]="lms.activeTenant().plan === 'Enterprise' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'">
+                  [class]="lms.activeTenant().plan === 'Enterprise' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border dark:border-emerald-800/60'">
               {{ lms.activeTenant().plan }}
             </span>
           </div>
@@ -56,7 +56,7 @@
               <button 
                 (click)="selectTenant(tenant.id)"
                 class="w-full flex items-center justify-between p-2 rounded-xl text-left transition-colors"
-                [class]="tenant.id === lms.activeTenantId() ? 'bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 font-medium' : 'hover:bg-base-200 text-text-primary'">
+                [class]="tenant.id === lms.activeTenantId() ? 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-medium' : 'hover:bg-base-200 text-text-primary'">
                 <div class="flex items-center gap-2.5">
                   <img [src]="tenant.branding.logoUrl" [alt]="tenant.name" class="w-7 h-7 rounded-lg object-cover" referrerpolicy="no-referrer" />
                   <div>
@@ -80,7 +80,7 @@
             <button 
               id="btn-add-tenant"
               (click)="openNewTenantModal()"
-              class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-tenant-50 hover:bg-tenant-100 dark:bg-tenant-200/10 dark:hover:bg-tenant-200/20 text-tenant-600 dark:text-tenant-200 text-xs font-semibold transition-colors">
+              class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-tenant-50 hover:bg-tenant-100 dark:bg-tenant-500/20 dark:hover:bg-tenant-500/30 text-tenant-700 dark:text-tenant-200 text-xs font-semibold transition-colors border border-tenant-500/20">
               <span class="material-symbols-outlined text-sm">add_circle</span>
               Provision New Tenant
             </button>
@@ -101,7 +101,7 @@
           [id]="'btn-role-' + r.role"
           (click)="selectRole(r.role)"
           class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all"
-          [class]="lms.activeRole() === r.role ? 'bg-base-100 text-tenant-600 shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-300/50'">
+          [class]="lms.activeRole() === r.role ? 'bg-tenant-500 text-white shadow-sm font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-300/50'">
           <span class="material-symbols-outlined text-sm">{{ r.icon }}</span>
           {{ r.label }}
         </button>
@@ -116,7 +116,7 @@
       <button 
         id="btn-layout-customizer"
         (click)="showLayoutModal.set(true)"
-        class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-tenant-50 hover:bg-tenant-100 dark:bg-tenant-200/10 dark:hover:bg-tenant-200/20 text-tenant-600 dark:text-tenant-200 border border-tenant-500/20 text-xs font-semibold transition-all shadow-xs"
+        class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-tenant-50 hover:bg-tenant-100 dark:bg-tenant-500/20 dark:hover:bg-tenant-500/30 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 text-xs font-semibold transition-all shadow-xs"
         title="Choose Layout & Navigation Structure">
         <span class="material-symbols-outlined text-base">dashboard_customize</span>
         <span class="hidden sm:inline">Layout Options</span>
@@ -193,7 +193,7 @@
             <div>
               <div class="font-bold text-xs text-text-primary">{{ lms.activeUser().name }}</div>
               <div class="text-[11px] text-text-secondary">{{ lms.activeUser().email }}</div>
-              <div class="text-[10px] text-tenant-600 font-medium capitalize mt-0.5">
+              <div class="text-[10px] text-tenant-600 dark:text-tenant-300 font-medium capitalize mt-0.5">
                 {{ lms.activeRole().replace('_', ' ') }} &bull; {{ lms.activeUser().department }}
               </div>
             </div>
@@ -202,7 +202,7 @@
           <div class="space-y-1 text-xs">
             <div class="flex items-center justify-between p-2 rounded-lg bg-base-200">
               <span class="text-text-secondary">Earned Points</span>
-              <span class="font-bold text-tenant-600">{{ lms.activeUser().points }} pts</span>
+              <span class="font-bold text-tenant-600 dark:text-tenant-300">{{ lms.activeUser().points }} pts</span>
             </div>
             <div class="flex items-center justify-between p-2 rounded-lg bg-base-200">
               <span class="text-text-secondary">Certificates</span>
@@ -221,7 +221,7 @@
     <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
         <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-tenant-50 dark:bg-tenant-200/10 flex items-center justify-center text-tenant-600">
+          <div class="w-8 h-8 rounded-xl bg-tenant-50 dark:bg-tenant-500/20 flex items-center justify-center text-tenant-600 dark:text-tenant-300">
             <span class="material-symbols-outlined text-lg">domain_add</span>
           </div>
           <div>

@@ -8,9 +8,9 @@
 
     <!-- Builder Mode Overlay Controls (Move, Resize, Settings, Duplicate, Delete) -->
     @if (isBuilderMode()) {
-      <div class="bg-tenant-50 dark:bg-tenant-200/10 border-b border-tenant-500/30 px-4 py-2.5 flex items-center justify-between gap-2 -m-5 mb-4 select-none">
+      <div class="bg-tenant-50 dark:bg-tenant-500/20 border-b border-tenant-500/30 px-4 py-2.5 flex items-center justify-between gap-2 -m-5 mb-4 select-none">
         <div class="flex items-center gap-2 min-w-0">
-          <span class="material-symbols-outlined text-base text-tenant-600 cursor-grab active:cursor-grabbing">drag_indicator</span>
+          <span class="material-symbols-outlined text-base text-tenant-600 dark:text-tenant-300 cursor-grab active:cursor-grabbing">drag_indicator</span>
           <span class="font-bold text-xs text-text-primary truncate">{{ widget().title }}</span>
           <span class="text-[10px] px-2 py-0.5 rounded-md bg-base-100 font-mono text-text-secondary border border-base-300">
             {{ widget().colSpan * 25 }}% Width

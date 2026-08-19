@@ -3,7 +3,7 @@
   <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
       <div class="flex items-center gap-2 mb-1">
-        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30">
           White-Label & Governance Hub
         </span>
         <span class="text-xs text-text-secondary">Tenant Partition: {{ lms.activeTenant().slug }}</span>
@@ -198,8 +198,8 @@
                 type="button"
                 (click)="setNavMode('sidebar')"
                 class="p-3 rounded-2xl border text-left transition-all"
-                [class]="layoutPrefs().navigationMode === 'sidebar' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-200/10 ring-2 ring-tenant-500/20' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
-                <span class="material-symbols-outlined text-base text-tenant-600 mb-1">dock_to_left</span>
+                [class]="layoutPrefs().navigationMode === 'sidebar' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <span class="material-symbols-outlined text-base text-tenant-600 dark:text-tenant-300 mb-1">dock_to_left</span>
                 <div class="font-bold text-xs text-text-primary">Classic Sidebar</div>
                 <div class="text-[10px] text-text-secondary">Vertical left drawer</div>
               </button>
@@ -208,8 +208,8 @@
                 type="button"
                 (click)="setNavMode('top_menu')"
                 class="p-3 rounded-2xl border text-left transition-all"
-                [class]="layoutPrefs().navigationMode === 'top_menu' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-200/10 ring-2 ring-tenant-500/20' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
-                <span class="material-symbols-outlined text-base text-tenant-600 mb-1">horizontal_split</span>
+                [class]="layoutPrefs().navigationMode === 'top_menu' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <span class="material-symbols-outlined text-base text-tenant-600 dark:text-tenant-300 mb-1">horizontal_split</span>
                 <div class="font-bold text-xs text-text-primary">Top Navigation</div>
                 <div class="text-[10px] text-text-secondary">Horizontal header bar</div>
               </button>
@@ -218,8 +218,8 @@
                 type="button"
                 (click)="setNavMode('compact_rail')"
                 class="p-3 rounded-2xl border text-left transition-all"
-                [class]="layoutPrefs().navigationMode === 'compact_rail' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-200/10 ring-2 ring-tenant-500/20' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
-                <span class="material-symbols-outlined text-base text-tenant-600 mb-1">view_compact</span>
+                [class]="layoutPrefs().navigationMode === 'compact_rail' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <span class="material-symbols-outlined text-base text-tenant-600 dark:text-tenant-300 mb-1">view_compact</span>
                 <div class="font-bold text-xs text-text-primary">Compact Rail</div>
                 <div class="text-[10px] text-text-secondary">Slim icon navigation</div>
               </button>
@@ -233,15 +233,15 @@
                 <button
                   type="button"
                   (click)="setHeaderDensity('comfortable')"
-                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium"
-                  [class]="layoutPrefs().headerDensity === 'comfortable' ? 'bg-base-100 text-tenant-600 font-bold shadow-xs' : 'text-text-secondary'">
+                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-all"
+                  [class]="layoutPrefs().headerDensity === 'comfortable' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary hover:text-text-primary'">
                   Comfortable
                 </button>
                 <button
                   type="button"
                   (click)="setHeaderDensity('compact')"
-                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium"
-                  [class]="layoutPrefs().headerDensity === 'compact' ? 'bg-base-100 text-tenant-600 font-bold shadow-xs' : 'text-text-secondary'">
+                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-all"
+                  [class]="layoutPrefs().headerDensity === 'compact' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary hover:text-text-primary'">
                   Compact
                 </button>
               </div>
@@ -253,15 +253,15 @@
                 <button
                   type="button"
                   (click)="setContentWidth('fluid')"
-                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium"
-                  [class]="layoutPrefs().contentWidth === 'fluid' ? 'bg-base-100 text-tenant-600 font-bold shadow-xs' : 'text-text-secondary'">
+                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-all"
+                  [class]="layoutPrefs().contentWidth === 'fluid' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary hover:text-text-primary'">
                   Fluid (100%)
                 </button>
                 <button
                   type="button"
                   (click)="setContentWidth('constrained')"
-                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium"
-                  [class]="layoutPrefs().contentWidth === 'constrained' ? 'bg-base-100 text-tenant-600 font-bold shadow-xs' : 'text-text-secondary'">
+                  class="flex-1 py-1 px-2 rounded-lg text-xs font-medium transition-all"
+                  [class]="layoutPrefs().contentWidth === 'constrained' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary hover:text-text-primary'">
                   Standard Max
                 </button>
               </div>

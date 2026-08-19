@@ -36,7 +36,7 @@
       @if (isAllowed(item.roles)) {
         <a 
           [routerLink]="item.route"
-          routerLinkActive="bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200 font-semibold shadow-sm"
+          routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
           [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
           [title]="item.label"
           class="flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative"
@@ -49,7 +49,7 @@
           @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
             <span class="truncate flex-1">{{ item.label }}</span>
             @if (item.badge) {
-              <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 font-medium">
+              <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
                 {{ item.badge }}
               </span>
             }
@@ -81,7 +81,7 @@
 
       <div class="flex items-center justify-between text-[10px] text-text-secondary pt-1 border-t border-base-300/60">
         <span>Storage: {{ lms.activeTenant().stats.storageUsedGb }} GB</span>
-        <span class="text-tenant-600 font-semibold">
+        <span class="text-tenant-600 dark:text-tenant-300 font-semibold">
           {{ lms.activeTenant().stats.complianceRate }}% Compliant
         </span>
       </div>

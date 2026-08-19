@@ -13,7 +13,7 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
           <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-xl bg-tenant-50 dark:bg-tenant-200/10 flex items-center justify-center text-tenant-600">
+            <div class="w-8 h-8 rounded-xl bg-tenant-50 dark:bg-tenant-500/20 flex items-center justify-center text-tenant-600 dark:text-tenant-300">
               <span class="material-symbols-outlined text-lg">tune</span>
             </div>
             <div>
@@ -56,7 +56,7 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
                   type="button"
                   (click)="formColSpan = span"
                   class="py-2 px-3 rounded-xl border text-center text-xs font-bold transition-all"
-                  [class]="formColSpan === span ? 'border-tenant-500 bg-tenant-50 text-tenant-600 dark:bg-tenant-200/10' : 'border-base-300 bg-base-200 text-text-secondary'">
+                  [class]="formColSpan === span ? 'border-tenant-500 bg-tenant-500 text-white shadow-xs' : 'border-base-300 bg-base-200 text-text-secondary hover:text-text-primary'">
                   {{ span * 25 }}% ({{ span }}/4)
                 </button>
               }

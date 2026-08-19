@@ -1340,9 +1340,63 @@ export class LmsDataService {
     root.style.setProperty('--tenant-primary-hover', this.adjustColor(primary, -20));
     root.style.setProperty('--tenant-primary-dark', this.adjustColor(primary, -40));
     root.style.setProperty('--tenant-accent', accent);
-    root.style.setProperty('--tenant-50', this.hexToRgba(primary, 0.08));
-    root.style.setProperty('--tenant-100', this.hexToRgba(primary, 0.15));
-    root.style.setProperty('--tenant-200', this.hexToRgba(primary, 0.25));
+    root.style.setProperty('--tenant-50', this.hexToRgba(primary, 0.1));
+    root.style.setProperty('--tenant-100', this.hexToRgba(primary, 0.2));
+    root.style.setProperty('--tenant-200', this.getHighContrastLightTint(primary, 0.88));
+    root.style.setProperty('--tenant-300', this.getHighContrastLightTint(primary, 0.78));
+    root.style.setProperty('--tenant-400', this.getHighContrastLightTint(primary, 0.68));
+  }
+
+  private getHighContrastLightTint(hex: string, targetLightness: number = 0.85): string {
+    try {
+      let c = hex.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      const num = parseInt(c, 16);
+      const r = ((num >> 16) & 255) / 255;
+      const g = ((num >> 8) & 255) / 255;
+      const b = (num & 255) / 255;
+      const max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h = 0, s = 0;
+      const l = (max + min) / 2;
+
+      if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+
+      // Reconstruct with target lightness and controlled saturation for perfect dark mode readability
+      const finalS = Math.min(s, 0.85);
+      const finalL = targetLightness;
+
+      const hue2rgb = (p: number, q: number, t: number) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+
+      const q = finalL < 0.5 ? finalL * (1 + finalS) : finalL + finalS - finalL * finalS;
+      const p = 2 * finalL - q;
+      const outR = Math.round(hue2rgb(p, q, h + 1/3) * 255);
+      const outG = Math.round(hue2rgb(p, q, h) * 255);
+      const outB = Math.round(hue2rgb(p, q, h - 1/3) * 255);
+
+      const toHex = (x: number) => {
+        const hStr = x.toString(16);
+        return hStr.length === 1 ? '0' + hStr : hStr;
+      };
+      return `#${toHex(outR)}${toHex(outG)}${toHex(outB)}`;
+    } catch {
+      return '#c7d2fe';
+    }
   }
 
   private hexToRgba(hex: string, alpha: number): string {

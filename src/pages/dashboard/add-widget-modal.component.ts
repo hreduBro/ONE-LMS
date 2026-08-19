@@ -14,7 +14,7 @@ import { DashboardWidget, DashboardWidgetType } from '../../models/lms.model';
         <!-- Header -->
         <div class="p-6 border-b border-base-300 flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-2xl bg-tenant-50 dark:bg-tenant-200/10 flex items-center justify-center text-tenant-600">
+            <div class="w-10 h-10 rounded-2xl bg-tenant-50 dark:bg-tenant-500/20 flex items-center justify-center text-tenant-600 dark:text-tenant-300">
               <span class="material-symbols-outlined text-2xl">widgets</span>
             </div>
             <div>
