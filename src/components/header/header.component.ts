@@ -1,13 +1,15 @@
 import { Component, ChangeDetectionStrategy, inject, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
 import { ThemeService } from '../../services/theme.service';
 import { UserRole } from '../../models/lms.model';
+import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-switcher-modal.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule, LayoutSwitcherModalComponent],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -20,6 +22,7 @@ export class HeaderComponent {
   showUserDropdown = signal(false);
   showNewTenantModal = signal(false);
   showNotificationMenu = signal(false);
+  showLayoutModal = signal(false);
 
   // New tenant form model
   newOrg = {

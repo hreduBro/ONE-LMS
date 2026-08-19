@@ -7,7 +7,10 @@ import { LmsDataService } from '../../services/lms-data.service';
   selector: 'app-sidebar',
   imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'flex flex-col h-full flex-shrink-0 z-30'
+  }
 })
 export class SidebarComponent {
   isOpen = input<boolean>(true);

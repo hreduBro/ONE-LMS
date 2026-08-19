@@ -18,6 +18,10 @@ export class UsersComponent {
   selectedRole = signal<string>('All');
   selectedCompliance = signal<string>('All');
 
+  // Pagination signals
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(5);
+
   showAddModal = signal<boolean>(false);
   selectedUser = signal<User | null>(null);
 
@@ -46,6 +50,55 @@ export class UsersComponent {
       return matchSearch && matchDept && matchRole && matchComp;
     });
   });
+
+  // Total pages
+  totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredUsers().length / this.pageSize()));
+  });
+
+  // Paginated slice
+  paginatedUsers = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.filteredUsers().slice(start, start + this.pageSize());
+  });
+
+  // Pages array for button rendering
+  pagesList = computed(() => {
+    const total = this.totalPages();
+    return Array.from({ length: total }, (_, i) => i + 1);
+  });
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
+  onFilterChange() {
+    this.currentPage.set(1);
+  }
+
+  goToPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  setPageSize(size: number) {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+  }
 
   openAddModal() {
     this.newUser = {

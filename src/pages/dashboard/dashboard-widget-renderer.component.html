@@ -1,0 +1,543 @@
+@if (isVisible()) {
+  <div 
+    [id]="'widget-' + widget().id"
+    class="relative rounded-3xl bg-base-100 border border-base-300 shadow-sm transition-all flex flex-col h-full overflow-hidden group"
+    [class.ring-2]="isBuilderMode()"
+    [class.ring-tenant-500]="isBuilderMode()"
+    [class.p-5]="widget().type !== 'announcement_banner' && widget().type !== 'kpi_grid'">
+
+    <!-- Builder Mode Overlay Controls (Move, Resize, Settings, Duplicate, Delete) -->
+    @if (isBuilderMode()) {
+      <div class="bg-tenant-50 dark:bg-tenant-200/10 border-b border-tenant-500/30 px-4 py-2.5 flex items-center justify-between gap-2 -m-5 mb-4 select-none">
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="material-symbols-outlined text-base text-tenant-600 cursor-grab active:cursor-grabbing">drag_indicator</span>
+          <span class="font-bold text-xs text-text-primary truncate">{{ widget().title }}</span>
+          <span class="text-[10px] px-2 py-0.5 rounded-md bg-base-100 font-mono text-text-secondary border border-base-300">
+            {{ widget().colSpan * 25 }}% Width
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1">
+          <!-- ColSpan Size Changer -->
+          <div class="flex items-center bg-base-100 rounded-lg border border-base-300 p-0.5">
+            <button 
+              type="button"
+              (click)="changeColSpan.emit({ id: widget().id, colSpan: 1 })"
+              class="px-1.5 py-0.5 text-[10px] rounded font-bold"
+              [class]="widget().colSpan === 1 ? 'bg-tenant-500 text-white' : 'text-text-secondary hover:text-text-primary'"
+              title="1/4 Width (25%)">1/4</button>
+            <button 
+              type="button"
+              (click)="changeColSpan.emit({ id: widget().id, colSpan: 2 })"
+              class="px-1.5 py-0.5 text-[10px] rounded font-bold"
+              [class]="widget().colSpan === 2 ? 'bg-tenant-500 text-white' : 'text-text-secondary hover:text-text-primary'"
+              title="1/2 Width (50%)">1/2</button>
+            <button 
+              type="button"
+              (click)="changeColSpan.emit({ id: widget().id, colSpan: 3 })"
+              class="px-1.5 py-0.5 text-[10px] rounded font-bold"
+              [class]="widget().colSpan === 3 ? 'bg-tenant-500 text-white' : 'text-text-secondary hover:text-text-primary'"
+              title="3/4 Width (75%)">3/4</button>
+            <button 
+              type="button"
+              (click)="changeColSpan.emit({ id: widget().id, colSpan: 4 })"
+              class="px-1.5 py-0.5 text-[10px] rounded font-bold"
+              [class]="widget().colSpan === 4 ? 'bg-tenant-500 text-white' : 'text-text-secondary hover:text-text-primary'"
+              title="Full Width (100%)">Full</button>
+          </div>
+
+          <!-- Move Buttons -->
+          <button 
+            type="button"
+            (click)="moveUp.emit(widget().id)" 
+            class="p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-base-100"
+            title="Move Up">
+            <span class="material-symbols-outlined text-sm">arrow_upward</span>
+          </button>
+          <button 
+            type="button"
+            (click)="moveDown.emit(widget().id)" 
+            class="p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-base-100"
+            title="Move Down">
+            <span class="material-symbols-outlined text-sm">arrow_downward</span>
+          </button>
+
+          <!-- Edit Configuration -->
+          <button 
+            type="button"
+            (click)="editWidget.emit(widget())" 
+            class="p-1 rounded-lg text-tenant-600 hover:bg-base-100"
+            title="Widget Settings">
+            <span class="material-symbols-outlined text-sm">settings</span>
+          </button>
+
+          <!-- Duplicate -->
+          <button 
+            type="button"
+            (click)="duplicateWidget.emit(widget())" 
+            class="p-1 rounded-lg text-text-secondary hover:text-text-primary hover:bg-base-100"
+            title="Duplicate Widget">
+            <span class="material-symbols-outlined text-sm">content_copy</span>
+          </button>
+
+          <!-- Delete -->
+          <button 
+            type="button"
+            (click)="removeWidget.emit(widget().id)" 
+            class="p-1 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20"
+            title="Remove Widget">
+            <span class="material-symbols-outlined text-sm">delete</span>
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- 1. ANNOUNCEMENT BANNER -->
+    @if (widget().type === 'announcement_banner') {
+      <div class="p-5 rounded-3xl bg-gradient-to-r from-tenant-500/15 via-tenant-500/5 to-transparent border border-tenant-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-3.5">
+          <div class="w-10 h-10 rounded-2xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <span class="material-symbols-outlined text-xl">campaign</span>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 mb-0.5">
+              <span class="font-bold text-sm text-text-primary">{{ widget().title }}</span>
+              <span class="text-[10px] px-2 py-0.2 rounded-full font-semibold bg-tenant-500 text-white">Broadcast</span>
+            </div>
+            <p class="text-xs text-text-secondary leading-relaxed">
+              {{ widget().config?.bannerText || 'Tenant LMS compliance and skill learning initiative is active.' }}
+            </p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 self-end md:self-auto">
+          <a routerLink="/courses" class="px-3.5 py-1.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors">
+            <span>Explore Catalog</span>
+            <span class="material-symbols-outlined text-xs">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- 2. KPI GRID -->
+    @if (widget().type === 'kpi_grid') {
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
+        @for (kpi of kpiItems(); track kpi.title) {
+          <app-kpi-card [data]="kpi"></app-kpi-card>
+        }
+      </div>
+    }
+
+    <!-- 3. KPI HIGHLIGHT RADIAL GAUGE -->
+    @if (widget().type === 'kpi_highlight') {
+      <div class="flex flex-col items-center justify-center text-center py-2 h-full">
+        <div class="relative w-28 h-28 flex items-center justify-center mb-3">
+          <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+            <path class="text-base-300" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+            <path class="text-tenant-500" stroke-dasharray="94, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+          </svg>
+          <div class="absolute flex flex-col items-center justify-center">
+            <span class="text-2xl font-black text-text-primary tracking-tight">{{ lms.activeTenant().stats.complianceRate }}%</span>
+            <span class="text-[10px] text-emerald-600 font-semibold">Compliant</span>
+          </div>
+        </div>
+        <h4 class="font-bold text-xs text-text-primary">{{ widget().title }}</h4>
+        <p class="text-[11px] text-text-secondary mt-0.5">Target standard: >95% regulatory adherence</p>
+      </div>
+    }
+
+    <!-- 4. DEPARTMENT COMPLETION MATRIX -->
+    @if (widget().type === 'chart_department_matrix') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <div>
+            <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-tenant-600 text-base">bar_chart</span>
+              {{ widget().title }}
+            </h3>
+            @if (widget().subtitle) {
+              <p class="text-[11px] text-text-secondary mt-0.5">{{ widget().subtitle }}</p>
+            }
+          </div>
+          <span class="text-[11px] font-mono text-text-secondary bg-base-200 px-2 py-0.5 rounded-lg">
+            {{ lms.departmentMetrics().length }} Depts
+          </span>
+        </div>
+
+        <div class="space-y-3.5">
+          @for (dm of lms.departmentMetrics(); track dm.department) {
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-text-primary flex items-center gap-1.5">
+                  {{ dm.department }}
+                  <span class="text-[10px] text-text-secondary font-normal">({{ dm.learnersCount }} personnel)</span>
+                </span>
+                <div class="flex items-center gap-2 font-mono text-xs">
+                  <span class="text-text-secondary">Avg: {{ dm.avgCompletionRate }}%</span>
+                  <span class="font-bold" [class]="dm.complianceRate >= 90 ? 'text-emerald-600' : 'text-amber-500'">
+                    {{ dm.complianceRate }}% Compliance
+                  </span>
+                </div>
+              </div>
+              <div class="w-full bg-base-200 h-2 rounded-full overflow-hidden flex">
+                <div 
+                  class="bg-tenant-500 h-full rounded-full transition-all duration-500" 
+                  [style.width.%]="dm.complianceRate">
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 5. ENROLLMENT & COMPLETION VELOCITY TREND -->
+    @if (widget().type === 'chart_enrollment_trends') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <div>
+            <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-tenant-600 text-base">show_chart</span>
+              {{ widget().title }}
+            </h3>
+            @if (widget().subtitle) {
+              <p class="text-[11px] text-text-secondary mt-0.5">{{ widget().subtitle }}</p>
+            }
+          </div>
+          <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded-lg">
+            +24.8% Monthly Velocity
+          </span>
+        </div>
+
+        <!-- SVG Curve Chart -->
+        <div class="relative h-44 w-full pt-2">
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 400 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad-enroll" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="var(--color-tenant-500, #4f46e5)" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="var(--color-tenant-500, #4f46e5)" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            <path d="M0,90 Q80,75 140,50 T280,35 T400,10 L400,120 L0,120 Z" fill="url(#grad-enroll)" />
+            <path d="M0,90 Q80,75 140,50 T280,35 T400,10" fill="none" stroke="currentColor" class="text-tenant-500" stroke-width="3" stroke-linecap="round" />
+            <circle cx="140" cy="50" r="4" class="fill-tenant-500 ring-2 ring-white" />
+            <circle cx="280" cy="35" r="4" class="fill-tenant-500 ring-2 ring-white" />
+            <circle cx="400" cy="10" r="4" class="fill-tenant-500 ring-2 ring-white" />
+          </svg>
+          <div class="flex items-center justify-between text-[10px] text-text-secondary pt-2 border-t border-base-300 font-mono">
+            <span>Sep</span>
+            <span>Oct</span>
+            <span>Nov</span>
+            <span>Dec</span>
+            <span>Jan</span>
+            <span>Feb</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 6. COMPLIANCE VS RISK BREAKDOWN GAUGE -->
+    @if (widget().type === 'chart_compliance_gauge') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600 text-base">pie_chart</span>
+            {{ widget().title }}
+          </h3>
+          <span class="text-[10px] font-mono text-text-secondary">Cohort Audit</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 text-center pt-2">
+          <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20">
+            <span class="text-xl font-bold text-emerald-600">88%</span>
+            <div class="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold mt-0.5">Compliant</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20">
+            <span class="text-xl font-bold text-amber-600">9%</span>
+            <div class="text-[10px] text-amber-700 dark:text-amber-300 font-semibold mt-0.5">At Risk</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20">
+            <span class="text-xl font-bold text-rose-600">3%</span>
+            <div class="text-[10px] text-rose-700 dark:text-rose-300 font-semibold mt-0.5">Overdue</div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- 7. 7-DAY LEARNING ACTIVITY HEATMAP -->
+    @if (widget().type === 'chart_activity_heatmap') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600 text-base">calendar_view_week</span>
+            {{ widget().title }}
+          </h3>
+          <span class="text-[11px] font-mono text-text-secondary">438 Total Study Hours</span>
+        </div>
+
+        <div class="grid grid-cols-7 gap-2 text-center pt-1">
+          @for (day of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; track day; let i = $index) {
+            <div class="space-y-1">
+              <span class="text-[10px] font-semibold text-text-secondary">{{ day }}</span>
+              <div 
+                class="h-14 rounded-xl flex items-end justify-center pb-1 transition-all"
+                [class]="i === 1 || i === 3 ? 'bg-tenant-500 text-white' : i === 2 || i === 4 ? 'bg-tenant-500/60 text-white' : 'bg-base-200 text-text-secondary'">
+                <span class="text-[10px] font-mono font-bold">{{ (i + 3) * 12 }}h</span>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 8. IN-PROGRESS LEARNER COURSEWARE -->
+    @if (widget().type === 'learner_in_progress') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <div>
+            <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-tenant-600 text-base">play_circle</span>
+              {{ widget().title }}
+            </h3>
+            @if (widget().subtitle) {
+              <p class="text-[11px] text-text-secondary mt-0.5">{{ widget().subtitle }}</p>
+            }
+          </div>
+          <a routerLink="/courses" class="text-xs text-tenant-600 hover:underline font-semibold flex items-center gap-0.5">
+            View All Catalog <span class="material-symbols-outlined text-xs">chevron_right</span>
+          </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          @for (item of myEnrollments(); track item.enrollment.id) {
+            <div class="p-3.5 rounded-2xl bg-base-200/70 border border-base-300 flex flex-col justify-between hover:border-tenant-500/50 transition-all">
+              <div class="flex items-start gap-3 mb-3">
+                <img [src]="item.course?.thumbnail" [alt]="item.course?.title" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" referrerpolicy="no-referrer" />
+                <div class="min-w-0 flex-1">
+                  <span class="text-[10px] px-2 py-0.2 rounded-md bg-base-100 font-semibold text-text-secondary border border-base-300">
+                    {{ item.course?.category }}
+                  </span>
+                  <h4 class="font-bold text-xs text-text-primary line-clamp-1 mt-1">{{ item.course?.title }}</h4>
+                  <p class="text-[10px] text-text-secondary line-clamp-1">{{ item.course?.instructorName }}</p>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between text-[11px] mb-1">
+                  <span class="text-text-secondary">Progress</span>
+                  <span class="font-bold text-tenant-600">{{ item.enrollment.progressPercent }}%</span>
+                </div>
+                <div class="w-full bg-base-300 h-1.5 rounded-full overflow-hidden mb-3">
+                  <div class="bg-tenant-500 h-full rounded-full" [style.width.%]="item.enrollment.progressPercent"></div>
+                </div>
+
+                <a 
+                  [routerLink]="['/courses', item.course?.id, 'learn']"
+                  class="w-full py-1.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors shadow-xs">
+                  <span class="material-symbols-outlined text-sm">play_arrow</span>
+                  <span>{{ item.enrollment.progressPercent === 100 ? 'Review Course' : 'Resume Lesson' }}</span>
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 9. OVERDUE COMPLIANCE ESCALATION QUEUE -->
+    @if (widget().type === 'escalation_queue') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <div>
+            <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-rose-500 text-base">priority_high</span>
+              {{ widget().title }}
+            </h3>
+            <p class="text-[11px] text-text-secondary mt-0.5">Personnel requiring remediation</p>
+          </div>
+          <button 
+            (click)="dispatchReminders()" 
+            class="px-2.5 py-1 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 text-xs font-semibold flex items-center gap-1 transition-colors">
+            <span class="material-symbols-outlined text-xs">send</span>
+            <span>Dispatch Notices</span>
+          </button>
+        </div>
+
+        @if (reminderSentMessage()) {
+          <div class="mb-3 p-2 rounded-xl bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">check_circle</span>
+            {{ reminderSentMessage() }}
+          </div>
+        }
+
+        <div class="space-y-2">
+          @for (user of overduePersonnel(); track user.id) {
+            <div class="p-2.5 rounded-xl bg-base-200/60 border border-base-300 flex items-center justify-between text-xs">
+              <div class="flex items-center gap-2.5">
+                <img [src]="user.avatar" [alt]="user.name" class="w-7 h-7 rounded-full object-cover" referrerpolicy="no-referrer" />
+                <div>
+                  <div class="font-semibold text-text-primary">{{ user.name }}</div>
+                  <div class="text-[10px] text-text-secondary">{{ user.department }} &bull; {{ user.email }}</div>
+                </div>
+              </div>
+              <span class="text-[10px] px-2 py-0.5 rounded-md font-bold"
+                [class]="user.complianceStatus === 'Overdue' ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'">
+                {{ user.complianceStatus }}
+              </span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 10. LIVE AUDIT LOG STREAM -->
+    @if (widget().type === 'live_audit_feed') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600 text-base">history_toggle_off</span>
+            {{ widget().title }}
+          </h3>
+          <span class="text-[10px] font-mono text-emerald-600 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Live Stream
+          </span>
+        </div>
+
+        <div class="divide-y divide-base-300 space-y-2 max-h-56 overflow-y-auto">
+          @for (log of lms.auditLogs().slice(0, 4); track log.id) {
+            <div class="pt-2 text-xs">
+              <div class="flex items-center justify-between text-[10px] text-text-secondary mb-0.5">
+                <span class="font-bold text-text-primary">{{ log.actor }} ({{ log.actorRole }})</span>
+                <span class="font-mono">{{ log.timestamp }}</span>
+              </div>
+              <p class="text-text-secondary line-clamp-1">{{ log.action }}: <span class="text-text-primary font-medium">{{ log.target }}</span></p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 11. UPCOMING WEBINARS -->
+    @if (widget().type === 'upcoming_webinars') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600 text-base">videocam</span>
+            {{ widget().title }}
+          </h3>
+          <a routerLink="/webinars" class="text-xs text-tenant-600 font-semibold hover:underline">Schedule</a>
+        </div>
+
+        <div class="space-y-2.5">
+          @for (webinar of lms.webinars().slice(0, 2); track webinar.id) {
+            <div class="p-3 rounded-2xl bg-base-200/60 border border-base-300 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <img [src]="webinar.instructorAvatar" [alt]="webinar.instructor" class="w-8 h-8 rounded-xl object-cover" referrerpolicy="no-referrer" />
+                <div>
+                  <h4 class="font-bold text-xs text-text-primary line-clamp-1">{{ webinar.title }}</h4>
+                  <div class="text-[10px] text-text-secondary flex items-center gap-1.5 mt-0.5">
+                    <span>{{ webinar.scheduledAt | date:'short' }}</span>
+                    <span>&bull;</span>
+                    <span class="text-tenant-600 font-medium">{{ webinar.platform }}</span>
+                  </div>
+                </div>
+              </div>
+              <a routerLink="/webinars" class="px-2.5 py-1 rounded-xl bg-tenant-500 text-white text-xs font-semibold shadow-xs">
+                Join
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 12. GAMIFICATION LEADERBOARD -->
+    @if (widget().type === 'gamification_leaderboard') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500 text-base">military_tech</span>
+            {{ widget().title }}
+          </h3>
+          <span class="text-[10px] font-bold text-amber-600 bg-amber-500/10 px-2 py-0.5 rounded-full">Top XP</span>
+        </div>
+
+        <div class="space-y-2">
+          @for (learner of topLearners(); track learner.id; let idx = $index) {
+            <div class="flex items-center justify-between p-2 rounded-xl bg-base-200/50 text-xs">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+                  [class]="idx === 0 ? 'bg-amber-400 text-black' : idx === 1 ? 'bg-slate-300 text-black' : 'bg-base-300 text-text-secondary'">
+                  {{ idx + 1 }}
+                </span>
+                <img [src]="learner.avatar" [alt]="learner.name" class="w-6 h-6 rounded-full object-cover" referrerpolicy="no-referrer" />
+                <span class="font-semibold text-text-primary truncate max-w-[110px]">{{ learner.name }}</span>
+              </div>
+              <span class="font-bold font-mono text-tenant-600">{{ learner.points }} XP</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- 13. QUICK ACTIONS DISPATCHER -->
+    @if (widget().type === 'quick_actions') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600 text-base">bolt</span>
+            {{ widget().title }}
+          </h3>
+          <span class="text-[10px] font-mono text-text-secondary">One-Click Dispatch</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <button (click)="dispatchReminders()" class="p-2.5 rounded-xl bg-base-200 hover:bg-base-300 text-left transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-rose-500 text-base">mail</span>
+            <span class="text-xs font-semibold text-text-primary">Send Overdue Alerts</span>
+          </button>
+          <a routerLink="/courses" class="p-2.5 rounded-xl bg-base-200 hover:bg-base-300 text-left transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-indigo-500 text-base">add_circle</span>
+            <span class="text-xs font-semibold text-text-primary">Create New Course</span>
+          </a>
+          <a routerLink="/users" class="p-2.5 rounded-xl bg-base-200 hover:bg-base-300 text-left transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-500 text-base">person_add</span>
+            <span class="text-xs font-semibold text-text-primary">Invite Learners</span>
+          </a>
+          <a routerLink="/certificates" class="p-2.5 rounded-xl bg-base-200 hover:bg-base-300 text-left transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500 text-base">verified</span>
+            <span class="text-xs font-semibold text-text-primary">Verify Credentials</span>
+          </a>
+        </div>
+      </div>
+    }
+
+    <!-- 14. CERTIFICATES TICKER -->
+    @if (widget().type === 'certificates_ticker') {
+      <div>
+        <div class="flex items-center justify-between pb-3 border-b border-base-300 mb-4">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500 text-base">verified</span>
+            {{ widget().title }}
+          </h3>
+          <a routerLink="/certificates" class="text-xs text-tenant-600 font-semibold hover:underline">Vault</a>
+        </div>
+
+        <div class="space-y-2">
+          @for (cert of lms.tenantCertificates().slice(0, 3); track cert.id) {
+            <div class="p-2.5 rounded-xl bg-base-200/60 border border-base-300 flex items-center justify-between text-xs">
+              <div>
+                <div class="font-bold text-text-primary">{{ cert.userName }}</div>
+                <div class="text-[10px] text-text-secondary">{{ cert.courseTitle }}</div>
+              </div>
+              <div class="text-right">
+                <span class="text-[10px] font-mono text-tenant-600 font-bold">{{ cert.verificationCode }}</span>
+                <div class="text-[9px] text-emerald-600 font-semibold">Verified</div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+  </div>
+}

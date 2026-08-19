@@ -18,6 +18,10 @@ export class CertificatesComponent {
   verificationResult = signal<Certificate | null | 'not_found'>(null);
   selectedCert = signal<Certificate | null>(null);
 
+  // Pagination
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(6);
+
   // Filtered certificates
   filteredCertificates = computed(() => {
     const q = this.searchQuery().toLowerCase();
@@ -35,6 +39,47 @@ export class CertificatesComponent {
       c.verificationCode.toLowerCase().includes(q)
     );
   });
+
+  totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredCertificates().length / this.pageSize()));
+  });
+
+  paginatedCertificates = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.filteredCertificates().slice(start, start + this.pageSize());
+  });
+
+  pagesList = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
+  goToPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  setPageSize(size: number) {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+  }
 
   verifyCertificate() {
     const code = this.verificationCodeInput().trim().toUpperCase();

@@ -24,6 +24,7 @@ export class CoursePlayerComponent {
 
   // Active quiz state
   selectedAnswers = signal<Record<string, number>>({});
+  answeredCount = computed(() => Object.keys(this.selectedAnswers()).length);
   quizSubmitted = signal<boolean>(false);
   quizScore = signal<number>(0);
   quizPassed = signal<boolean>(false);

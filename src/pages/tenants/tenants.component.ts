@@ -19,6 +19,10 @@ export class TenantsComponent {
   showAddModal = signal<boolean>(false);
   editingTenant = signal<Tenant | null>(null);
 
+  // Pagination
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(4);
+
   // New tenant form model
   newTenantForm = {
     name: '',
@@ -47,10 +51,55 @@ export class TenantsComponent {
     });
   });
 
+  totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredTenants().length / this.pageSize()));
+  });
+
+  paginatedTenants = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.filteredTenants().slice(start, start + this.pageSize());
+  });
+
+  pagesList = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
+
   // Global telemetry
   totalLearners = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.totalLearners, 0));
   totalSeats = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.seatLimit, 0));
   totalStorage = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.storageUsedGb, 0));
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
+  onFilterChange() {
+    this.currentPage.set(1);
+  }
+
+  goToPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  setPageSize(size: number) {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+  }
 
   selectTenant(id: string) {
     this.lms.switchTenant(id);

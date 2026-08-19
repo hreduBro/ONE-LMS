@@ -1,12 +1,18 @@
 
-<div class="flex h-screen bg-base-200 font-sans">
-  <app-sidebar [isOpen]="isSidebarOpen()"></app-sidebar>
+<div class="flex h-screen bg-base-200 font-sans overflow-hidden">
+  @if (lms.adminLayoutPreferences().navigationMode !== 'top_menu') {
+    <app-sidebar [isOpen]="isSidebarOpen()"></app-sidebar>
+  }
   
   <div class="flex-1 flex flex-col overflow-hidden">
     <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+
+    @if (lms.adminLayoutPreferences().navigationMode === 'top_menu') {
+      <app-top-menu></app-top-menu>
+    }
     
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-base-100">
-      <div class="container mx-auto px-6 py-8">
+      <div [class]="lms.adminLayoutPreferences().contentWidth === 'fluid' ? 'w-full px-4 lg:px-8 py-6' : 'container mx-auto px-4 lg:px-6 py-6'">
         <!-- The main content will be rendered here based on the route. -->
         <router-outlet></router-outlet>
       </div>

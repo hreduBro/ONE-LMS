@@ -337,7 +337,7 @@
               <div class="flex justify-end pt-2">
                 <button 
                   (click)="submitQuiz(questions, activeLesson().passingScorePercent || 75)"
-                  [disabled]="Object.keys(selectedAnswers()).length < questions.length"
+                  [disabled]="answeredCount() < questions.length"
                   class="px-6 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all">
                   <span class="material-symbols-outlined text-sm">task_alt</span>
                   Submit Assessment

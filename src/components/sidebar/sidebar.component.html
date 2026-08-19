@@ -1,18 +1,18 @@
 <aside 
-  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col z-30 overflow-hidden flex-shrink-0"
-  [class]="isOpen() ? 'w-64' : 'w-0 md:w-20'">
+  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full z-30 overflow-hidden flex-shrink-0"
+  [class]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' ? 'w-16' : (isOpen() ? 'w-64' : 'w-0 md:w-20')">
   
   <!-- Sidebar Header: Brand Logo & Title -->
-  <div class="h-16 border-b border-base-300 flex items-center px-4 gap-3 overflow-hidden">
-    <div class="w-10 h-10 rounded-xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+  <div class="h-16 border-b border-base-300 flex items-center px-3.5 gap-3 overflow-hidden" [class.justify-center]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' || !isOpen()">
+    <div class="w-9 h-9 rounded-xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
       @if (lms.activeTenant().branding.logoUrl) {
         <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
       } @else {
-        <span class="material-symbols-outlined text-2xl">school</span>
+        <span class="material-symbols-outlined text-xl">school</span>
       }
     </div>
     
-    @if (isOpen()) {
+    @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
       <div class="flex flex-col min-w-0 transition-opacity duration-200">
         <span class="font-bold text-sm text-text-primary truncate tracking-tight">
           {{ lms.activeTenant().name }}
@@ -25,25 +25,28 @@
   </div>
 
   <!-- Navigation Menu -->
-  <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
-    <div class="px-3 pb-2 text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
-      @if (isOpen()) {
+  <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-1">
+    @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
+      <div class="px-2.5 pb-1 text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
         <span>Navigation</span>
-      }
-    </div>
+      </div>
+    }
 
     @for (item of navItems; track item.route) {
       @if (isAllowed(item.roles)) {
         <a 
           [routerLink]="item.route"
           routerLinkActive="bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200 font-semibold shadow-sm"
-          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative">
+          [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+          [title]="item.label"
+          class="flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative"
+          [class.justify-center]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' || !isOpen()">
           
           <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
             {{ item.icon }}
           </span>
 
-          @if (isOpen()) {
+          @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
             <span class="truncate flex-1">{{ item.label }}</span>
             @if (item.badge) {
               <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 font-medium">
@@ -57,7 +60,7 @@
   </nav>
 
   <!-- Sidebar Footer: Tenant Resource Quota -->
-  @if (isOpen()) {
+  @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
     <div class="p-3 m-3 rounded-2xl bg-base-200 border border-base-300 text-xs">
       <div class="flex items-center justify-between mb-1.5">
         <span class="text-[11px] font-medium text-text-secondary flex items-center gap-1">
@@ -85,3 +88,4 @@
     </div>
   }
 </aside>
+

@@ -206,3 +206,62 @@ export interface DepartmentMetric {
   complianceRate: number;
   overdueCount: number;
 }
+
+// Navigation & Layout Configuration for Admins
+export type NavigationLayoutMode = 'sidebar' | 'top_menu' | 'compact_rail';
+export type HeaderDensity = 'comfortable' | 'compact';
+export type ContentWidthMode = 'fluid' | 'constrained';
+
+export interface AdminLayoutPreferences {
+  navigationMode: NavigationLayoutMode;
+  headerDensity: HeaderDensity;
+  showBreadcrumbs: boolean;
+  stickyHeader: boolean;
+  contentWidth: ContentWidthMode;
+  accentMode: 'brand' | 'neutral' | 'subtle';
+}
+
+// Dashboard Studio Widget Types & Models
+export type DashboardWidgetType =
+  | 'kpi_grid'
+  | 'kpi_highlight'
+  | 'chart_department_matrix'
+  | 'chart_enrollment_trends'
+  | 'chart_compliance_gauge'
+  | 'chart_activity_heatmap'
+  | 'learner_in_progress'
+  | 'escalation_queue'
+  | 'live_audit_feed'
+  | 'upcoming_webinars'
+  | 'gamification_leaderboard'
+  | 'quick_actions'
+  | 'certificates_ticker'
+  | 'announcement_banner';
+
+export interface DashboardWidget {
+  id: string;
+  type: DashboardWidgetType;
+  title: string;
+  subtitle?: string;
+  colSpan: 1 | 2 | 3 | 4; // Grid columns out of 4 (1 = 25%, 2 = 50%, 3 = 75%, 4 = 100%)
+  visibleForRoles: UserRole[];
+  config?: {
+    highlightMetric?: 'learners' | 'compliance' | 'completion' | 'xp' | 'certificates' | 'seats';
+    bannerText?: string;
+    bannerType?: 'info' | 'warning' | 'success' | 'indigo';
+    chartTimeframe?: '7d' | '30d' | '90d';
+    maxItems?: number;
+    showSummaryBadge?: boolean;
+    customAccentColor?: string;
+  };
+}
+
+export interface CustomTenantDashboard {
+  tenantId: string;
+  isPublished: boolean;
+  publishedAt: string;
+  publishedBy: string;
+  version: number;
+  widgets: DashboardWidget[];
+}
+

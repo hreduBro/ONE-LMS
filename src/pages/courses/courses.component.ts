@@ -21,6 +21,10 @@ export class CoursesComponent {
   mandatoryOnly = signal<boolean>(false);
   showCreateModal = signal<boolean>(false);
 
+  // Pagination
+  currentPage = signal<number>(1);
+  pageSize = signal<number>(6);
+
   categories: string[] = ['All', 'Compliance & Security', 'Engineering', 'Healthcare', 'Finance', 'AI & Data', 'Leadership'];
   levels: string[] = ['All', 'Beginner', 'Intermediate', 'Advanced'];
 
@@ -58,6 +62,51 @@ export class CoursesComponent {
       return matchSearch && matchCat && matchLvl && matchMandatory;
     });
   });
+
+  totalPages = computed(() => {
+    return Math.max(1, Math.ceil(this.filteredCourses().length / this.pageSize()));
+  });
+
+  paginatedCourses = computed(() => {
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return this.filteredCourses().slice(start, start + this.pageSize());
+  });
+
+  pagesList = computed(() => {
+    return Array.from({ length: this.totalPages() }, (_, i) => i + 1);
+  });
+
+  onSearchChange(val: string) {
+    this.searchQuery.set(val);
+    this.currentPage.set(1);
+  }
+
+  onFilterChange() {
+    this.currentPage.set(1);
+  }
+
+  goToPage(p: number) {
+    if (p >= 1 && p <= this.totalPages()) {
+      this.currentPage.set(p);
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage() < this.totalPages()) {
+      this.currentPage.update(p => p + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
+    }
+  }
+
+  setPageSize(size: number) {
+    this.pageSize.set(size);
+    this.currentPage.set(1);
+  }
 
   // Get user's enrollment for a course
   getEnrollment(courseId: string) {

@@ -9,9 +9,20 @@ import { Kpi } from '../../models/dashboard.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class KpiCardComponent {
-  data = input.required<Kpi>();
+  dataInput = input<Kpi | undefined>(undefined, { alias: 'data' });
+  kpiInput = input<Kpi | undefined>(undefined, { alias: 'kpi' });
 
-  isPositiveChange = computed(() => this.data().change.startsWith('+'));
+  resolvedData = computed<Kpi>(() => {
+    return this.dataInput() || this.kpiInput() || {
+      title: 'Metric',
+      value: '0',
+      change: '+0%',
+      icon: 'activity',
+      color: 'indigo'
+    };
+  });
+
+  isPositiveChange = computed(() => this.resolvedData().change?.startsWith('+') ?? true);
 
   iconMap: Record<string, string> = {
     users: 'group',
@@ -28,3 +39,4 @@ export class KpiCardComponent {
     trending: 'monitoring'
   };
 }
+

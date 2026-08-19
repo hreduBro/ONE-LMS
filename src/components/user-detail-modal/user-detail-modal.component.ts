@@ -9,7 +9,7 @@ import { User } from '../../models/user.model';
   imports: [CommonModule],
 })
 export class UserDetailModalComponent {
-  user = input.required<User | null>();
+  user = input<User | null>(null);
   closeModal = output<void>();
 
   onClose() {

@@ -30,7 +30,7 @@
       <input 
         type="text" 
         [ngModel]="searchQuery()" 
-        (ngModelChange)="searchQuery.set($event)"
+        (ngModelChange)="onSearchChange($event)"
         placeholder="Search personnel by name or email..."
         class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
     </div>
@@ -41,7 +41,7 @@
         <span class="text-text-secondary font-semibold">Dept:</span>
         <select 
           [ngModel]="selectedDepartment()" 
-          (ngModelChange)="selectedDepartment.set($event)"
+          (ngModelChange)="selectedDepartment.set($event); onFilterChange()"
           class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
           <option value="All">All Departments</option>
           @for (dept of lms.activeTenant().departments; track dept) {
@@ -55,7 +55,7 @@
         <span class="text-text-secondary font-semibold">Role:</span>
         <select 
           [ngModel]="selectedRole()" 
-          (ngModelChange)="selectedRole.set($event)"
+          (ngModelChange)="selectedRole.set($event); onFilterChange()"
           class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
           <option value="All">All Roles</option>
           <option value="tenant_admin">Tenant Admin</option>
@@ -69,7 +69,7 @@
         <span class="text-text-secondary font-semibold">Compliance:</span>
         <select 
           [ngModel]="selectedCompliance()" 
-          (ngModelChange)="selectedCompliance.set($event)"
+          (ngModelChange)="selectedCompliance.set($event); onFilterChange()"
           class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
           <option value="All">All Statuses</option>
           <option value="Compliant">Compliant</option>
@@ -97,7 +97,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-base-300">
-          @for (user of filteredUsers(); track user.id) {
+          @for (user of paginatedUsers(); track user.id) {
             <tr class="hover:bg-base-200/50 transition-colors cursor-pointer" (click)="viewUser(user)">
               <!-- Personnel Name & Avatar -->
               <td class="px-5 py-3.5">
@@ -177,6 +177,63 @@
           }
         </tbody>
       </table>
+    </div>
+
+    <!-- Table Pagination Footer -->
+    <div class="px-5 py-3.5 bg-base-200/50 border-t border-base-300 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-3 text-text-secondary">
+        <span>
+          Showing 
+          <span class="font-semibold text-text-primary font-mono">{{ filteredUsers().length === 0 ? 0 : (currentPage() - 1) * pageSize() + 1 }}</span>
+          to 
+          <span class="font-semibold text-text-primary font-mono">{{ filteredUsers().length < currentPage() * pageSize() ? filteredUsers().length : currentPage() * pageSize() }}</span>
+          of 
+          <span class="font-semibold text-text-primary font-mono">{{ filteredUsers().length }}</span> 
+          personnel
+        </span>
+
+        <div class="flex items-center gap-1.5 pl-3 border-l border-base-300">
+          <span class="text-[11px]">Per page:</span>
+          <select 
+            [value]="pageSize()"
+            (change)="setPageSize(+$any($event.target).value)"
+            class="px-2 py-1 rounded-lg bg-base-100 border border-base-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-tenant-500">
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Pagination Buttons -->
+      <div class="flex items-center gap-1">
+        <button 
+          (click)="prevPage()"
+          [disabled]="currentPage() === 1"
+          class="px-2.5 py-1.5 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200 disabled:opacity-40 disabled:hover:bg-base-100 text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all"
+          title="Previous Page">
+          <span class="material-symbols-outlined text-sm">chevron_left</span>
+          <span class="hidden sm:inline text-xs">Prev</span>
+        </button>
+
+        @for (p of pagesList(); track p) {
+          <button 
+            (click)="goToPage(p)"
+            class="w-8 h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all"
+            [class]="p === currentPage() ? 'bg-tenant-500 text-white border-tenant-500 shadow-sm' : 'border-base-300 bg-base-100 hover:bg-base-200 text-text-secondary hover:text-text-primary'">
+            {{ p }}
+          </button>
+        }
+
+        <button 
+          (click)="nextPage()"
+          [disabled]="currentPage() === totalPages()"
+          class="px-2.5 py-1.5 rounded-lg border border-base-300 bg-base-100 hover:bg-base-200 disabled:opacity-40 disabled:hover:bg-base-100 text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all"
+          title="Next Page">
+          <span class="hidden sm:inline text-xs">Next</span>
+          <span class="material-symbols-outlined text-sm">chevron_right</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

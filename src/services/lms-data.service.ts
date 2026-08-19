@@ -8,7 +8,12 @@ import {
   LiveWebinar,
   AuditLog,
   UserRole,
-  DepartmentMetric
+  DepartmentMetric,
+  AdminLayoutPreferences,
+  NavigationLayoutMode,
+  DashboardWidget,
+  DashboardWidgetType,
+  CustomTenantDashboard
 } from '../models/lms.model';
 
 const INITIAL_TENANTS: Tenant[] = [
@@ -906,6 +911,207 @@ const INITIAL_AUDIT_LOGS: AuditLog[] = [
   }
 ];
 
+export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
+  {
+    id: 'w-announcement-1',
+    type: 'announcement_banner',
+    title: 'Tenant Skill & Compliance Directive',
+    colSpan: 4,
+    visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner'],
+    config: {
+      bannerText: 'Annual Mandatory Cybersecurity & Regulatory Certification cycle is in effect. All personnel must complete assignments before the due date.',
+      bannerType: 'indigo'
+    }
+  },
+  {
+    id: 'w-kpi-grid-1',
+    type: 'kpi_grid',
+    title: 'High-Level Operational Key Performance Indicators',
+    subtitle: 'Real-time telemetry aggregated for active tenant and role',
+    colSpan: 4,
+    visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner']
+  },
+  {
+    id: 'w-learner-courses-1',
+    type: 'learner_in_progress',
+    title: 'Continue Active Learning',
+    subtitle: 'Enrolled interactive curricula & mandatory certification modules',
+    colSpan: 3,
+    visibleForRoles: ['learner']
+  },
+  {
+    id: 'w-gamification-1',
+    type: 'gamification_leaderboard',
+    title: 'Skill Mastery & XP Leaderboard',
+    subtitle: 'Top achievers and credential badge showcase',
+    colSpan: 1,
+    visibleForRoles: ['learner', 'instructor']
+  },
+  {
+    id: 'w-dept-matrix-1',
+    type: 'chart_department_matrix',
+    title: 'Department Progress & Compliance Matrix',
+    subtitle: 'Aggregated progress across operational units',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin', 'instructor']
+  },
+  {
+    id: 'w-enrollment-trends-1',
+    type: 'chart_enrollment_trends',
+    title: 'Enrollment & Completion Velocity',
+    subtitle: 'Monthly progression trends across active cohorts',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin']
+  },
+  {
+    id: 'w-escalation-queue-1',
+    type: 'escalation_queue',
+    title: 'Compliance Risk & Escalation Queue',
+    subtitle: 'Personnel requiring immediate remediation',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin', 'instructor']
+  },
+  {
+    id: 'w-live-audit-1',
+    type: 'live_audit_feed',
+    title: 'Real-Time Security & Audit Stream',
+    subtitle: 'Live tamper-proof event logs and compliance traces',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin']
+  },
+  {
+    id: 'w-upcoming-webinars-1',
+    type: 'upcoming_webinars',
+    title: 'Upcoming Live Virtual Classrooms',
+    subtitle: 'Interactive instructor-led sessions and workshops',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner']
+  },
+  {
+    id: 'w-quick-actions-1',
+    type: 'quick_actions',
+    title: 'Executive LMS Dispatcher',
+    subtitle: 'Quick operational actions and escalation alerts',
+    colSpan: 2,
+    visibleForRoles: ['super_admin', 'tenant_admin']
+  }
+];
+
+export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string; description: string; defaultColSpan: 1 | 2 | 3 | 4; icon: string; category: string }[] = [
+  {
+    type: 'kpi_grid',
+    name: 'Dynamic KPI Metrics Grid',
+    description: '4-card responsive KPI matrix adapting to active role (Learners, Compliance, Completed, Certificates).',
+    defaultColSpan: 4,
+    icon: 'speed',
+    category: 'KPIs & Summary'
+  },
+  {
+    type: 'kpi_highlight',
+    name: 'Compliance Health Focus Gauge',
+    description: 'High-impact circular radial progress metric displaying tenant target compliance score.',
+    defaultColSpan: 1,
+    icon: 'donut_large',
+    category: 'KPIs & Summary'
+  },
+  {
+    type: 'announcement_banner',
+    name: 'Broadcast Announcement Banner',
+    description: 'Customizable alert banner for tenant-wide announcements, deadlines, or welcome notices.',
+    defaultColSpan: 4,
+    icon: 'campaign',
+    category: 'Operational'
+  },
+  {
+    type: 'chart_department_matrix',
+    name: 'Department Completion & Compliance Matrix',
+    description: 'Detailed horizontal progress bar matrix showing completion rates and overdue counts by department.',
+    defaultColSpan: 2,
+    icon: 'bar_chart',
+    category: 'Analytics & Charts'
+  },
+  {
+    type: 'chart_enrollment_trends',
+    name: 'Enrollment & Completion Velocity Trend',
+    description: 'Smooth SVG area chart visualizing monthly cohort enrollment growth and completions.',
+    defaultColSpan: 2,
+    icon: 'show_chart',
+    category: 'Analytics & Charts'
+  },
+  {
+    type: 'chart_compliance_gauge',
+    name: 'Regulatory Compliance vs Risk Breakdown',
+    description: 'Visual breakdown of Compliant vs At-Risk vs Overdue learners with percentage indicators.',
+    defaultColSpan: 2,
+    icon: 'pie_chart',
+    category: 'Analytics & Charts'
+  },
+  {
+    type: 'chart_activity_heatmap',
+    name: '7-Day Learning Activity Heatmap',
+    description: 'Daily activity heatmap visualizing peak learning hours across the organization.',
+    defaultColSpan: 2,
+    icon: 'calendar_view_week',
+    category: 'Analytics & Charts'
+  },
+  {
+    type: 'learner_in_progress',
+    name: 'In-Progress Learning Path Carousel',
+    description: 'Resume active lessons, view progress percentage, and launch interactive course players.',
+    defaultColSpan: 3,
+    icon: 'play_circle',
+    category: 'Courseware'
+  },
+  {
+    type: 'escalation_queue',
+    name: 'Overdue Compliance Escalation Queue',
+    description: 'Personnel roster at risk of missing compliance deadlines with 1-click reminder triggers.',
+    defaultColSpan: 2,
+    icon: 'priority_high',
+    category: 'Operational'
+  },
+  {
+    type: 'live_audit_feed',
+    name: 'Live Tamper-Proof Audit Feed',
+    description: 'Real-time security log stream of all tenant actions, certificate issuances, and enrollments.',
+    defaultColSpan: 2,
+    icon: 'history_toggle_off',
+    category: 'Security & Audit'
+  },
+  {
+    type: 'upcoming_webinars',
+    name: 'Upcoming Live Virtual Classrooms',
+    description: 'Scheduled instructor webinars, attendee counters, platform badges, and direct Join links.',
+    defaultColSpan: 2,
+    icon: 'videocam',
+    category: 'Live Sessions'
+  },
+  {
+    type: 'gamification_leaderboard',
+    name: 'Skill Mastery Leaderboard & Badges',
+    description: 'Top organizational learners ranked by XP points, earned badges, and milestone awards.',
+    defaultColSpan: 1,
+    icon: 'military_tech',
+    category: 'Gamification'
+  },
+  {
+    type: 'quick_actions',
+    name: 'Executive LMS Dispatcher',
+    description: 'Quick-access action hub for sending reminders, adding learners, creating courses, and downloading audit reports.',
+    defaultColSpan: 2,
+    icon: 'bolt',
+    category: 'Operational'
+  },
+  {
+    type: 'certificates_ticker',
+    name: 'Verified Certificates Issuance Ticker',
+    description: 'Live ticker of recently earned tamper-proof credentials with verification codes.',
+    defaultColSpan: 2,
+    icon: 'verified',
+    category: 'Credentials'
+  }
+];
+
 @Injectable({
   providedIn: 'root'
 })
@@ -920,6 +1126,69 @@ export class LmsDataService {
   certificates = signal<Certificate[]>(INITIAL_CERTIFICATES);
   webinars = signal<LiveWebinar[]>(INITIAL_WEBINARS);
   auditLogs = signal<AuditLog[]>(INITIAL_AUDIT_LOGS);
+
+  // Admin Layout Preferences Signal
+  adminLayoutPreferences = signal<AdminLayoutPreferences>({
+    navigationMode: 'sidebar', // 'sidebar' | 'top_menu' | 'compact_rail'
+    headerDensity: 'comfortable', // 'comfortable' | 'compact'
+    showBreadcrumbs: true,
+    stickyHeader: true,
+    contentWidth: 'fluid',
+    accentMode: 'brand'
+  });
+
+  // Multi-Tenant Customizable Dashboards Store
+  tenantDashboards = signal<Record<string, CustomTenantDashboard>>({
+    'tenant-acme': {
+      tenantId: 'tenant-acme',
+      isPublished: true,
+      publishedAt: '2025-02-18 10:30 AM',
+      publishedBy: 'Clara Oswald (Tenant Admin)',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    },
+    'tenant-stanford': {
+      tenantId: 'tenant-stanford',
+      isPublished: true,
+      publishedAt: '2025-02-15 02:15 PM',
+      publishedBy: 'Provost Admin',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    },
+    'tenant-apexhealth': {
+      tenantId: 'tenant-apexhealth',
+      isPublished: true,
+      publishedAt: '2025-02-10 09:00 AM',
+      publishedBy: 'Dr. Sarah Jenkins',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    },
+    'tenant-finedge': {
+      tenantId: 'tenant-finedge',
+      isPublished: true,
+      publishedAt: '2025-02-12 11:45 AM',
+      publishedBy: 'Victoria Sterling',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    }
+  });
+
+  // Active Tenant Dashboard Computed
+  activeTenantDashboard = computed<CustomTenantDashboard>(() => {
+    const tenantId = this.activeTenantId();
+    const dashboards = this.tenantDashboards();
+    if (dashboards[tenantId]) {
+      return dashboards[tenantId];
+    }
+    return {
+      tenantId,
+      isPublished: false,
+      publishedAt: 'Not published yet',
+      publishedBy: 'System Default',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    };
+  });
 
   // Search & Filter state
   searchQuery = signal<string>('');
@@ -1435,4 +1704,59 @@ export class LmsDataService {
 
     this.auditLogs.update(list => [newLog, ...list.slice(0, 49)]);
   }
+
+  // Update Admin Layout Preferences
+  updateLayoutPreferences(prefs: Partial<AdminLayoutPreferences>) {
+    this.adminLayoutPreferences.update(current => ({
+      ...current,
+      ...prefs
+    }));
+    this.logAction('Layout Customization Changed', `Switched layout to navigation mode: ${prefs.navigationMode || this.adminLayoutPreferences().navigationMode}`, 'info');
+  }
+
+  // Publish / Save Custom Tenant Dashboard
+  publishTenantDashboard(tenantId: string, widgets: DashboardWidget[], publishedByName?: string): CustomTenantDashboard {
+    const user = this.activeUser();
+    const current = this.tenantDashboards()[tenantId];
+    const newVersion = current ? current.version + 1 : 1;
+
+    const published: CustomTenantDashboard = {
+      tenantId,
+      isPublished: true,
+      publishedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+      publishedBy: publishedByName || `${user.name} (${user.role === 'super_admin' ? 'Super Admin' : 'Tenant Admin'})`,
+      version: newVersion,
+      widgets: JSON.parse(JSON.stringify(widgets))
+    };
+
+    this.tenantDashboards.update(map => ({
+      ...map,
+      [tenantId]: published
+    }));
+
+    this.logAction('Custom Dashboard Published', `Published v${newVersion} dashboard layout with ${widgets.length} modular widgets for tenant ${this.activeTenant().name}`, 'success');
+    return published;
+  }
+
+  // Reset Tenant Dashboard to standard default widgets
+  resetTenantDashboard(tenantId: string): CustomTenantDashboard {
+    const user = this.activeUser();
+    const defaults: CustomTenantDashboard = {
+      tenantId,
+      isPublished: true,
+      publishedAt: 'Reset to System Default',
+      publishedBy: user.name,
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    };
+
+    this.tenantDashboards.update(map => ({
+      ...map,
+      [tenantId]: defaults
+    }));
+
+    this.logAction('Dashboard Reset', `Reset dashboard layout to factory template for ${this.activeTenant().name}`, 'warning');
+    return defaults;
+  }
 }
+

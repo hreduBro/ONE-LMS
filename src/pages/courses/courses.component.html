@@ -42,7 +42,7 @@
       <input 
         type="text" 
         [ngModel]="searchQuery()" 
-        (ngModelChange)="searchQuery.set($event)"
+        (ngModelChange)="onSearchChange($event)"
         placeholder="Search courses, instructors, topics..."
         class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
     </div>
@@ -52,7 +52,7 @@
         <span class="text-text-secondary font-semibold">Level:</span>
         <select 
           [ngModel]="selectedLevel()" 
-          (ngModelChange)="selectedLevel.set($event)"
+          (ngModelChange)="selectedLevel.set($event); onFilterChange()"
           class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
           @for (lvl of levels; track lvl) {
             <option [value]="lvl">{{ lvl }}</option>
@@ -64,7 +64,7 @@
         <input 
           type="checkbox" 
           [checked]="mandatoryOnly()" 
-          (change)="mandatoryOnly.set(!mandatoryOnly())"
+          (change)="mandatoryOnly.set(!mandatoryOnly()); onFilterChange()"
           class="rounded text-tenant-500 focus:ring-tenant-500" />
         <span>Mandatory Compliance Only</span>
       </label>
@@ -73,7 +73,7 @@
 
   <!-- Courses Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    @for (course of filteredCourses(); track course.id) {
+    @for (course of paginatedCourses(); track course.id) {
       @let enr = getEnrollment(course.id);
       <div class="rounded-3xl bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between group">
         <div>
@@ -182,6 +182,63 @@
         </button>
       </div>
     }
+  </div>
+
+  <!-- Courses Pagination Footer -->
+  <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+    <div class="flex items-center gap-3 text-text-secondary">
+      <span>
+        Showing 
+        <span class="font-semibold text-text-primary font-mono">{{ filteredCourses().length === 0 ? 0 : (currentPage() - 1) * pageSize() + 1 }}</span>
+        to 
+        <span class="font-semibold text-text-primary font-mono">{{ filteredCourses().length < currentPage() * pageSize() ? filteredCourses().length : currentPage() * pageSize() }}</span>
+        of 
+        <span class="font-semibold text-text-primary font-mono">{{ filteredCourses().length }}</span> 
+        courses
+      </span>
+
+      <div class="flex items-center gap-1.5 pl-3 border-l border-base-300">
+        <span class="text-[11px]">Per page:</span>
+        <select 
+          [value]="pageSize()"
+          (change)="setPageSize(+$any($event.target).value)"
+          class="px-2 py-1 rounded-lg bg-base-200 border border-base-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-tenant-500">
+          <option [value]="3">3</option>
+          <option [value]="6">6</option>
+          <option [value]="12">12</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Pagination Buttons -->
+    <div class="flex items-center gap-1">
+      <button 
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1"
+        class="px-2.5 py-1.5 rounded-lg border border-base-300 bg-base-200 hover:bg-base-300 disabled:opacity-40 disabled:hover:bg-base-200 text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all"
+        title="Previous Page">
+        <span class="material-symbols-outlined text-sm">chevron_left</span>
+        <span class="hidden sm:inline text-xs">Prev</span>
+      </button>
+
+      @for (p of pagesList(); track p) {
+        <button 
+          (click)="goToPage(p)"
+          class="w-8 h-8 rounded-lg border text-xs font-semibold flex items-center justify-center transition-all"
+          [class]="p === currentPage() ? 'bg-tenant-500 text-white border-tenant-500 shadow-sm' : 'border-base-300 bg-base-200 hover:bg-base-300 text-text-secondary hover:text-text-primary'">
+          {{ p }}
+        </button>
+      }
+
+      <button 
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+        class="px-2.5 py-1.5 rounded-lg border border-base-300 bg-base-200 hover:bg-base-300 disabled:opacity-40 disabled:hover:bg-base-200 text-text-secondary hover:text-text-primary flex items-center gap-1 transition-all"
+        title="Next Page">
+        <span class="hidden sm:inline text-xs">Next</span>
+        <span class="material-symbols-outlined text-sm">chevron_right</span>
+      </button>
+    </div>
   </div>
 </div>
 

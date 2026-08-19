@@ -1,12 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
-import { Tenant } from '../../models/lms.model';
+import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../models/lms.model';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './settings.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -14,6 +15,7 @@ export class SettingsComponent {
   lms = inject(LmsDataService);
 
   savedNotification = signal<boolean>(false);
+  layoutPrefs = this.lms.adminLayoutPreferences;
 
   // Editable settings copy
   settingsForm = {
@@ -51,6 +53,18 @@ export class SettingsComponent {
     });
   }
 
+  setNavMode(mode: NavigationLayoutMode) {
+    this.lms.updateLayoutPreferences({ navigationMode: mode });
+  }
+
+  setHeaderDensity(density: HeaderDensity) {
+    this.lms.updateLayoutPreferences({ headerDensity: density });
+  }
+
+  setContentWidth(width: ContentWidthMode) {
+    this.lms.updateLayoutPreferences({ contentWidth: width });
+  }
+
   saveSettings() {
     const current = this.lms.activeTenant();
     const updated: Tenant = {
@@ -72,3 +86,4 @@ export class SettingsComponent {
     setTimeout(() => this.savedNotification.set(false), 3500);
   }
 }
+
