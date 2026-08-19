@@ -1,0 +1,262 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200">
+          {{ lms.activeTenant().name }} Virtual Campus
+        </span>
+        <span class="text-xs text-text-secondary">HD WebRTC & Teleconferencing</span>
+      </div>
+      <h1 class="text-2xl font-bold text-text-primary tracking-tight">Live Webinars & Virtual Classrooms</h1>
+      <p class="text-xs text-text-secondary">Synchronous training sessions, interactive Q&A workshops, and instructor office hours</p>
+    </div>
+
+    @if (lms.activeRole() !== 'learner') {
+      <button 
+        id="btn-schedule-webinar"
+        (click)="openScheduleModal()"
+        class="px-4 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-sm self-start md:self-auto">
+        <span class="material-symbols-outlined text-sm">video_call</span>
+        Schedule Live Session
+      </button>
+    }
+  </div>
+
+  <!-- Upcoming Live Sessions Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @for (webinar of lms.webinars(); track webinar.id) {
+      <div class="rounded-3xl bg-base-100 border border-base-300 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden flex flex-col justify-between p-5 space-y-4">
+        <div>
+          <div class="flex items-start justify-between gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600">
+              {{ webinar.platform }}
+            </span>
+            <span class="text-[11px] font-mono text-text-secondary">
+              {{ webinar.durationMinutes }} mins
+            </span>
+          </div>
+
+          <h3 class="font-bold text-base text-text-primary mt-3 line-clamp-1">{{ webinar.title }}</h3>
+          
+          @if (webinar.courseTitle) {
+            <p class="text-xs text-text-secondary mt-1">Associated with: <span class="font-medium text-text-primary">{{ webinar.courseTitle }}</span></p>
+          }
+
+          <!-- Scheduled date box -->
+          <div class="mt-4 p-3 rounded-2xl bg-base-200 border border-base-300/60 flex items-center gap-3">
+            <div class="p-2 rounded-xl bg-tenant-500 text-white flex flex-col items-center justify-center min-w-10">
+              <span class="text-[10px] uppercase font-bold">{{ webinar.scheduledAt | date:'MMM' }}</span>
+              <span class="text-base font-black leading-none">{{ webinar.scheduledAt | date:'d' }}</span>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-text-primary">{{ webinar.scheduledAt | date:'EEEE, h:mm a' }}</div>
+              <div class="text-[11px] text-text-secondary">{{ webinar.attendeesCount || webinar.attendeeCount }} learners registered</div>
+            </div>
+          </div>
+
+          <!-- Host Info -->
+          <div class="flex items-center gap-2.5 mt-4 pt-3 border-t border-base-300/60">
+            <img [src]="webinar.hostAvatar || webinar.instructorAvatar" [alt]="webinar.hostName || webinar.instructor" class="w-7 h-7 rounded-full object-cover ring-1 ring-base-300" referrerpolicy="no-referrer" />
+            <div class="text-xs">
+              <span class="font-bold text-text-primary">{{ webinar.hostName || webinar.instructor }}</span>
+              <span class="text-text-secondary text-[11px] block">Session Host</span>
+            </div>
+          </div>
+        </div>
+
+        <button 
+          (click)="joinSession(webinar)"
+          class="w-full py-2.5 px-4 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm">
+          <span class="material-symbols-outlined text-sm">videocam</span>
+          Enter Virtual Classroom
+        </button>
+      </div>
+    } @empty {
+      <div class="col-span-full p-12 rounded-3xl bg-base-100 border border-base-300 text-center space-y-2">
+        <span class="material-symbols-outlined text-4xl text-text-secondary">videocam_off</span>
+        <h4 class="font-bold text-sm text-text-primary">No live sessions scheduled</h4>
+        <p class="text-xs text-text-secondary">Instructors can schedule synchronous workshops and office hours.</p>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Virtual Classroom Modal (Simulated Live Conference) -->
+@if (activeVirtualRoom()) {
+  @let room = activeVirtualRoom()!;
+  <div class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex flex-col p-4 sm:p-6 animate-in zoom-in-95">
+    <!-- Conference Header -->
+    <div class="flex items-center justify-between pb-3 border-b border-white/10 text-white">
+      <div class="flex items-center gap-3">
+        <span class="w-3 h-3 rounded-full bg-rose-500 animate-ping"></span>
+        <div>
+          <h2 class="font-bold text-sm sm:text-base">{{ room.title }}</h2>
+          <p class="text-xs text-white/70">Host: {{ room.hostName || room.instructor }} &bull; {{ lms.activeTenant().name }} Secure Room</p>
+        </div>
+      </div>
+
+      <button (click)="leaveSession()" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">call_end</span>
+        Leave Classroom
+      </button>
+    </div>
+
+    <!-- Main Conference Stage -->
+    <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 gap-4 py-4 min-h-0">
+      <!-- Video Stage -->
+      <div class="lg:col-span-3 bg-zinc-900 rounded-3xl overflow-hidden relative flex flex-col justify-between p-4 shadow-2xl border border-white/10">
+        <!-- Main Presenter View -->
+        <div class="flex-1 flex flex-col items-center justify-center text-center space-y-3">
+          <img [src]="room.hostAvatar || room.instructorAvatar" [alt]="room.hostName || room.instructor" class="w-24 h-24 rounded-full ring-4 ring-tenant-500 object-cover" referrerpolicy="no-referrer" />
+          <div>
+            <h3 class="text-white font-bold text-lg">{{ room.hostName || room.instructor }} (Presenting)</h3>
+            <p class="text-xs text-white/60">Sharing: Compliance Framework & Operational Safety Deck</p>
+          </div>
+        </div>
+
+        <!-- Attendees mini strip -->
+        <div class="flex items-center gap-2 overflow-x-auto py-2">
+          @for (user of lms.tenantUsers().slice(0, 4); track user.id) {
+            <div class="p-2 rounded-xl bg-black/40 backdrop-blur-md border border-white/10 flex items-center gap-2 text-white text-xs min-w-36">
+              <img [src]="user.avatar" [alt]="user.name" class="w-6 h-6 rounded-full object-cover" referrerpolicy="no-referrer" />
+              <span class="truncate">{{ user.name }}</span>
+            </div>
+          }
+        </div>
+
+        <!-- Call Controls Bar -->
+        <div class="self-center flex items-center gap-3 bg-black/60 backdrop-blur-md px-6 py-3 rounded-full border border-white/20">
+          <button 
+            (click)="isMuted.set(!isMuted())"
+            class="p-3 rounded-full text-white transition-colors"
+            [class]="isMuted() ? 'bg-rose-600' : 'bg-white/20 hover:bg-white/30'">
+            <span class="material-symbols-outlined text-lg">{{ isMuted() ? 'mic_off' : 'mic' }}</span>
+          </button>
+
+          <button 
+            (click)="isVideoOn.set(!isVideoOn())"
+            class="p-3 rounded-full text-white transition-colors"
+            [class]="!isVideoOn() ? 'bg-rose-600' : 'bg-white/20 hover:bg-white/30'">
+            <span class="material-symbols-outlined text-lg">{{ !isVideoOn() ? 'videocam_off' : 'videocam' }}</span>
+          </button>
+
+          <button class="p-3 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors" title="Share Screen">
+            <span class="material-symbols-outlined text-lg">present_to_all</span>
+          </button>
+
+          <button class="p-3 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors" title="Raise Hand">
+            <span class="material-symbols-outlined text-lg">front_hand</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Chat & Q&A Panel -->
+      <div class="bg-zinc-900 rounded-3xl p-4 flex flex-col justify-between border border-white/10 min-h-0">
+        <div class="pb-3 border-b border-white/10 text-white font-bold text-xs flex items-center justify-between">
+          <span class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm text-tenant-400">forum</span>
+            Classroom Chat
+          </span>
+          <span class="text-[10px] text-white/50">{{ liveChatMessages().length }} messages</span>
+        </div>
+
+        <!-- Chat Stream -->
+        <div class="flex-1 overflow-y-auto space-y-3 py-3 pr-1 text-xs">
+          @for (msg of liveChatMessages(); track msg.time + msg.sender) {
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[10px] text-white/50">
+                <span class="font-bold text-white/80">{{ msg.sender }}</span>
+                <span>{{ msg.time }}</span>
+              </div>
+              <p class="text-white/90 bg-white/5 p-2.5 rounded-xl border border-white/5">{{ msg.text }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- Chat Input -->
+        <form (submit)="sendChatMessage()" class="flex items-center gap-2 pt-2 border-t border-white/10">
+          <input 
+            type="text" 
+            [(ngModel)]="chatInput" 
+            name="chat" 
+            placeholder="Ask question or message class..."
+            class="flex-1 px-3 py-2 rounded-xl bg-white/10 border border-white/20 text-white text-xs placeholder-white/40 focus:outline-none" />
+          <button type="submit" [disabled]="!chatInput().trim()" class="p-2 rounded-xl bg-tenant-500 disabled:opacity-50 text-white">
+            <span class="material-symbols-outlined text-sm">send</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Schedule Webinar Modal -->
+@if (showScheduleModal()) {
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-6 animate-in zoom-in-95">
+      <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
+        <h3 class="font-bold text-base text-text-primary flex items-center gap-2">
+          <span class="material-symbols-outlined text-tenant-600">video_call</span>
+          Schedule Live Session: {{ lms.activeTenant().name }}
+        </h3>
+        <button (click)="showScheduleModal.set(false)" class="text-text-secondary hover:text-text-primary">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <form (submit)="scheduleWebinar()" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Session Topic *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="newWebinar.title" 
+            name="title" 
+            placeholder="e.g. Q3 SOC2 Security Briefing & Live Q&A"
+            required
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Platform</label>
+            <select 
+              [(ngModel)]="newWebinar.platform" 
+              name="platform"
+              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
+              <option value="Zoom">Zoom</option>
+              <option value="MS Teams">MS Teams</option>
+              <option value="Google Meet">Google Meet</option>
+              <option value="WebRTC">In-App WebRTC</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Duration (Mins)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="newWebinar.durationMinutes" 
+              name="duration" 
+              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Date & Time</label>
+          <input 
+            type="datetime-local" 
+            [(ngModel)]="newWebinar.scheduledAt" 
+            name="datetime" 
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
+          <button type="button" (click)="showScheduleModal.set(false)" class="px-4 py-2 rounded-xl bg-base-200 text-xs font-semibold text-text-secondary">Cancel</button>
+          <button type="submit" [disabled]="!newWebinar.title.trim()" class="px-4 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">schedule_send</span> Schedule
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

@@ -1,0 +1,367 @@
+<div class="space-y-6">
+  <!-- Page Header & Stats Summary -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-1">
+        <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300">
+          Super Admin Console
+        </span>
+        <span class="text-xs text-text-secondary">Multi-Tenant Partition Architecture</span>
+      </div>
+      <h1 class="text-2xl font-bold text-text-primary tracking-tight">Organization & Tenant Management</h1>
+      <p class="text-xs text-text-secondary">Provision, customize, and govern isolated enterprise LMS client partitions</p>
+    </div>
+
+    <button 
+      id="btn-provision-tenant"
+      (click)="openAddModal()"
+      class="px-4 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-sm self-start md:self-auto">
+      <span class="material-symbols-outlined text-sm">domain_add</span>
+      Provision New Tenant
+    </button>
+  </div>
+
+  <!-- Global Metrics Bar -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm">
+      <div class="text-xs text-text-secondary font-semibold uppercase">Total Tenants</div>
+      <div class="text-2xl font-bold text-text-primary mt-1">{{ lms.tenants().length }}</div>
+      <div class="text-[11px] text-emerald-600 font-medium mt-0.5">100% Online</div>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm">
+      <div class="text-xs text-text-secondary font-semibold uppercase">Global Learners</div>
+      <div class="text-2xl font-bold text-text-primary mt-1">{{ totalLearners() | number }}</div>
+      <div class="text-[11px] text-text-secondary mt-0.5">Across all organizations</div>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm">
+      <div class="text-xs text-text-secondary font-semibold uppercase">Allocated Seats</div>
+      <div class="text-2xl font-bold text-text-primary mt-1">{{ totalSeats() | number }}</div>
+      <div class="text-[11px] text-indigo-600 font-medium mt-0.5">{{ ((totalLearners() / totalSeats()) * 100) | number:'1.0-0' }}% Utilized</div>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm">
+      <div class="text-xs text-text-secondary font-semibold uppercase">Cloud Storage</div>
+      <div class="text-2xl font-bold text-text-primary mt-1">{{ totalStorage() | number:'1.0-0' }} GB</div>
+      <div class="text-[11px] text-text-secondary mt-0.5">Media & SCORM packages</div>
+    </div>
+  </div>
+
+  <!-- Filters & Search Toolbar -->
+  <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+    <div class="relative w-full sm:w-80">
+      <span class="material-symbols-outlined absolute left-3 top-2.5 text-text-secondary text-sm">search</span>
+      <input 
+        type="text" 
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="searchQuery.set($event)"
+        placeholder="Search by organization name, domain, slug..."
+        class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+    </div>
+
+    <div class="flex items-center gap-2.5 w-full sm:w-auto">
+      <div class="flex items-center gap-1 text-xs">
+        <span class="text-text-secondary font-semibold">Plan:</span>
+        <select 
+          [ngModel]="planFilter()" 
+          (ngModelChange)="planFilter.set($event)"
+          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
+          <option value="All">All Plans</option>
+          <option value="Enterprise">Enterprise</option>
+          <option value="Pro">Pro</option>
+          <option value="Starter">Starter</option>
+        </select>
+      </div>
+
+      <div class="flex items-center gap-1 text-xs">
+        <span class="text-text-secondary font-semibold">Status:</span>
+        <select 
+          [ngModel]="statusFilter()" 
+          (ngModelChange)="statusFilter.set($event)"
+          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
+          <option value="All">All Statuses</option>
+          <option value="Active">Active</option>
+          <option value="Suspended">Suspended</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tenant Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    @for (tenant of filteredTenants(); track tenant.id) {
+      <div 
+        class="rounded-3xl bg-base-100 border transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden relative"
+        [class]="tenant.id === lms.activeTenantId() ? 'border-tenant-500 ring-2 ring-tenant-500/20' : 'border-base-300'">
+        
+        <!-- Active Tag -->
+        @if (tenant.id === lms.activeTenantId()) {
+          <div class="bg-tenant-500 text-white text-[10px] font-bold py-0.5 px-3 text-center uppercase tracking-wider">
+            Currently Active Workspace
+          </div>
+        }
+
+        <div class="p-5 space-y-4">
+          <!-- Card Header -->
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <img 
+                [src]="tenant.branding.logoUrl" 
+                [alt]="tenant.name" 
+                class="w-12 h-12 rounded-2xl object-cover ring-1 ring-base-300"
+                referrerpolicy="no-referrer" />
+              <div>
+                <h3 class="font-bold text-sm text-text-primary leading-tight">{{ tenant.name }}</h3>
+                <span class="text-[11px] font-mono text-text-secondary block mt-0.5">{{ tenant.domain }}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col items-end gap-1">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                    [class]="tenant.plan === 'Enterprise' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300'">
+                {{ tenant.plan }}
+              </span>
+              <span class="text-[10px] font-medium px-2 py-0.5 rounded-full"
+                    [class]="tenant.status === 'Active' ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30'">
+                {{ tenant.status }}
+              </span>
+            </div>
+          </div>
+
+          <p class="text-xs text-text-secondary line-clamp-2">{{ tenant.branding.tagline }}</p>
+
+          <!-- Branding Color Swatches & SSO -->
+          <div class="flex items-center justify-between text-xs py-2 border-y border-base-300/60">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-text-secondary">Brand Palette:</span>
+              <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.background-color]="tenant.branding.primaryColor" title="Primary Color"></span>
+              <span class="w-4 h-4 rounded-full border border-black/10 shadow-xs" [style.background-color]="tenant.branding.accentColor" title="Accent Color"></span>
+            </div>
+
+            <div class="flex items-center gap-1 text-[11px] text-text-secondary">
+              <span class="material-symbols-outlined text-xs">key</span>
+              <span>SSO: {{ tenant.branding.ssoProvider }}</span>
+            </div>
+          </div>
+
+          <!-- Seat Usage Bar -->
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold">
+              <span class="text-text-secondary">Seat License Utilization</span>
+              <span class="text-text-primary font-mono">{{ tenant.stats.seatsUsed }} / {{ tenant.stats.seatLimit }}</span>
+            </div>
+            <div class="w-full bg-base-300 h-2 rounded-full overflow-hidden">
+              <div 
+                class="h-full rounded-full transition-all duration-300"
+                [style.background-color]="tenant.branding.primaryColor"
+                [style.width.%]="(tenant.stats.seatsUsed / tenant.stats.seatLimit) * 100">
+              </div>
+            </div>
+          </div>
+
+          <!-- Metrics Row -->
+          <div class="grid grid-cols-3 gap-2 text-center text-xs py-2 bg-base-200 rounded-xl">
+            <div>
+              <div class="font-bold text-text-primary">{{ tenant.stats.totalCourses }}</div>
+              <div class="text-[10px] text-text-secondary">Courses</div>
+            </div>
+            <div>
+              <div class="font-bold text-emerald-600">{{ tenant.stats.complianceRate }}%</div>
+              <div class="text-[10px] text-text-secondary">Compliance</div>
+            </div>
+            <div>
+              <div class="font-bold text-text-primary">{{ tenant.stats.storageUsedGb }} GB</div>
+              <div class="text-[10px] text-text-secondary">Storage</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Footer Actions -->
+        <div class="p-3 bg-base-200 border-t border-base-300 flex items-center justify-between gap-2">
+          <div class="flex items-center gap-1">
+            <button 
+              (click)="openEditModal(tenant, $event)"
+              class="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-300 transition-colors text-xs flex items-center gap-1"
+              title="Edit Branding">
+              <span class="material-symbols-outlined text-sm">palette</span>
+            </button>
+            <button 
+              (click)="toggleStatus(tenant.id, $event)"
+              class="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-300 transition-colors text-xs"
+              [title]="tenant.status === 'Active' ? 'Suspend Tenant' : 'Activate Tenant'">
+              <span class="material-symbols-outlined text-sm">
+                {{ tenant.status === 'Active' ? 'pause_circle' : 'play_circle' }}
+              </span>
+            </button>
+          </div>
+
+          <button 
+            (click)="selectTenant(tenant.id)"
+            class="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1"
+            [class]="tenant.id === lms.activeTenantId() ? 'bg-tenant-500 text-white' : 'bg-base-100 hover:bg-base-300 text-text-primary border border-base-300'">
+            <span class="material-symbols-outlined text-sm">login</span>
+            {{ tenant.id === lms.activeTenantId() ? 'Active' : 'Switch Workspace' }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Add Tenant Modal -->
+@if (showAddModal()) {
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-in zoom-in-95">
+      <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
+        <h3 class="font-bold text-base text-text-primary flex items-center gap-2">
+          <span class="material-symbols-outlined text-tenant-600">domain_add</span>
+          Provision New LMS Organization
+        </h3>
+        <button (click)="showAddModal.set(false)" class="text-text-secondary hover:text-text-primary">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <form (submit)="createTenant()" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Organization Name *</label>
+          <input 
+            type="text" 
+            [(ngModel)]="newTenantForm.name" 
+            name="name" 
+            placeholder="e.g. Apex Health Institute"
+            required
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Subdomain Slug</label>
+            <input 
+              type="text" 
+              [(ngModel)]="newTenantForm.slug" 
+              name="slug" 
+              placeholder="apex-health"
+              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none font-mono" />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Subscription Tier</label>
+            <select 
+              [(ngModel)]="newTenantForm.plan" 
+              name="plan"
+              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
+              <option value="Starter">Starter (250 seats)</option>
+              <option value="Pro">Pro (1,000 seats)</option>
+              <option value="Enterprise">Enterprise (5,000+ seats)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Primary Brand Color</label>
+            <div class="flex items-center gap-2">
+              <input type="color" [(ngModel)]="newTenantForm.primaryColor" name="primaryColor" class="w-8 h-8 rounded cursor-pointer border-0" />
+              <span class="text-xs font-mono">{{ newTenantForm.primaryColor }}</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Accent Color</label>
+            <div class="flex items-center gap-2">
+              <input type="color" [(ngModel)]="newTenantForm.accentColor" name="accentColor" class="w-8 h-8 rounded cursor-pointer border-0" />
+              <span class="text-xs font-mono">{{ newTenantForm.accentColor }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Tagline</label>
+          <input 
+            type="text" 
+            [(ngModel)]="newTenantForm.tagline" 
+            name="tagline" 
+            placeholder="Clinical Clinical Training & HIPAA Excellence"
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
+          <button type="button" (click)="showAddModal.set(false)" class="px-4 py-2 rounded-xl bg-base-200 text-xs font-semibold text-text-secondary">Cancel</button>
+          <button type="submit" [disabled]="!newTenantForm.name.trim()" class="px-4 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">rocket_launch</span> Launch
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+
+<!-- Edit Tenant Modal -->
+@if (editingTenant()) {
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-in zoom-in-95">
+      <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
+        <h3 class="font-bold text-base text-text-primary flex items-center gap-2">
+          <span class="material-symbols-outlined text-tenant-600">palette</span>
+          Edit Organization Branding: {{ editingTenant()?.name }}
+        </h3>
+        <button (click)="editingTenant.set(null)" class="text-text-secondary hover:text-text-primary">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Organization Name</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editingTenant()!.name" 
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Primary Color</label>
+            <div class="flex items-center gap-2">
+              <input type="color" [(ngModel)]="editingTenant()!.branding.primaryColor" class="w-8 h-8 rounded cursor-pointer border-0" />
+              <span class="text-xs font-mono">{{ editingTenant()!.branding.primaryColor }}</span>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-text-primary mb-1">Accent Color</label>
+            <div class="flex items-center gap-2">
+              <input type="color" [(ngModel)]="editingTenant()!.branding.accentColor" class="w-8 h-8 rounded cursor-pointer border-0" />
+              <span class="text-xs font-mono">{{ editingTenant()!.branding.accentColor }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Custom Tagline</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editingTenant()!.branding.tagline" 
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-text-primary mb-1">Logo URL</label>
+          <input 
+            type="text" 
+            [(ngModel)]="editingTenant()!.branding.logoUrl" 
+            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none font-mono" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">
+          <button (click)="editingTenant.set(null)" class="px-4 py-2 rounded-xl bg-base-200 text-xs font-semibold text-text-secondary">Cancel</button>
+          <button (click)="saveTenantEdit()" class="px-4 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">save</span> Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

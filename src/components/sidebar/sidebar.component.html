@@ -1,0 +1,87 @@
+<aside 
+  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col z-30 overflow-hidden flex-shrink-0"
+  [class]="isOpen() ? 'w-64' : 'w-0 md:w-20'">
+  
+  <!-- Sidebar Header: Brand Logo & Title -->
+  <div class="h-16 border-b border-base-300 flex items-center px-4 gap-3 overflow-hidden">
+    <div class="w-10 h-10 rounded-xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
+      @if (lms.activeTenant().branding.logoUrl) {
+        <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+      } @else {
+        <span class="material-symbols-outlined text-2xl">school</span>
+      }
+    </div>
+    
+    @if (isOpen()) {
+      <div class="flex flex-col min-w-0 transition-opacity duration-200">
+        <span class="font-bold text-sm text-text-primary truncate tracking-tight">
+          {{ lms.activeTenant().name }}
+        </span>
+        <span class="text-[10px] text-text-secondary truncate">
+          {{ lms.activeTenant().branding.tagline }}
+        </span>
+      </div>
+    }
+  </div>
+
+  <!-- Navigation Menu -->
+  <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
+    <div class="px-3 pb-2 text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
+      @if (isOpen()) {
+        <span>Navigation</span>
+      }
+    </div>
+
+    @for (item of navItems; track item.route) {
+      @if (isAllowed(item.roles)) {
+        <a 
+          [routerLink]="item.route"
+          routerLinkActive="bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200 font-semibold shadow-sm"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative">
+          
+          <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
+            {{ item.icon }}
+          </span>
+
+          @if (isOpen()) {
+            <span class="truncate flex-1">{{ item.label }}</span>
+            @if (item.badge) {
+              <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300 font-medium">
+                {{ item.badge }}
+              </span>
+            }
+          }
+        </a>
+      }
+    }
+  </nav>
+
+  <!-- Sidebar Footer: Tenant Resource Quota -->
+  @if (isOpen()) {
+    <div class="p-3 m-3 rounded-2xl bg-base-200 border border-base-300 text-xs">
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[11px] font-medium text-text-secondary flex items-center gap-1">
+          <span class="material-symbols-outlined text-xs">badge</span> Seats Used
+        </span>
+        <span class="font-bold text-[11px] text-text-primary font-mono">
+          {{ lms.activeTenant().stats.seatsUsed }} / {{ lms.activeTenant().stats.seatLimit }}
+        </span>
+      </div>
+      
+      <!-- Progress Bar -->
+      <div class="w-full bg-base-300 h-1.5 rounded-full overflow-hidden mb-2">
+        <div 
+          class="bg-tenant-500 h-full rounded-full transition-all duration-500"
+          [style.width.%]="(lms.activeTenant().stats.seatsUsed / lms.activeTenant().stats.seatLimit) * 100">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between text-[10px] text-text-secondary pt-1 border-t border-base-300/60">
+        <span>Storage: {{ lms.activeTenant().stats.storageUsedGb }} GB</span>
+        <span class="text-tenant-600 font-semibold">
+          {{ lms.activeTenant().stats.complianceRate }}% Compliant
+        </span>
+      </div>
+    </div>
+  }
+</aside>

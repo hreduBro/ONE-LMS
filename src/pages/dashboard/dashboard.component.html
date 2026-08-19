@@ -1,0 +1,273 @@
+<div class="space-y-6">
+  <!-- Notification alert if reminder sent -->
+  @if (reminderSentMessage()) {
+    <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 flex items-center justify-between animate-in fade-in">
+      <div class="flex items-center gap-2 text-sm font-semibold">
+        <span class="material-symbols-outlined">check_circle</span>
+        <span>{{ reminderSentMessage() }}</span>
+      </div>
+      <button (click)="reminderSentMessage.set(null)" class="text-xs hover:underline">Dismiss</button>
+    </div>
+  }
+
+  <!-- Welcome / Tenant Brand Banner -->
+  <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-base-100 to-base-200 border border-base-300 p-6 sm:p-8 shadow-sm">
+    <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div class="space-y-2 max-w-2xl">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200 border border-tenant-200/50">
+            Tenant: {{ lms.activeTenant().name }}
+          </span>
+          <span class="text-xs font-mono text-text-secondary">
+            {{ lms.activeTenant().domain }}
+          </span>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-text-primary tracking-tight">
+          Welcome back, {{ lms.activeUser().name }}
+        </h1>
+        
+        <p class="text-sm text-text-secondary leading-relaxed">
+          {{ lms.activeTenant().branding.tagline }}. You are currently acting in the 
+          <span class="font-semibold text-tenant-600 dark:text-tenant-200 capitalize">
+            {{ lms.activeRole().replace('_', ' ') }}
+          </span> workspace.
+        </p>
+      </div>
+
+      <!-- Quick Action Controls -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        @if (lms.activeRole() === 'learner') {
+          <a routerLink="/courses" 
+             class="px-4 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-sm">
+            <span class="material-symbols-outlined text-sm">explore</span>
+            Explore Catalog
+          </a>
+          <a routerLink="/certificates" 
+             class="px-4 py-2.5 rounded-xl bg-base-100 hover:bg-base-200 border border-base-300 text-text-primary text-xs font-semibold flex items-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-sm">military_tech</span>
+            My Certificates
+          </a>
+        } @else {
+          <a routerLink="/courses" 
+             class="px-4 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center gap-2 transition-all shadow-sm">
+            <span class="material-symbols-outlined text-sm">add_circle</span>
+            Add Course
+          </a>
+          <button 
+            (click)="dispatchReminders()"
+            class="px-4 py-2.5 rounded-xl bg-base-100 hover:bg-base-200 border border-base-300 text-text-primary text-xs font-semibold flex items-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-sm text-amber-500">notifications_active</span>
+            Dispatch Reminders
+          </button>
+          <a routerLink="/tenants" 
+             class="px-4 py-2.5 rounded-xl bg-base-100 hover:bg-base-200 border border-base-300 text-text-primary text-xs font-semibold flex items-center gap-2 transition-all">
+            <span class="material-symbols-outlined text-sm text-indigo-500">domain</span>
+            Switch Tenant
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- KPI Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    @for (kpi of kpis(); track kpi.title) {
+      <app-kpi-card [data]="kpi"></app-kpi-card>
+    }
+  </div>
+
+  <!-- Role-specific main content section -->
+  @if (lms.activeRole() === 'learner') {
+    <!-- Learner's In-Progress Courses & Learning Path -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600">play_circle</span>
+            Continue Learning
+          </h2>
+          <a routerLink="/courses" class="text-xs text-tenant-600 hover:underline font-semibold">View All Courses &rarr;</a>
+        </div>
+
+        <div class="space-y-3">
+          @for (item of myEnrollments(); track item.enrollment.id) {
+            <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div class="flex items-center gap-3.5">
+                <img [src]="item.course?.coverImage" [alt]="item.course?.title" class="w-16 h-16 rounded-xl object-cover" referrerpolicy="no-referrer" />
+                <div>
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600">
+                      {{ item.course?.category }}
+                    </span>
+                    @if (item.course?.isMandatory) {
+                      <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700">Mandatory</span>
+                    }
+                  </div>
+                  <h3 class="font-bold text-sm text-text-primary line-clamp-1">{{ item.course?.title }}</h3>
+                  <div class="text-xs text-text-secondary mt-0.5">Instructor: {{ item.course?.instructorName }}</div>
+                </div>
+              </div>
+
+              <div class="w-full sm:w-48 flex flex-col items-end gap-1.5">
+                <div class="flex items-center justify-between w-full text-xs font-semibold">
+                  <span class="text-text-secondary">Progress</span>
+                  <span class="text-tenant-600">{{ item.enrollment.progressPercent }}%</span>
+                </div>
+                <div class="w-full bg-base-300 h-2 rounded-full overflow-hidden">
+                  <div class="bg-tenant-500 h-full rounded-full transition-all" [style.width.%]="item.enrollment.progressPercent"></div>
+                </div>
+                <a [routerLink]="['/courses', item.course?.id, 'learn']" 
+                   class="mt-2 w-full py-1.5 px-3 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold text-center transition-colors flex items-center justify-center gap-1">
+                  <span>{{ item.enrollment.progressPercent === 100 ? 'Review & Certificate' : 'Resume Lesson' }}</span>
+                  <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+              </div>
+            </div>
+          } @empty {
+            <div class="p-8 rounded-2xl bg-base-100 border border-base-300 text-center space-y-2">
+              <span class="material-symbols-outlined text-4xl text-text-secondary">school</span>
+              <h4 class="font-bold text-sm text-text-primary">No active courses yet</h4>
+              <p class="text-xs text-text-secondary">Explore the tenant course catalog to start your learning journey.</p>
+              <a routerLink="/courses" class="inline-block mt-2 px-4 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold">Browse Catalog</a>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Learner Badges & Live Webinars -->
+      <div class="space-y-6">
+        <!-- Badges Card -->
+        <div class="p-5 rounded-2xl bg-base-100 border border-base-300 shadow-sm space-y-3">
+          <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-amber-500">military_tech</span>
+            Earned Badges & Skills
+          </h3>
+          <div class="flex flex-wrap gap-2">
+            @for (badge of lms.activeUser().badges; track badge) {
+              <span class="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-sm text-amber-500">verified</span>
+                {{ badge }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <!-- Upcoming Live Sessions -->
+        <div class="p-5 rounded-2xl bg-base-100 border border-base-300 shadow-sm space-y-3">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-tenant-600">videocam</span>
+              Upcoming Live Sessions
+            </h3>
+            <a routerLink="/webinars" class="text-xs text-tenant-600 hover:underline">All</a>
+          </div>
+
+          <div class="space-y-2.5">
+            @for (webinar of lms.webinars(); track webinar.id) {
+              <div class="p-3 rounded-xl bg-base-200 border border-base-300/60 text-xs space-y-1">
+                <div class="font-semibold text-text-primary line-clamp-1">{{ webinar.title }}</div>
+                <div class="flex items-center justify-between text-text-secondary text-[11px]">
+                  <span>{{ webinar.scheduledAt | date:'MMM d, h:mm a' }}</span>
+                  <span class="text-tenant-600 font-medium">{{ webinar.platform }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- Admin & Instructor View: Department Compliance & Matrix -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Department Compliance Matrix -->
+      <div class="lg:col-span-2 p-6 rounded-3xl bg-base-100 border border-base-300 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-bold text-text-primary flex items-center gap-2">
+              <span class="material-symbols-outlined text-tenant-600">monitoring</span>
+              Department Compliance & Completion Radar
+            </h2>
+            <p class="text-xs text-text-secondary">Mandatory regulatory certification health by organizational branch</p>
+          </div>
+          <a routerLink="/analytics" class="text-xs text-tenant-600 hover:underline font-semibold">Full Analytics &rarr;</a>
+        </div>
+
+        <div class="divide-y divide-base-300">
+          @for (dept of lms.departmentMetrics(); track dept.department) {
+            <div class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="min-w-44">
+                <span class="font-bold text-xs text-text-primary">{{ dept.department }}</span>
+                <div class="text-[11px] text-text-secondary mt-0.5">
+                  {{ dept.learnersCount }} personnel &bull; 
+                  @if (dept.overdueCount > 0) {
+                    <span class="text-rose-600 font-semibold">{{ dept.overdueCount }} overdue</span>
+                  } @else {
+                    <span class="text-emerald-600 font-semibold">100% On-Track</span>
+                  }
+                </div>
+              </div>
+
+              <!-- Completion & Compliance Bars -->
+              <div class="flex-1 grid grid-cols-2 gap-4 max-w-xs">
+                <div>
+                  <div class="flex justify-between text-[11px] font-medium text-text-secondary mb-1">
+                    <span>Course Completion</span>
+                    <span class="text-text-primary font-bold">{{ dept.avgCompletionRate }}%</span>
+                  </div>
+                  <div class="w-full bg-base-300 h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-indigo-500 h-full rounded-full" [style.width.%]="dept.avgCompletionRate"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex justify-between text-[11px] font-medium text-text-secondary mb-1">
+                    <span>Compliance</span>
+                    <span class="font-bold" [class]="dept.complianceRate >= 95 ? 'text-emerald-600' : 'text-amber-600'">
+                      {{ dept.complianceRate }}%
+                    </span>
+                  </div>
+                  <div class="w-full bg-base-300 h-1.5 rounded-full overflow-hidden">
+                    <div 
+                      class="h-full rounded-full" 
+                      [class]="dept.complianceRate >= 95 ? 'bg-emerald-500' : 'bg-amber-500'"
+                      [style.width.%]="dept.complianceRate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Real-Time Audit Log Feed -->
+      <div class="p-6 rounded-3xl bg-base-100 border border-base-300 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined text-tenant-600">history_toggle_off</span>
+            Live Audit Stream
+          </h2>
+          <span class="text-[10px] font-mono text-emerald-600 font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/30">
+            ● Real-Time
+          </span>
+        </div>
+
+        <div class="space-y-3 max-h-[340px] overflow-y-auto pr-1">
+          @for (log of lms.auditLogs(); track log.id) {
+            <div class="p-3 rounded-2xl bg-base-200 border border-base-300/70 text-xs space-y-1">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-text-primary">{{ log.actor }}</span>
+                <span class="text-[10px] text-text-secondary">{{ log.timestamp }}</span>
+              </div>
+              <p class="text-text-secondary font-medium">{{ log.action }}</p>
+              <div class="text-[11px] text-tenant-600 dark:text-tenant-200 font-mono truncate">
+                {{ log.target }}
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+</div>

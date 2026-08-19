@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>OmniLearn Multi-Tenant LMS</title>
+  <base href="/" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            serif: ['Cinzel', 'serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            tenant: {
+              50: 'var(--tenant-50, #f5f3ff)',
+              100: 'var(--tenant-100, #ede9fe)',
+              200: 'var(--tenant-200, #ddd6fe)',
+              500: 'var(--tenant-primary, #6366f1)',
+              600: 'var(--tenant-primary-hover, #4f46e5)',
+              700: 'var(--tenant-primary-dark, #4338ca)',
+              accent: 'var(--tenant-accent, #ec4899)',
+            },
+            'brand-primary': 'var(--brand-primary)',
+            'brand-secondary': 'var(--brand-secondary)',
+            'base-100': 'var(--base-100)',
+            'base-200': 'var(--base-200)',
+            'base-300': 'var(--base-300)',
+            'text-primary': 'var(--text-primary)',
+            'text-secondary': 'var(--text-secondary)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --tenant-primary: #4f46e5;
+      --tenant-primary-hover: #4338ca;
+      --tenant-primary-dark: #3730a3;
+      --tenant-accent: #06b6d4;
+      --tenant-50: #eef2ff;
+      --tenant-100: #e0e7ff;
+      --tenant-200: #c7d2fe;
+      
+      /* Default Light Theme */
+      --brand-primary: #4f46e5;
+      --brand-secondary: #06b6d4;
+      --base-100: #ffffff;
+      --base-200: #f8fafc;
+      --base-300: #f1f5f9;
+      --text-primary: #0f172a;
+      --text-secondary: #64748b;
+    }
+
+    html.dark {
+      --base-100: #0f172a;
+      --base-200: #1e293b;
+      --base-300: #334155;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill {
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    html.dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+  </style>
+<script type="importmap">
+{
+  "imports": {
+    "rxjs": "https://aistudiocdn.com/rxjs@^7.8.2?conditions=es2015",
+    "rxjs/operators": "https://aistudiocdn.com/rxjs@^7.8.2/operators?conditions=es2015",
+    "rxjs/ajax": "https://aistudiocdn.com/rxjs@^7.8.2/ajax?conditions=es2015",
+    "rxjs/webSocket": "https://aistudiocdn.com/rxjs@^7.8.2/webSocket?conditions=es2015",
+    "rxjs/testing": "https://aistudiocdn.com/rxjs@^7.8.2/testing?conditions=es2015",
+    "rxjs/fetch": "https://aistudiocdn.com/rxjs@^7.8.2/fetch?conditions=es2015",
+    "@angular/compiler": "https://next.esm.sh/@angular/compiler@^20.3.12?external=rxjs",
+    "@angular/platform-browser": "https://next.esm.sh/@angular/platform-browser@^20.3.12?external=rxjs",
+    "@angular/core": "https://next.esm.sh/@angular/core@^20.3.12?external=rxjs",
+    "@angular/router": "https://next.esm.sh/@angular/router@^20.3.12?external=rxjs",
+    "@angular/common": "https://next.esm.sh/@angular/common@^20.3.12?external=rxjs",
+    "@angular/forms": "https://next.esm.sh/@angular/forms@^20.3.12?external=rxjs"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-base-200 text-text-primary antialiased min-h-screen">
+  <app-root></app-root>
+</body>
+</html>

@@ -1,0 +1,208 @@
+export type UserRole = 'super_admin' | 'tenant_admin' | 'instructor' | 'learner';
+export type TenantPlan = 'Starter' | 'Pro' | 'Enterprise';
+export type TenantStatus = 'Active' | 'Trial' | 'Suspended';
+export type LessonType = 'video' | 'article' | 'quiz' | 'interactive_lab';
+export type CourseCategory = 'Engineering' | 'Compliance & Security' | 'Leadership' | 'Healthcare' | 'Finance' | 'AI & Data';
+export type CourseLevel = 'Beginner' | 'Intermediate' | 'Advanced';
+
+export interface TenantBranding {
+  primaryColor: string;
+  accentColor: string;
+  tagline: string;
+  bannerUrl: string;
+  logoUrl: string;
+  customCssEnabled: boolean;
+  ssoProvider: 'SAML 2.0' | 'Okta' | 'Azure AD' | 'Google Workspace' | 'None';
+}
+
+export interface TenantStats {
+  seatLimit: number;
+  seatsUsed: number;
+  totalCourses: number;
+  totalLearners: number;
+  completionRate: number;
+  complianceRate: number;
+  storageUsedGb: number;
+  storageLimitGb: number;
+}
+
+export interface Tenant {
+  id: string;
+  name: string;
+  slug: string;
+  domain: string;
+  plan: TenantPlan;
+  status: TenantStatus;
+  branding: TenantBranding;
+  departments: string[];
+  stats: TenantStats;
+  createdAt: string;
+  renewalDate: string;
+  adminEmail: string;
+  features: {
+    scormSupport: boolean;
+    aiTutor: boolean;
+    liveWebinars: boolean;
+    customCertificates: boolean;
+    whiteLabel: boolean;
+    customDomain: boolean;
+  };
+}
+
+export interface User {
+  id: string;
+  tenantId: string;
+  name: string;
+  email: string;
+  avatar: string;
+  role: UserRole;
+  department: string;
+  enrolledCourses: string[];
+  completedCourses: string[];
+  earnedCertificates: string[];
+  points: number;
+  badges: string[];
+  lastActive: string;
+  status: 'Active' | 'Invited' | 'Suspended';
+  complianceStatus: 'Compliant' | 'At Risk' | 'Overdue';
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correctAnswerIndex: number;
+  explanation: string;
+  points: number;
+}
+
+export interface LessonResource {
+  title: string;
+  size: string;
+  url: string;
+  type: string;
+}
+
+export interface Lesson {
+  id: string;
+  title: string;
+  type: LessonType;
+  durationMinutes: number;
+  summary: string;
+  contentHtml?: string;
+  videoUrl?: string;
+  resources?: LessonResource[];
+  quizQuestions?: QuizQuestion[];
+  passingScorePercent?: number;
+}
+
+export interface CourseModule {
+  id: string;
+  title: string;
+  durationMinutes: number;
+  lessons: Lesson[];
+}
+
+export interface Course {
+  id: string;
+  tenantId: string; // 'global' or specific tenant ID
+  title: string;
+  subtitle: string;
+  description: string;
+  coverImage: string;
+  category: CourseCategory;
+  level: CourseLevel;
+  durationMinutes: number;
+  isMandatory: boolean;
+  complianceDeadlineDays?: number;
+  instructorName: string;
+  instructorTitle: string;
+  instructorAvatar: string;
+  rating: number;
+  reviewCount: number;
+  enrolledCount: number;
+  modules: CourseModule[];
+  certificateEnabled: boolean;
+  status: 'Published' | 'Draft' | 'Archived';
+  tags: string[];
+  createdAt: string;
+  targetDepartments?: string[];
+}
+
+export interface CourseEnrollment {
+  id: string;
+  tenantId: string;
+  userId: string;
+  courseId: string;
+  progressPercent: number;
+  completedLessonIds: string[];
+  quizScores: Record<string, number>;
+  status: 'not_started' | 'in_progress' | 'completed';
+  startedAt: string;
+  completedAt?: string;
+  lastAccessedLessonId?: string;
+  assignedBy?: string;
+  dueDate?: string;
+}
+
+export interface Certificate {
+  id: string;
+  tenantId: string;
+  tenantName: string;
+  tenantLogo: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  courseId: string;
+  courseTitle: string;
+  category: string;
+  issuedDate: string;
+  verificationCode: string;
+  gradeScore: number;
+  instructorName: string;
+  expiryDate?: string;
+}
+
+export interface LiveWebinar {
+  id: string;
+  tenantId: string;
+  title: string;
+  description?: string;
+  instructor: string;
+  instructorAvatar: string;
+  hostName?: string;
+  hostAvatar?: string;
+  scheduledAt: string;
+  durationMinutes: number;
+  attendeeCount: number;
+  attendeesCount?: number;
+  maxAttendees?: number;
+  platform: 'Zoom' | 'Teams' | 'Google Meet' | 'Built-in WebRTC' | 'MS Teams' | 'WebRTC';
+  status?: 'Upcoming' | 'Live' | 'Ended';
+  joinUrl: string;
+  courseId?: string;
+  courseTitle?: string;
+}
+
+export type Webinar = LiveWebinar;
+
+export interface AuditLog {
+  id: string;
+  tenantId: string;
+  tenantName: string;
+  actor: string;
+  actorRole: string;
+  action: string;
+  target: string;
+  timestamp: string;
+  severity: 'info' | 'warning' | 'success' | 'danger';
+  ipAddress: string;
+}
+
+export interface DepartmentMetric {
+  department: string;
+  learnersCount: number;
+  avgCompletionRate: number;
+  complianceRate: number;
+  overdueCount: number;
+}

@@ -1,0 +1,457 @@
+<div class="space-y-4">
+  <!-- Top Navigation & Progress Header -->
+  <div class="p-4 rounded-2xl bg-base-100 border border-base-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <a routerLink="/courses" class="p-2 rounded-xl bg-base-200 hover:bg-base-300 text-text-secondary hover:text-text-primary transition-colors" title="Back to Courses">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+      </a>
+
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600">
+            {{ course().category }}
+          </span>
+          <span class="text-xs text-text-secondary font-medium">
+            Lesson {{ currentLessonIndex() + 1 }} of {{ allLessons().length }}
+          </span>
+        </div>
+        <h1 class="font-bold text-base text-text-primary line-clamp-1 mt-0.5">{{ course().title }}</h1>
+      </div>
+    </div>
+
+    <!-- Progress & Action Bar -->
+    <div class="flex items-center gap-4">
+      <div class="w-40 sm:w-48 flex flex-col gap-1">
+        <div class="flex justify-between text-[11px] font-semibold">
+          <span class="text-text-secondary">Progress</span>
+          <span class="text-tenant-600">{{ enrollment()?.progressPercent || 0 }}%</span>
+        </div>
+        <div class="w-full bg-base-300 h-2 rounded-full overflow-hidden">
+          <div class="bg-tenant-500 h-full rounded-full transition-all duration-300" [style.width.%]="enrollment()?.progressPercent || 0"></div>
+        </div>
+      </div>
+
+      @if (enrollment()?.progressPercent === 100) {
+        <button 
+          (click)="viewCertificate()"
+          class="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shadow-sm animate-pulse">
+          <span class="material-symbols-outlined text-sm">military_tech</span>
+          View Certificate
+        </button>
+      }
+
+      <button 
+        (click)="isSidebarOpen.set(!isSidebarOpen())"
+        class="p-2 rounded-xl bg-base-200 hover:bg-base-300 text-text-secondary transition-colors"
+        title="Toggle Curriculum Sidebar">
+        <span class="material-symbols-outlined text-lg">
+          {{ isSidebarOpen() ? 'dock_to_right' : 'view_sidebar' }}
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Stage Layout: Sidebar + Player -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- Collapsible Curriculum Sidebar -->
+    @if (isSidebarOpen()) {
+      <div class="lg:col-span-4 rounded-3xl bg-base-100 border border-base-300 shadow-sm p-4 space-y-4 max-h-[820px] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3 border-b border-base-300">
+          <h2 class="font-bold text-xs text-text-primary uppercase tracking-wider flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-tenant-600 text-sm">format_list_bulleted</span>
+            Course Curriculum
+          </h2>
+          <span class="text-[11px] text-text-secondary font-mono">{{ allLessons().length }} units</span>
+        </div>
+
+        <div class="space-y-4">
+          @for (mod of course().modules; track mod.id) {
+            <div class="space-y-1.5">
+              <div class="font-bold text-xs text-text-primary px-2 py-1 bg-base-200 rounded-lg flex items-center justify-between">
+                <span class="truncate">{{ mod.title }}</span>
+                <span class="text-[10px] text-text-secondary">{{ mod.durationMinutes }}m</span>
+              </div>
+
+              <div class="space-y-1 pl-1">
+                @for (les of mod.lessons; track les.id) {
+                  @let completed = isLessonCompleted(les.id);
+                  @let isCurrent = les.id === activeLesson().id;
+                  
+                  <button 
+                    (click)="selectLesson(les.id)"
+                    class="w-full p-2.5 rounded-xl text-left text-xs transition-all flex items-center justify-between gap-2.5"
+                    [class]="isCurrent ? 'bg-tenant-50 dark:bg-tenant-200/10 text-tenant-600 dark:text-tenant-200 font-semibold ring-1 ring-tenant-500/30' : 'hover:bg-base-200 text-text-secondary hover:text-text-primary'">
+                    
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="material-symbols-outlined text-sm flex-shrink-0"
+                            [class]="completed ? 'text-emerald-500 fill' : isCurrent ? 'text-tenant-500' : 'text-text-secondary'">
+                        @if (completed) { check_circle }
+                        @else if (les.type === 'video') { play_circle }
+                        @else if (les.type === 'quiz') { quiz }
+                        @else { article }
+                      </span>
+                      <span class="truncate leading-tight">{{ les.title }}</span>
+                    </div>
+
+                    <span class="text-[10px] text-text-secondary font-mono flex-shrink-0">{{ les.durationMinutes }}m</span>
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Player Stage -->
+    <div [class]="isSidebarOpen() ? 'lg:col-span-8' : 'lg:col-span-12'" class="space-y-6">
+      <div class="rounded-3xl bg-base-100 border border-base-300 shadow-sm overflow-hidden p-6 sm:p-8 space-y-6">
+        <!-- Active Lesson Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-base-300">
+          <div>
+            <div class="flex items-center gap-2 text-xs text-text-secondary mb-1">
+              <span class="capitalize flex items-center gap-1 font-semibold text-tenant-600">
+                <span class="material-symbols-outlined text-sm">
+                  @if (activeLesson().type === 'video') { play_circle }
+                  @else if (activeLesson().type === 'quiz') { quiz }
+                  @else { article }
+                </span>
+                {{ activeLesson().type }} Lesson
+              </span>
+              <span>&bull;</span>
+              <span>{{ activeLesson().durationMinutes }} mins</span>
+            </div>
+            <h2 class="text-xl font-bold text-text-primary tracking-tight">{{ activeLesson().title }}</h2>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button 
+              (click)="goToPrevLesson()" 
+              [disabled]="currentLessonIndex() === 0"
+              class="p-2 rounded-xl bg-base-200 hover:bg-base-300 disabled:opacity-30 text-text-primary text-xs transition-colors"
+              title="Previous Lesson">
+              <span class="material-symbols-outlined text-sm">skip_previous</span>
+            </button>
+            <button 
+              (click)="goToNextLesson()" 
+              [disabled]="currentLessonIndex() === allLessons().length - 1"
+              class="p-2 rounded-xl bg-base-200 hover:bg-base-300 disabled:opacity-30 text-text-primary text-xs transition-colors"
+              title="Next Lesson">
+              <span class="material-symbols-outlined text-sm">skip_next</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. VIDEO LESSON TYPE -->
+        @if (activeLesson().type === 'video') {
+          <div class="space-y-4">
+            <!-- Simulated Video Player -->
+            <div class="relative w-full rounded-2xl overflow-hidden bg-black aspect-video flex flex-col justify-between p-4 shadow-inner">
+              <div class="flex items-center justify-between text-white/80 text-xs">
+                <span class="font-medium tracking-wide">{{ activeLesson().title }}</span>
+                <span class="px-2 py-0.5 rounded bg-white/20 text-[10px] font-mono">1080p HD</span>
+              </div>
+
+              <!-- Center Play Icon -->
+              <div class="self-center my-auto">
+                <div class="w-16 h-16 rounded-full bg-tenant-500/90 text-white flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-lg">
+                  <span class="material-symbols-outlined text-3xl fill">play_arrow</span>
+                </div>
+              </div>
+
+              <!-- Bottom Video Controls Simulation -->
+              <div class="space-y-2">
+                <div class="w-full bg-white/30 h-1.5 rounded-full overflow-hidden cursor-pointer">
+                  <div class="bg-tenant-500 h-full w-2/5 rounded-full"></div>
+                </div>
+                <div class="flex items-center justify-between text-white text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-sm cursor-pointer">play_arrow</span>
+                    <span class="material-symbols-outlined text-sm cursor-pointer">volume_up</span>
+                    <span class="font-mono text-[11px]">04:15 / {{ activeLesson().durationMinutes }}:00</span>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span class="text-[11px] font-mono cursor-pointer px-1 rounded bg-white/10">1.0x</span>
+                    <span class="material-symbols-outlined text-sm cursor-pointer">closed_caption</span>
+                    <span class="material-symbols-outlined text-sm cursor-pointer">fullscreen</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lesson Summary & Resources -->
+            <div class="p-4 rounded-2xl bg-base-200 border border-base-300/80 space-y-3">
+              <h4 class="font-bold text-xs text-text-primary uppercase tracking-wider">Lesson Summary</h4>
+              <p class="text-xs text-text-secondary leading-relaxed">{{ activeLesson().summary }}</p>
+
+              @if (activeLesson().resources && activeLesson().resources!.length > 0) {
+                <div class="pt-2 border-t border-base-300/60 space-y-2">
+                  <span class="text-[11px] font-semibold text-text-primary">Downloadable Attachments & Frameworks</span>
+                  <div class="flex flex-wrap gap-2">
+                    @for (res of activeLesson().resources; track res.title) {
+                      <a [href]="res.url" class="px-3 py-1.5 rounded-xl bg-base-100 border border-base-300 text-xs text-text-primary font-medium hover:bg-tenant-50 hover:text-tenant-600 flex items-center gap-2 transition-colors">
+                        <span class="material-symbols-outlined text-sm text-tenant-500">download</span>
+                        <span>{{ res.title }}</span>
+                        <span class="text-[10px] text-text-secondary font-mono">({{ res.size }})</span>
+                      </a>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- 2. ARTICLE LESSON TYPE -->
+        @if (activeLesson().type === 'article') {
+          <div class="space-y-6">
+            <div class="prose dark:prose-invert max-w-none text-xs leading-relaxed" [innerHTML]="activeLesson().contentHtml"></div>
+
+            @if (activeLesson().resources && activeLesson().resources!.length > 0) {
+              <div class="p-4 rounded-2xl bg-base-200 border border-base-300/80 space-y-2">
+                <span class="text-xs font-semibold text-text-primary">Attached Course Documents</span>
+                <div class="flex flex-wrap gap-2">
+                  @for (res of activeLesson().resources; track res.title) {
+                    <a [href]="res.url" class="px-3 py-1.5 rounded-xl bg-base-100 border border-base-300 text-xs text-text-primary font-medium flex items-center gap-2">
+                      <span class="material-symbols-outlined text-sm text-tenant-500">description</span>
+                      <span>{{ res.title }}</span>
+                      <span class="text-[10px] text-text-secondary font-mono">({{ res.size }})</span>
+                    </a>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- 3. INTERACTIVE QUIZ ASSESSMENT TYPE -->
+        @if (activeLesson().type === 'quiz' && activeLesson().quizQuestions) {
+          @let questions = activeLesson().quizQuestions!;
+          <div class="space-y-6">
+            <div class="p-4 rounded-2xl bg-tenant-50 dark:bg-tenant-200/10 border border-tenant-200/50 flex items-center justify-between">
+              <div>
+                <h4 class="font-bold text-xs text-tenant-700 dark:text-tenant-200">Mandatory Verification Assessment</h4>
+                <p class="text-[11px] text-text-secondary">Minimum Passing Threshold: {{ activeLesson().passingScorePercent || 75 }}%</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full bg-tenant-500 text-white text-xs font-bold font-mono">
+                {{ questions.length }} Questions
+              </span>
+            </div>
+
+            <!-- Quiz Result Card if Submitted -->
+            @if (quizSubmitted()) {
+              <div class="p-6 rounded-3xl border text-center space-y-3 animate-in zoom-in-95"
+                   [class]="quizPassed() ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-rose-500/10 border-rose-500/30'">
+                <div class="w-12 h-12 rounded-full mx-auto flex items-center justify-center"
+                     [class]="quizPassed() ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'">
+                  <span class="material-symbols-outlined text-2xl">
+                    {{ quizPassed() ? 'verified' : 'error' }}
+                  </span>
+                </div>
+
+                <h3 class="text-xl font-bold text-text-primary">
+                  {{ quizPassed() ? 'Congratulations! Assessment Passed' : 'Assessment Failed. Review & Try Again' }}
+                </h3>
+
+                <div class="text-2xl font-black font-mono"
+                     [class]="quizPassed() ? 'text-emerald-600' : 'text-rose-600'">
+                  Score: {{ quizScore() }}%
+                </div>
+
+                <p class="text-xs text-text-secondary max-w-md mx-auto">
+                  {{ quizPassed() 
+                     ? 'You have successfully satisfied the knowledge verification requirement for this module. Your progress has been updated.' 
+                     : 'You need at least ' + (activeLesson().passingScorePercent || 75) + '% to pass. Please review the answer rationales below and retry.' }}
+                </p>
+
+                @if (!quizPassed()) {
+                  <button (click)="retryQuiz()" class="px-5 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold">
+                    Retry Assessment
+                  </button>
+                }
+              </div>
+            }
+
+            <!-- Questions List -->
+            <div class="space-y-6">
+              @for (q of questions; track q.id; let qIdx = $index) {
+                <div class="p-5 rounded-2xl bg-base-200 border border-base-300/80 space-y-3">
+                  <div class="flex items-start justify-between gap-2">
+                    <span class="font-bold text-xs text-text-primary leading-snug">
+                      {{ qIdx + 1 }}. {{ q.question }}
+                    </span>
+                    <span class="text-[10px] font-mono text-text-secondary bg-base-100 px-2 py-0.5 rounded-md border border-base-300">
+                      {{ q.points }} pts
+                    </span>
+                  </div>
+
+                  <!-- Options list -->
+                  <div class="space-y-2">
+                    @for (opt of q.options; track opt; let optIdx = $index) {
+                      @let isSelected = selectedAnswers()[q.id] === optIdx;
+                      @let isCorrect = q.correctAnswerIndex === optIdx;
+                      
+                      <button 
+                        (click)="selectQuizOption(q.id, optIdx)"
+                        [disabled]="quizSubmitted()"
+                        class="w-full p-3 rounded-xl text-left text-xs transition-all border flex items-center justify-between gap-3"
+                        [class]="quizSubmitted() 
+                          ? (isCorrect ? 'bg-emerald-500/10 border-emerald-500 text-emerald-700 dark:text-emerald-300 font-medium' : isSelected ? 'bg-rose-500/10 border-rose-500 text-rose-700 font-medium' : 'bg-base-100 border-base-300 text-text-secondary opacity-60')
+                          : (isSelected ? 'bg-tenant-50 dark:bg-tenant-200/10 border-tenant-500 text-tenant-700 dark:text-tenant-200 font-semibold' : 'bg-base-100 border-base-300 text-text-primary hover:bg-base-300/50')">
+                        
+                        <div class="flex items-center gap-2.5">
+                          <span class="w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-bold font-mono"
+                                [class]="isSelected ? 'bg-tenant-500 text-white border-tenant-500' : 'border-base-300 text-text-secondary'">
+                            {{ ['A', 'B', 'C', 'D'][optIdx] }}
+                          </span>
+                          <span>{{ opt }}</span>
+                        </div>
+
+                        @if (quizSubmitted()) {
+                          @if (isCorrect) {
+                            <span class="material-symbols-outlined text-sm text-emerald-600">check_circle</span>
+                          } @else if (isSelected) {
+                            <span class="material-symbols-outlined text-sm text-rose-600">cancel</span>
+                          }
+                        }
+                      </button>
+                    }
+                  </div>
+
+                  <!-- Explanation if submitted -->
+                  @if (quizSubmitted()) {
+                    <div class="p-3 rounded-xl bg-base-100 border border-base-300 text-[11px] text-text-secondary space-y-1">
+                      <div class="font-semibold text-text-primary flex items-center gap-1">
+                        <span class="material-symbols-outlined text-xs text-tenant-500">info</span>
+                        Answer Rationale:
+                      </div>
+                      <p>{{ q.explanation }}</p>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- Quiz Action Button -->
+            @if (!quizSubmitted()) {
+              <div class="flex justify-end pt-2">
+                <button 
+                  (click)="submitQuiz(questions, activeLesson().passingScorePercent || 75)"
+                  [disabled]="Object.keys(selectedAnswers()).length < questions.length"
+                  class="px-6 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 disabled:opacity-50 text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all">
+                  <span class="material-symbols-outlined text-sm">task_alt</span>
+                  Submit Assessment
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Bottom Lesson Completion Action Bar -->
+        <div class="pt-6 border-t border-base-300 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="flex items-center gap-2 text-xs text-text-secondary">
+            <span class="material-symbols-outlined text-sm text-tenant-500">verified_user</span>
+            <span>Tenant Record: Encrypted & Verified under {{ lms.activeTenant().name }}</span>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            @if (!isLessonCompleted(activeLesson().id)) {
+              <button 
+                (click)="markLessonComplete()"
+                class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-sm transition-all">
+                <span class="material-symbols-outlined text-sm">check_circle</span>
+                Mark Complete & Next
+              </button>
+            } @else {
+              <button 
+                (click)="goToNextLesson()"
+                [disabled]="currentLessonIndex() === allLessons().length - 1"
+                class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-base-200 hover:bg-base-300 disabled:opacity-40 text-text-primary text-xs font-semibold flex items-center justify-center gap-1.5 transition-all">
+                <span>Next Lesson</span>
+                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Certificate Award & Printable Modal -->
+@if (showCertificateModal() && earnedCertificate()) {
+  @let cert = earnedCertificate()!;
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
+      <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-6">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-amber-500 text-2xl">military_tech</span>
+          <div>
+            <h3 class="font-bold text-base text-text-primary">Verified Certificate of Completion</h3>
+            <p class="text-xs text-text-secondary">Official credential issued by {{ cert.tenantName }}</p>
+          </div>
+        </div>
+        <button (click)="showCertificateModal.set(false)" class="text-text-secondary hover:text-text-primary">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- High-Resolution Printable Certificate Frame -->
+      <div class="p-8 rounded-3xl border-4 border-double border-amber-500/40 bg-gradient-to-b from-amber-50/20 via-base-100 to-amber-50/20 dark:from-amber-950/10 dark:to-base-100 text-center space-y-6 shadow-md relative overflow-hidden">
+        <!-- Watermark / Stamp -->
+        <div class="absolute -right-8 -bottom-8 w-48 h-48 rounded-full border-8 border-amber-500/10 flex items-center justify-center pointer-events-none">
+          <span class="text-amber-500/20 font-serif font-bold text-sm tracking-widest rotate-[-25deg]">VERIFIED AUTHENTIC</span>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <img [src]="cert.tenantLogo" [alt]="cert.tenantName" class="w-12 h-12 rounded-xl object-cover" referrerpolicy="no-referrer" />
+          <span class="text-xs font-serif uppercase tracking-widest text-amber-600 font-bold">Certificate ID: {{ cert.verificationCode }}</span>
+        </div>
+
+        <div class="space-y-2">
+          <h2 class="text-2xl sm:text-3xl font-serif font-extrabold text-text-primary tracking-wide">
+            CERTIFICATE OF COMPLETION
+          </h2>
+          <p class="text-xs text-text-secondary uppercase tracking-widest">This is officially presented to</p>
+          <div class="text-2xl font-extrabold text-tenant-600 dark:text-tenant-200 py-1 border-b-2 border-tenant-500/30 max-w-md mx-auto">
+            {{ cert.userName }}
+          </div>
+          <p class="text-xs text-text-secondary">for successfully mastering the curriculum and passing all regulatory assessments for</p>
+        </div>
+
+        <div class="py-2">
+          <h3 class="text-lg sm:text-xl font-bold text-text-primary">{{ cert.courseTitle }}</h3>
+          <span class="text-xs font-semibold text-text-secondary">Specialization: {{ cert.category }}</span>
+        </div>
+
+        <!-- Signatures & Verification Row -->
+        <div class="grid grid-cols-2 gap-6 pt-6 border-t border-base-300 text-xs">
+          <div class="text-left space-y-1">
+            <div class="font-serif italic text-base text-text-primary font-bold">{{ cert.instructorName }}</div>
+            <div class="text-[10px] text-text-secondary uppercase tracking-wider">Authorized Lead Instructor</div>
+          </div>
+
+          <div class="text-right space-y-1">
+            <div class="font-mono text-xs text-text-primary font-bold">{{ cert.issuedDate }}</div>
+            <div class="text-[10px] text-text-secondary uppercase tracking-wider">Issued Date &bull; Grade: {{ cert.gradeScore }}%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="flex items-center justify-between pt-6 mt-4 border-t border-base-300">
+        <div class="text-xs text-text-secondary font-mono">
+          Credential SHA-256: {{ cert.verificationCode }}
+        </div>
+        <div class="flex items-center gap-2">
+          <button (click)="printCertificate()" class="px-4 py-2 rounded-xl bg-base-200 hover:bg-base-300 text-xs font-semibold text-text-primary flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-sm">print</span> Print
+          </button>
+          <button (click)="showCertificateModal.set(false)" class="px-4 py-2 rounded-xl bg-tenant-500 text-white text-xs font-semibold">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
