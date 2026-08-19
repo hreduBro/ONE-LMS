@@ -123,19 +123,89 @@
       </button>
     }
 
-    <!-- Dark/Light Mode Toggle -->
-    <button 
-      id="btn-theme-toggle"
-      (click)="themeService.toggleDarkMode()"
-      class="p-2 rounded-xl text-text-secondary hover:bg-base-200 transition-colors focus:outline-none"
-      title="Toggle Light/Dark Theme"
-      aria-label="Toggle Theme">
-      @if (themeService.isDarkMode()) {
-        <span class="material-symbols-outlined text-xl text-amber-400">light_mode</span>
-      } @else {
-        <span class="material-symbols-outlined text-xl text-indigo-500">dark_mode</span>
+    <!-- Dark/Light/System Theme Selector -->
+    <div class="relative">
+      <div class="flex items-center bg-base-200 p-0.5 rounded-xl border border-base-300">
+        <!-- Quick toggle button -->
+        <button 
+          id="btn-theme-toggle"
+          (click)="themeService.toggleDarkMode()"
+          class="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-base-100 transition-colors focus:outline-none flex items-center gap-1 text-xs"
+          [title]="'Current: ' + (themeService.themeMode() === 'system' ? 'System Sync (' + (themeService.isDarkMode() ? 'Dark' : 'Light') + ')' : (themeService.themeMode() === 'dark' ? 'Dark Mode' : 'Light Mode')) + ' - Click to toggle'">
+          @if (themeService.isDarkMode()) {
+            <span class="material-symbols-outlined text-lg text-amber-400">light_mode</span>
+          } @else {
+            <span class="material-symbols-outlined text-lg text-indigo-500">dark_mode</span>
+          }
+          @if (themeService.themeMode() === 'system') {
+            <span class="text-[9px] font-bold px-1 py-0.2 rounded bg-tenant-500/20 text-tenant-700 dark:text-tenant-300 font-mono">AUTO</span>
+          }
+        </button>
+
+        <!-- Theme options dropdown trigger -->
+        <button 
+          id="btn-theme-menu"
+          (click)="showThemeMenu.set(!showThemeMenu())"
+          class="px-1 py-1.5 text-text-secondary hover:text-text-primary rounded-lg transition-colors"
+          title="Theme Options: System, Light, Dark">
+          <span class="material-symbols-outlined text-xs">expand_more</span>
+        </button>
+      </div>
+
+      <!-- Theme Dropdown Popover -->
+      @if (showThemeMenu()) {
+        <div class="absolute right-0 mt-2 w-52 bg-base-100 rounded-2xl shadow-xl border border-base-300 p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+          <div class="px-2 py-1 mb-1 border-b border-base-300 text-[10px] font-bold uppercase tracking-wider text-text-secondary">
+            Appearance & Dark Mode
+          </div>
+          
+          <button 
+            type="button"
+            (click)="setTheme('system')"
+            class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors text-left"
+            [class]="themeService.themeMode() === 'system' ? 'bg-tenant-500/15 text-tenant-700 dark:text-tenant-200 font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200'">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-base">devices</span>
+              <div>
+                <div>System Default</div>
+                <div class="text-[10px] text-text-secondary font-normal">Syncs with OS ({{ themeService.systemPrefersDark() ? 'Dark' : 'Light' }})</div>
+              </div>
+            </div>
+            @if (themeService.themeMode() === 'system') {
+              <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check</span>
+            }
+          </button>
+
+          <button 
+            type="button"
+            (click)="setTheme('light')"
+            class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors text-left mt-0.5"
+            [class]="themeService.themeMode() === 'light' ? 'bg-tenant-500/15 text-tenant-700 dark:text-tenant-200 font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200'">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-base text-amber-500">light_mode</span>
+              <span>Light Mode</span>
+            </div>
+            @if (themeService.themeMode() === 'light') {
+              <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check</span>
+            }
+          </button>
+
+          <button 
+            type="button"
+            (click)="setTheme('dark')"
+            class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-xs transition-colors text-left mt-0.5"
+            [class]="themeService.themeMode() === 'dark' ? 'bg-tenant-500/15 text-tenant-700 dark:text-tenant-200 font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200'">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-base text-indigo-400">dark_mode</span>
+              <span>Dark Mode</span>
+            </div>
+            @if (themeService.themeMode() === 'dark') {
+              <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check</span>
+            }
+          </button>
+        </div>
       }
-    </button>
+    </div>
 
     <!-- Notification / Compliance Alerts -->
     <div class="relative">

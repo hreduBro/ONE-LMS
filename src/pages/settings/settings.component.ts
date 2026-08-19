@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
+import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../models/lms.model';
 
 @Component({
@@ -13,6 +14,7 @@ import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '.
 })
 export class SettingsComponent {
   lms = inject(LmsDataService);
+  themeService = inject(ThemeService);
 
   savedNotification = signal<boolean>(false);
   layoutPrefs = this.lms.adminLayoutPreferences;
@@ -23,6 +25,7 @@ export class SettingsComponent {
     domain: '',
     tagline: '',
     logoUrl: '',
+    faviconUrl: '',
     primaryColor: '#4f46e5',
     accentColor: '#06b6d4',
     ssoProvider: 'Okta' as 'Okta' | 'SAML 2.0' | 'Azure AD' | 'Google Workspace' | 'None',
@@ -41,6 +44,7 @@ export class SettingsComponent {
         domain: t.domain,
         tagline: t.branding.tagline,
         logoUrl: t.branding.logoUrl,
+        faviconUrl: t.branding.faviconUrl || '',
         primaryColor: t.branding.primaryColor,
         accentColor: t.branding.accentColor,
         ssoProvider: t.branding.ssoProvider,
@@ -65,6 +69,10 @@ export class SettingsComponent {
     this.lms.updateLayoutPreferences({ contentWidth: width });
   }
 
+  setThemeMode(mode: ThemeMode) {
+    this.themeService.setThemeMode(mode);
+  }
+
   saveSettings() {
     const current = this.lms.activeTenant();
     const updated: Tenant = {
@@ -75,6 +83,7 @@ export class SettingsComponent {
         ...current.branding,
         tagline: this.settingsForm.tagline,
         logoUrl: this.settingsForm.logoUrl,
+        faviconUrl: this.settingsForm.faviconUrl,
         primaryColor: this.settingsForm.primaryColor,
         accentColor: this.settingsForm.accentColor,
         ssoProvider: this.settingsForm.ssoProvider

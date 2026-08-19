@@ -11,6 +11,7 @@ export interface TenantBranding {
   tagline: string;
   bannerUrl: string;
   logoUrl: string;
+  faviconUrl?: string;
   customCssEnabled: boolean;
   ssoProvider: 'SAML 2.0' | 'Okta' | 'Azure AD' | 'Google Workspace' | 'None';
 }

@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, output } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LmsDataService } from '../../services/lms-data.service';
+import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../models/lms.model';
 
 @Component({
@@ -9,7 +10,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
   imports: [CommonModule, FormsModule],
   template: `
     <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-xl p-6 animate-in zoom-in-95 duration-150">
+      <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-xl p-6 animate-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
         
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-5">
@@ -18,8 +19,8 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <span class="material-symbols-outlined text-xl">dashboard_customize</span>
             </div>
             <div>
-              <h3 class="font-bold text-base text-text-primary">Admin Layout & Navigation Architecture</h3>
-              <p class="text-xs text-text-secondary">Configure workspace menu topology and viewport layout</p>
+              <h3 class="font-bold text-base text-text-primary">Admin Layout & Appearance</h3>
+              <p class="text-xs text-text-secondary">Configure workspace menu topology, theme and viewport layout</p>
             </div>
           </div>
           <button (click)="close.emit()" class="text-text-secondary hover:text-text-primary p-1 rounded-lg">
@@ -96,11 +97,69 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
             </div>
           </div>
 
-          <!-- 2. Viewport Density & Container Width -->
+          <!-- 2. Dark Mode & System Theme Preference -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="block text-xs font-bold text-text-primary uppercase tracking-wider">
+                2. Theme & Dark Mode Preference
+              </label>
+              <span class="text-[10px] text-text-secondary">
+                Auto-syncs on OS changes
+              </span>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <button
+                type="button"
+                (click)="setThemeMode('system')"
+                class="p-2.5 rounded-xl border text-left transition-all"
+                [class]="themeService.themeMode() === 'system' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-base" [class]="themeService.themeMode() === 'system' ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary'">devices</span>
+                  @if (themeService.themeMode() === 'system') {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300">check_circle</span>
+                  }
+                </div>
+                <div class="font-bold text-xs text-text-primary">System Auto</div>
+                <div class="text-[10px] text-text-secondary mt-0.5">Matches OS scheme</div>
+              </button>
+
+              <button
+                type="button"
+                (click)="setThemeMode('light')"
+                class="p-2.5 rounded-xl border text-left transition-all"
+                [class]="themeService.themeMode() === 'light' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-base text-amber-500">light_mode</span>
+                  @if (themeService.themeMode() === 'light') {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300">check_circle</span>
+                  }
+                </div>
+                <div class="font-bold text-xs text-text-primary">Light Mode</div>
+                <div class="text-[10px] text-text-secondary mt-0.5">Forced light theme</div>
+              </button>
+
+              <button
+                type="button"
+                (click)="setThemeMode('dark')"
+                class="p-2.5 rounded-xl border text-left transition-all"
+                [class]="themeService.themeMode() === 'dark' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="material-symbols-outlined text-base text-indigo-400">dark_mode</span>
+                  @if (themeService.themeMode() === 'dark') {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300">check_circle</span>
+                  }
+                </div>
+                <div class="font-bold text-xs text-text-primary">Dark Mode</div>
+                <div class="text-[10px] text-text-secondary mt-0.5">Forced dark theme</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- 3. Viewport Density & Container Width -->
           <div class="grid grid-cols-2 gap-4">
             <div>
               <label class="block text-xs font-bold text-text-primary uppercase tracking-wider mb-2">
-                Header Density
+                3. Header Density
               </label>
               <div class="flex items-center gap-2 bg-base-200 p-1 rounded-xl border border-base-300">
                 <button
@@ -122,7 +181,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
 
             <div>
               <label class="block text-xs font-bold text-text-primary uppercase tracking-wider mb-2">
-                Content Container Width
+                4. Container Width
               </label>
               <div class="flex items-center gap-2 bg-base-200 p-1 rounded-xl border border-base-300">
                 <button
@@ -143,7 +202,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
             </div>
           </div>
 
-          <!-- 3. Toggles: Sticky Header & Breadcrumbs -->
+          <!-- 4. Toggles: Sticky Header & Breadcrumbs -->
           <div class="grid grid-cols-2 gap-3 pt-2 border-t border-base-300">
             <label class="flex items-center justify-between p-2.5 rounded-xl bg-base-200/60 border border-base-300 cursor-pointer">
               <span class="text-xs font-medium text-text-primary flex items-center gap-1.5">
@@ -179,7 +238,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
             type="button" 
             (click)="close.emit()"
             class="px-5 py-2 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-semibold shadow-sm transition-colors">
-            Apply Layout
+            Apply Layout & Theme
           </button>
         </div>
       </div>
@@ -189,12 +248,17 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
 })
 export class LayoutSwitcherModalComponent {
   lms = inject(LmsDataService);
+  themeService = inject(ThemeService);
   close = output<void>();
 
   prefs = this.lms.adminLayoutPreferences;
 
   setNavigationMode(mode: NavigationLayoutMode) {
     this.lms.updateLayoutPreferences({ navigationMode: mode });
+  }
+
+  setThemeMode(mode: ThemeMode) {
+    this.themeService.setThemeMode(mode);
   }
 
   setHeaderDensity(density: HeaderDensity) {
@@ -213,3 +277,4 @@ export class LayoutSwitcherModalComponent {
     this.lms.updateLayoutPreferences({ showBreadcrumbs: !this.prefs().showBreadcrumbs });
   }
 }
+

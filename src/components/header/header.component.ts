@@ -23,6 +23,12 @@ export class HeaderComponent {
   showNewTenantModal = signal(false);
   showNotificationMenu = signal(false);
   showLayoutModal = signal(false);
+  showThemeMenu = signal(false);
+
+  setTheme(mode: 'system' | 'light' | 'dark') {
+    this.themeService.setThemeMode(mode);
+    this.showThemeMenu.set(false);
+  }
 
   // New tenant form model
   newOrg = {

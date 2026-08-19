@@ -1312,11 +1312,11 @@ export class LmsDataService {
   });
 
   constructor() {
-    // Dynamic CSS theme injection effect whenever active tenant changes
+    // Dynamic CSS theme and favicon injection effect whenever active tenant changes
     effect(() => {
       const tenant = this.activeTenant();
       if (tenant && tenant.branding) {
-        this.applyTenantTheme(tenant.branding.primaryColor, tenant.branding.accentColor);
+        this.applyTenantTheme(tenant.branding.primaryColor, tenant.branding.accentColor, tenant.branding.faviconUrl, tenant.name);
       }
     });
   }
@@ -1332,8 +1332,8 @@ export class LmsDataService {
     this.activeRole.set(role);
   }
 
-  // Apply tenant branding CSS custom properties
-  private applyTenantTheme(primary: string, accent: string) {
+  // Apply tenant branding CSS custom properties and dynamic favicon
+  private applyTenantTheme(primary: string, accent: string, customFavicon?: string, tenantName?: string) {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
     root.style.setProperty('--tenant-primary', primary);
@@ -1345,6 +1345,46 @@ export class LmsDataService {
     root.style.setProperty('--tenant-200', this.getHighContrastLightTint(primary, 0.88));
     root.style.setProperty('--tenant-300', this.getHighContrastLightTint(primary, 0.78));
     root.style.setProperty('--tenant-400', this.getHighContrastLightTint(primary, 0.68));
+
+    this.updateFavicon(primary, accent, customFavicon, tenantName);
+  }
+
+  private updateFavicon(primary: string, accent: string, customFaviconUrl?: string, tenantName?: string) {
+    try {
+      let link: HTMLLinkElement | null = document.querySelector("link[rel*='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = 'shortcut icon';
+        document.head.appendChild(link);
+      }
+
+      if (customFaviconUrl && !customFaviconUrl.includes('unsplash.com')) {
+        link.type = 'image/x-icon';
+        link.href = customFaviconUrl;
+        return;
+      }
+
+      // Generate dynamic SVG favicon tinted with active tenant brand primary & accent
+      const svg = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'>
+        <defs>
+          <linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>
+            <stop offset='0%' stop-color='${primary}'/>
+            <stop offset='100%' stop-color='${accent}'/>
+          </linearGradient>
+        </defs>
+        <rect width='64' height='64' rx='16' fill='#0f172a'/>
+        <path d='M32 14 L52 24 L32 34 L12 24 Z' fill='url(#g)'/>
+        <path d='M20 30 L20 42 C20 47 44 47 44 42 L44 30 L32 36 Z' fill='url(#g)' opacity='0.85'/>
+        <path d='M50 25 L50 38' stroke='${accent}' stroke-width='2.5' stroke-linecap='round'/>
+        <circle cx='50' cy='39' r='2.5' fill='${accent}'/>
+        <circle cx='32' cy='24' r='3.5' fill='#ffffff'/>
+      </svg>`;
+
+      link.type = 'image/svg+xml';
+      link.href = `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    } catch (e) {
+      // ignore DOM error in non-browser context
+    }
   }
 
   private getHighContrastLightTint(hex: string, targetLightness: number = 0.85): string {
