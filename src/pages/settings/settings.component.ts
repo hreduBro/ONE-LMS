@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
+import { LmsApiService } from '../../services/lms-api.service';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../models/lms.model';
 
@@ -14,6 +15,7 @@ import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '.
 })
 export class SettingsComponent {
   lms = inject(LmsDataService);
+  api = inject(LmsApiService);
   themeService = inject(ThemeService);
 
   savedNotification = signal<boolean>(false);

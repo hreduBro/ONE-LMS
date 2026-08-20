@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LmsDataService } from '../../services/lms-data.service';
@@ -16,16 +16,31 @@ export class WebinarsComponent {
   showScheduleModal = signal<boolean>(false);
   activeVirtualRoom = signal<LiveWebinar | null>(null);
 
+  // Mobile Bottom Sheet control: 'chat' | 'participants' | 'reactions' | null
+  activeMobileSheet = signal<'chat' | 'participants' | 'reactions' | null>(null);
+
+  // Audio / Video / Screen controls
+  isMuted = signal<boolean>(false);
+  isVideoOn = signal<boolean>(true);
+  isScreenSharing = signal<boolean>(false);
+  isHandRaised = signal<boolean>(false);
+  isSpeakerView = signal<boolean>(true);
+  isPiPMinimized = signal<boolean>(false);
+
   // Live session chat messages
-  liveChatMessages = signal<Array<{ sender: string; time: string; text: string }>>([
-    { sender: 'Dr. Evelyn Reed', time: '10:02 AM', text: 'Welcome everyone! We will begin the case review in 2 minutes.' },
+  liveChatMessages = signal<Array<{ sender: string; time: string; text: string; isHost?: boolean }>>([
+    { sender: 'Dr. Evelyn Reed', time: '10:02 AM', text: 'Welcome everyone! We will begin the case review in 2 minutes.', isHost: true },
     { sender: 'Marcus Vance', time: '10:03 AM', text: 'Audio and slide deck look crystal clear.' },
     { sender: 'Sarah Chen', time: '10:04 AM', text: 'Ready with our department compliance questions.' }
   ]);
 
   chatInput = signal<string>('');
-  isMuted = signal<boolean>(false);
-  isVideoOn = signal<boolean>(true);
+  unreadChatCount = signal<number>(0);
+
+  // Reactions
+  reactions = ['👍', '👏', '❤️', '💡', '🔥', '🎉'];
+  activeReactions = signal<Array<{ id: number; emoji: string; left: number }>>([]);
+  private reactionIdSeq = 0;
 
   // New webinar form
   newWebinar = {
@@ -71,10 +86,46 @@ export class WebinarsComponent {
 
   joinSession(webinar: LiveWebinar) {
     this.activeVirtualRoom.set(webinar);
+    this.activeMobileSheet.set(null);
+    this.unreadChatCount.set(0);
+    this.isHandRaised.set(false);
+    this.isMuted.set(false);
+    this.isVideoOn.set(true);
   }
 
   leaveSession() {
     this.activeVirtualRoom.set(null);
+    this.activeMobileSheet.set(null);
+  }
+
+  toggleMobileSheet(sheet: 'chat' | 'participants' | 'reactions') {
+    if (this.activeMobileSheet() === sheet) {
+      this.activeMobileSheet.set(null);
+    } else {
+      this.activeMobileSheet.set(sheet);
+      if (sheet === 'chat') {
+        this.unreadChatCount.set(0);
+      }
+    }
+  }
+
+  triggerReaction(emoji: string) {
+    const id = ++this.reactionIdSeq;
+    const left = Math.floor(Math.random() * 60) + 20; // 20% to 80% horizontal
+    this.activeReactions.update(list => [...list, { id, emoji, left }]);
+    
+    // Auto cleanup floating reaction after 2.5s
+    setTimeout(() => {
+      this.activeReactions.update(list => list.filter(r => r.id !== id));
+    }, 2500);
+
+    if (this.activeMobileSheet() === 'reactions') {
+      this.activeMobileSheet.set(null);
+    }
+  }
+
+  toggleHandRaise() {
+    this.isHandRaised.update(val => !val);
   }
 
   sendChatMessage() {
@@ -82,14 +133,23 @@ export class WebinarsComponent {
     if (!text) return;
 
     const user = this.lms.activeUser();
+    const isHost = this.lms.activeRole() === 'instructor' || this.lms.activeRole() === 'super_admin';
+    
     this.liveChatMessages.update(prev => [
       ...prev,
       {
         sender: user.name,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        text
+        text,
+        isHost
       }
     ]);
     this.chatInput.set('');
+
+    // Trigger slight reaction for interactivity
+    if (text.includes('👍') || text.includes('agree')) {
+      this.triggerReaction('👍');
+    }
   }
 }
+

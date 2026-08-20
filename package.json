@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "node server.ts",
     "dev": "ng serve",
     "build": "ng build",
     "preview": "ng serve --configuration=production"
@@ -18,6 +19,11 @@
     "@angular/forms": "^20.3.0",
     "@angular/platform-browser": "^20.3.0",
     "@angular/router": "^20.3.12",
+    "@google/genai": "^2.18.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "rxjs": "^7.8.2",
     "tailwindcss": "latest"
   },

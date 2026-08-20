@@ -1,32 +1,67 @@
+<!-- Mobile Backdrop Overlay (only on mobile screens when drawer is open) -->
+@if (isOpen()) {
+  <div 
+    class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-40 animate-in fade-in duration-200"
+    (click)="close.emit()">
+  </div>
+}
+
 <aside 
-  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full z-30 overflow-hidden flex-shrink-0"
-  [class]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' ? 'w-16' : (isOpen() ? 'w-64' : 'w-0 md:w-20')">
+  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full overflow-hidden flex-shrink-0
+         fixed lg:static inset-y-0 left-0 z-50 lg:z-30 shadow-2xl lg:shadow-none"
+  [class.max-lg:translate-x-0]="isOpen()"
+  [class.max-lg:-translate-x-full]="!isOpen()"
+  [class.max-lg:w-72]="true"
+  [class.lg:hidden]="isTopMenu()"
+  [class.lg:w-20]="isCompact() && !isTopMenu()"
+  [class.lg:w-64]="!isCompact() && !isTopMenu() && isOpen()"
+  [class.lg:w-0]="!isCompact() && !isTopMenu() && !isOpen()"
+  [class.lg:border-r-0]="!isCompact() && !isTopMenu() && !isOpen()">
   
-  <!-- Sidebar Header: Brand Logo & Title -->
-  <div class="h-16 border-b border-base-300 flex items-center px-3.5 gap-3 overflow-hidden" [class.justify-center]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' || !isOpen()">
-    <div class="w-9 h-9 rounded-xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden">
-      @if (lms.activeTenant().branding.logoUrl) {
-        <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
-      } @else {
-        <span class="material-symbols-outlined text-xl">school</span>
+  <!-- ========================================================================= -->
+  <!-- 1. SIDEBAR HEADER: LOGO & BRANDING -->
+  <!-- ========================================================================= -->
+  <div class="h-16 border-b border-base-300 flex items-center justify-between px-3.5 gap-2 overflow-hidden flex-shrink-0"
+       [class.lg:justify-center]="isCompact()">
+    
+    <div class="flex items-center gap-3 min-w-0" [class.lg:justify-center]="isCompact()">
+      <div class="w-10 h-10 rounded-xl bg-tenant-500 text-white flex items-center justify-center flex-shrink-0 shadow-sm overflow-hidden font-bold ring-2 ring-tenant-500/20"
+           [title]="lms.activeTenant().name">
+        @if (lms.activeTenant().branding.logoUrl) {
+          <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+        } @else {
+          <span class="material-symbols-outlined text-xl">school</span>
+        }
+      </div>
+      
+      <!-- Text details (Hidden in desktop compact rail mode, visible on standard sidebar & mobile) -->
+      @if (!isCompact()) {
+        <div class="flex flex-col min-w-0 transition-opacity duration-200">
+          <span class="font-bold text-sm text-text-primary truncate tracking-tight">
+            {{ lms.activeTenant().name }}
+          </span>
+          <span class="text-[10px] text-text-secondary truncate">
+            {{ lms.activeTenant().branding.tagline }}
+          </span>
+        </div>
       }
     </div>
-    
-    @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
-      <div class="flex flex-col min-w-0 transition-opacity duration-200">
-        <span class="font-bold text-sm text-text-primary truncate tracking-tight">
-          {{ lms.activeTenant().name }}
-        </span>
-        <span class="text-[10px] text-text-secondary truncate">
-          {{ lms.activeTenant().branding.tagline }}
-        </span>
-      </div>
-    }
+
+    <!-- Mobile Close Drawer Button (Visible only on mobile) -->
+    <button 
+      (click)="close.emit()" 
+      class="lg:hidden w-8 h-8 rounded-lg bg-base-200 hover:bg-base-300 flex items-center justify-center text-text-secondary flex-shrink-0"
+      title="Close Menu">
+      <span class="material-symbols-outlined text-lg">close</span>
+    </button>
   </div>
 
-  <!-- Navigation Menu -->
-  <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-1">
-    @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
+  <!-- ========================================================================= -->
+  <!-- 2. NAVIGATION MENU -->
+  <!-- ========================================================================= -->
+  <nav class="flex-1 overflow-y-auto px-2.5 py-3 space-y-1 overflow-x-hidden">
+    <!-- Category label -->
+    @if (!isCompact()) {
       <div class="px-2.5 pb-1 text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
         <span>Navigation</span>
       </div>
@@ -34,34 +69,70 @@
 
     @for (item of navItems; track item.route) {
       @if (isAllowed(item.roles)) {
-        <a 
-          [routerLink]="item.route"
-          routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
-          [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-          [title]="item.label"
-          class="flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative"
-          [class.justify-center]="lms.adminLayoutPreferences().navigationMode === 'compact_rail' || !isOpen()">
-          
-          <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
-            {{ item.icon }}
-          </span>
+        
+        @if (isCompact()) {
+          <!-- Compact Rail Item (Icon-Centric) -->
+          <a 
+            [routerLink]="item.route"
+            (click)="onNavItemClick()"
+            routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-semibold"
+            [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+            [title]="item.label"
+            class="flex flex-col items-center justify-center p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all relative group">
+            
+            <span class="material-symbols-outlined text-xl transition-transform group-hover:scale-110">
+              {{ item.icon }}
+            </span>
+            <span class="text-[9px] font-medium text-center truncate max-w-full mt-0.5 leading-tight text-text-secondary group-hover:text-text-primary">
+              {{ item.label.split(' ')[0] }}
+            </span>
 
-          @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
-            <span class="truncate flex-1">{{ item.label }}</span>
+            @if (item.badge) {
+              <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500 ring-1 ring-base-100"></span>
+            }
+          </a>
+        } @else {
+          <!-- Standard Row (Full Width with Icon + Label + Badge) -->
+          <a 
+            [routerLink]="item.route"
+            (click)="onNavItemClick()"
+            routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
+            [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+            [title]="item.label"
+            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative active:scale-[0.98]">
+            
+            <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
+              {{ item.icon }}
+            </span>
+
+            <span class="truncate flex-1 font-medium">{{ item.label }}</span>
             @if (item.badge) {
               <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
                 {{ item.badge }}
               </span>
             }
-          }
-        </a>
+          </a>
+        }
+
       }
     }
   </nav>
 
-  <!-- Sidebar Footer: Tenant Resource Quota -->
-  @if (lms.adminLayoutPreferences().navigationMode !== 'compact_rail' && isOpen()) {
-    <div class="p-3 m-3 rounded-2xl bg-base-200 border border-base-300 text-xs">
+  <!-- ========================================================================= -->
+  <!-- 3. SIDEBAR FOOTER: TENANT RESOURCE QUOTA -->
+  <!-- ========================================================================= -->
+  @if (isCompact()) {
+    <!-- Compact Rail Footer (Icon Meter) -->
+    <div class="p-2 mb-3 mx-auto rounded-xl bg-base-200 border border-base-300 text-center flex-shrink-0"
+         [title]="'Seats: ' + lms.activeTenant().stats.seatsUsed + '/' + lms.activeTenant().stats.seatLimit + ' (' + lms.activeTenant().stats.complianceRate + '% compliant)'">
+      <span class="material-symbols-outlined text-base text-tenant-600 dark:text-tenant-300 block">verified</span>
+      <span class="text-[9px] font-mono font-bold text-text-primary block leading-none mt-0.5">
+        {{ lms.activeTenant().stats.complianceRate }}%
+      </span>
+    </div>
+  } @else {
+    <!-- Full Footer on Standard Sidebar and Mobile Drawer -->
+    <div class="p-3 m-3 rounded-2xl bg-base-200 border border-base-300 text-xs flex-shrink-0">
       <div class="flex items-center justify-between mb-1.5">
         <span class="text-[11px] font-medium text-text-secondary flex items-center gap-1">
           <span class="material-symbols-outlined text-xs">badge</span> Seats Used
@@ -74,7 +145,7 @@
       <!-- Progress Bar -->
       <div class="w-full bg-base-300 h-1.5 rounded-full overflow-hidden mb-2">
         <div 
-          class="bg-tenant-500 h-full rounded-full transition-all duration-500"
+          class="bg-tenant-500 h-full rounded-full transition-all duration-500" 
           [style.width.%]="(lms.activeTenant().stats.seatsUsed / lms.activeTenant().stats.seatLimit) * 100">
         </div>
       </div>
@@ -88,4 +159,6 @@
     </div>
   }
 </aside>
+
+
 

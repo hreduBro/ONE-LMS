@@ -19,8 +19,20 @@ export class CoursePlayerComponent {
   courseId = signal<string>('');
   activeLessonId = signal<string>('');
   isSidebarOpen = signal<boolean>(true);
+  showCurriculumDrawer = signal<boolean>(false);
   showCertificateModal = signal<boolean>(false);
   earnedCertificate = signal<Certificate | null>(null);
+
+  // Mobile Tabs: 'overview' | 'syllabus' | 'notes' | 'discussion' | 'resources'
+  activeMobileTab = signal<'overview' | 'syllabus' | 'notes' | 'discussion' | 'resources'>('overview');
+
+  // Video Player Controls State
+  isPlaying = signal<boolean>(false);
+  currentPlaybackTime = signal<number>(45); // in seconds
+  playbackSpeed = signal<number>(1);
+  showSpeedMenu = signal<boolean>(false);
+  isCaptionsOn = signal<boolean>(true);
+  isAutoplayNext = signal<boolean>(true);
 
   // Active quiz state
   selectedAnswers = signal<Record<string, number>>({});
@@ -30,7 +42,15 @@ export class CoursePlayerComponent {
   quizPassed = signal<boolean>(false);
 
   // Active note-taking scratchpad
-  lessonNotes = signal<string>('');
+  lessonNotes = signal<string>('• Compliance requirements mandate annual recertification.\n• Section 3.2 details standard operating procedures for incident handling.');
+  savedNoteAlert = signal<boolean>(false);
+
+  // Community Discussion items
+  discussions = signal<Array<{ id: string; user: string; avatar: string; time: string; text: string; likes: number; isLiked?: boolean }>>([
+    { id: '1', user: 'Sarah Jenkins', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', time: '2 hours ago', text: 'Can anyone clarify if Module 2 covers European GDPR compliance or just US HIPAA?', likes: 4 },
+    { id: '2', user: 'David Kim (Instructor)', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', time: '1 hour ago', text: 'Hi Sarah! Module 2 covers multi-jurisdiction frameworks including both GDPR and ISO 27001.', likes: 8 }
+  ]);
+  newQuestionText = signal<string>('');
 
   // Course computed
   course = computed<Course>(() => {
@@ -61,10 +81,15 @@ export class CoursePlayerComponent {
     return found || list[0];
   });
 
+  // Total lesson duration in seconds
+  totalDurationSeconds = computed(() => {
+    return (this.activeLesson()?.durationMinutes || 10) * 60;
+  });
+
   // Active lesson index
   currentLessonIndex = computed(() => {
     const current = this.activeLesson();
-    return this.allLessons().findIndex(l => l.id === current.id);
+    return this.allLessons().findIndex(l => l.id === current?.id);
   });
 
   constructor() {
@@ -87,17 +112,46 @@ export class CoursePlayerComponent {
         }
       }
     });
+
+    // Close desktop sidebar on mobile by default
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      this.isSidebarOpen.set(false);
+    }
   }
 
   selectLesson(lessonId: string) {
     this.activeLessonId.set(lessonId);
     this.quizSubmitted.set(false);
     this.selectedAnswers.set({});
+    this.isPlaying.set(false);
+    this.currentPlaybackTime.set(0);
+    this.showCurriculumDrawer.set(false);
   }
 
   isLessonCompleted(lessonId: string): boolean {
     const enr = this.enrollment();
     return enr ? enr.completedLessonIds.includes(lessonId) : false;
+  }
+
+  // Video Player Controls
+  togglePlay() {
+    this.isPlaying.update(p => !p);
+  }
+
+  seekRelative(deltaSeconds: number) {
+    const total = this.totalDurationSeconds();
+    this.currentPlaybackTime.update(t => Math.max(0, Math.min(total, t + deltaSeconds)));
+  }
+
+  setPlaybackSpeed(speed: number) {
+    this.playbackSpeed.set(speed);
+    this.showSpeedMenu.set(false);
+  }
+
+  formatTime(totalSec: number): string {
+    const m = Math.floor(totalSec / 60);
+    const s = Math.floor(totalSec % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
   }
 
   // Mark active lesson as completed
@@ -135,6 +189,44 @@ export class CoursePlayerComponent {
     if (idx > 0) {
       this.selectLesson(all[idx - 1].id);
     }
+  }
+
+  // Notes action
+  saveNotes() {
+    this.savedNoteAlert.set(true);
+    setTimeout(() => this.savedNoteAlert.set(false), 2000);
+  }
+
+  // Q&A discussion actions
+  postQuestion() {
+    const text = this.newQuestionText().trim();
+    if (!text) return;
+
+    this.discussions.update(list => [
+      {
+        id: Date.now().toString(),
+        user: this.lms.activeUser().name,
+        avatar: this.lms.activeUser().avatar,
+        time: 'Just now',
+        text,
+        likes: 0
+      },
+      ...list
+    ]);
+    this.newQuestionText.set('');
+  }
+
+  toggleLike(item: { id: string; likes: number; isLiked?: boolean }) {
+    this.discussions.update(list => list.map(d => {
+      if (d.id === item.id) {
+        return {
+          ...d,
+          isLiked: !d.isLiked,
+          likes: d.isLiked ? d.likes - 1 : d.likes + 1
+        };
+      }
+      return d;
+    }));
   }
 
   // Quiz submission

@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
+import { LmsApiService } from '../../services/lms-api.service';
 import { ThemeService } from '../../services/theme.service';
 import { UserRole } from '../../models/lms.model';
 import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-switcher-modal.component';
+import { BackendConsoleModalComponent } from '../backend-console-modal/backend-console-modal.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule, RouterModule, LayoutSwitcherModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule, LayoutSwitcherModalComponent, BackendConsoleModalComponent],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeaderComponent {
   lms = inject(LmsDataService);
+  api = inject(LmsApiService);
   themeService = inject(ThemeService);
   toggleSidebar = output<void>();
 
@@ -24,6 +27,7 @@ export class HeaderComponent {
   showNotificationMenu = signal(false);
   showLayoutModal = signal(false);
   showThemeMenu = signal(false);
+  showBackendConsole = signal(false);
 
   setTheme(mode: 'system' | 'light' | 'dark') {
     this.themeService.setThemeMode(mode);

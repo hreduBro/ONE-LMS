@@ -7,19 +7,19 @@ import { LmsDataService } from '../../services/lms-data.service';
   selector: 'app-top-menu',
   imports: [CommonModule, RouterModule],
   template: `
-    <nav class="bg-base-100 border-b border-base-300 px-4 lg:px-6 py-1.5 overflow-x-auto">
-      <div class="flex items-center gap-1 min-w-max">
+    <nav class="bg-base-100 border-b border-base-300 px-4 lg:px-6 py-2 overflow-x-auto shadow-xs">
+      <div class="flex items-center gap-1.5 min-w-max">
         @for (item of navItems; track item.route) {
           @if (isAllowed(item.roles)) {
             <a 
               [routerLink]="item.route"
-              routerLinkActive="bg-tenant-500 text-white shadow-sm font-semibold"
+              routerLinkActive="bg-tenant-50 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
               [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-              class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all">
+              class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all active:scale-[0.98]">
               <span class="material-symbols-outlined text-base">{{ item.icon }}</span>
               <span>{{ item.label }}</span>
               @if (item.badge) {
-                <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-200 font-semibold">
+                <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
                   {{ item.badge }}
                 </span>
               }
