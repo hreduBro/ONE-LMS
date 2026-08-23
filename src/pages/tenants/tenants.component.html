@@ -163,8 +163,8 @@
         type="text" 
         [ngModel]="searchQuery()" 
         (ngModelChange)="onSearchChange($event)"
-        placeholder="Search by name, 4-digit ID, city, admin..."
-        class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+        placeholder="Search organization by name, numeric ID (e.g. 1972), domain, plan, city..."
+        class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500" />
     </div>
 
     <div class="flex items-center gap-2.5 w-full sm:w-auto">
@@ -202,7 +202,7 @@
     @for (tenant of paginatedTenants(); track tenant.id) {
       <div 
         class="rounded-3xl bg-base-100 border transition-all duration-200 shadow-sm hover:shadow-md flex flex-col justify-between overflow-hidden relative group"
-        [class]="tenant.id === lms.activeTenantId() ? 'border-tenant-500 ring-2 ring-tenant-500/20' : 'border-base-300'">
+        [class]="tenant.id === lms.activeTenantId() ? 'border-2 border-tenant-500 shadow-md' : 'border border-base-300'">
         
         <!-- Active Workspace Bar -->
         @if (tenant.id === lms.activeTenantId()) {
@@ -379,7 +379,7 @@
         <select 
           [value]="pageSize()"
           (change)="setPageSize(+$any($event.target).value)"
-          class="px-2 py-1 rounded-lg bg-base-200 border border-base-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-tenant-500">
+          class="px-2 py-1 rounded-lg bg-base-200 border border-base-300 text-xs font-semibold focus:outline-none focus:border-tenant-500">
           <option [value]="3">3</option>
           <option [value]="6">6</option>
           <option [value]="12">12</option>

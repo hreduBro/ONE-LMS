@@ -3,8 +3,8 @@
     #cardContainer
     [id]="'widget-' + widget().id"
     class="relative rounded-3xl bg-base-100 border border-base-300/80 shadow-xs transition-all flex flex-col h-full overflow-hidden group"
-    [class.ring-2]="isBuilderMode()"
-    [class.ring-tenant-500]="isBuilderMode()"
+    [class.border-2]="isBuilderMode()"
+    [class.border-tenant-500]="isBuilderMode()"
     [class.shadow-md]="isBuilderMode()">
 
     <!-- Live Drag-Resize Dimension Overlay (Gridstack-like) -->
@@ -307,7 +307,7 @@
                   type="text" 
                   [(ngModel)]="deptSearchQuery"
                   placeholder="Filter dept..."
-                  class="px-2.5 py-1 rounded-xl bg-base-200 dark:bg-slate-800 text-xs border border-base-300 dark:border-slate-700 text-text-primary focus:outline-hidden focus:ring-1 focus:ring-tenant-500 w-28 sm:w-32" />
+                  class="px-2.5 py-1 rounded-xl bg-base-200 dark:bg-slate-800 text-xs border border-base-300 dark:border-slate-700 text-text-primary focus:outline-hidden focus:border-tenant-500 w-28 sm:w-32" />
                 <button 
                   type="button"
                   (click)="deptSortMode.set(deptSortMode() === 'compliance' ? 'learners' : 'compliance')"
@@ -459,24 +459,24 @@
             <button 
               type="button"
               (click)="complianceFilter.set(complianceFilter() === 'compliant' ? 'all' : 'compliant')"
-              class="p-2.5 rounded-2xl border transition-all text-center"
-              [class]="complianceFilter() === 'compliant' ? 'bg-emerald-500/20 border-emerald-500 ring-2 ring-emerald-500/30' : 'bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/15'">
+              class="p-2.5 rounded-2xl border transition-all text-center focus:outline-none focus:ring-0 outline-none"
+              [class]="complianceFilter() === 'compliant' ? 'bg-emerald-500/20 border-2 border-emerald-500' : 'bg-emerald-500/10 border border-emerald-500/20 hover:bg-emerald-500/15'">
               <span class="text-lg font-bold text-emerald-600">88%</span>
               <div class="text-[10px] text-emerald-700 dark:text-emerald-300 font-semibold mt-0.5">Compliant</div>
             </button>
             <button 
               type="button"
               (click)="complianceFilter.set(complianceFilter() === 'at_risk' ? 'all' : 'at_risk')"
-              class="p-2.5 rounded-2xl border transition-all text-center"
-              [class]="complianceFilter() === 'at_risk' ? 'bg-amber-500/20 border-amber-500 ring-2 ring-amber-500/30' : 'bg-amber-500/10 border-amber-500/20 hover:bg-amber-500/15'">
+              class="p-2.5 rounded-2xl border transition-all text-center focus:outline-none focus:ring-0 outline-none"
+              [class]="complianceFilter() === 'at_risk' ? 'bg-amber-500/20 border-2 border-amber-500' : 'bg-amber-500/10 border border-amber-500/20 hover:bg-amber-500/15'">
               <span class="text-lg font-bold text-amber-600">9%</span>
               <div class="text-[10px] text-amber-700 dark:text-amber-300 font-semibold mt-0.5">At Risk</div>
             </button>
             <button 
               type="button"
               (click)="complianceFilter.set(complianceFilter() === 'overdue' ? 'all' : 'overdue')"
-              class="p-2.5 rounded-2xl border transition-all text-center"
-              [class]="complianceFilter() === 'overdue' ? 'bg-rose-500/20 border-rose-500 ring-2 ring-rose-500/30' : 'bg-rose-500/10 border-rose-500/20 hover:bg-rose-500/15'">
+              class="p-2.5 rounded-2xl border transition-all text-center focus:outline-none focus:ring-0 outline-none"
+              [class]="complianceFilter() === 'overdue' ? 'bg-rose-500/20 border-2 border-rose-500' : 'bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/15'">
               <span class="text-lg font-bold text-rose-600">3%</span>
               <div class="text-[10px] text-rose-700 dark:text-rose-300 font-semibold mt-0.5">Overdue</div>
             </button>
@@ -513,9 +513,9 @@
               <button 
                 type="button"
                 (click)="selectedHeatmapDay.set(i)"
-                class="space-y-1 p-1 rounded-xl transition-all"
-                [class.ring-2]="selectedHeatmapDay() === i"
-                [class.ring-tenant-500]="selectedHeatmapDay() === i">
+                class="space-y-1 p-1 rounded-xl transition-all focus:outline-none focus:ring-0 outline-none"
+                [class.border-2]="selectedHeatmapDay() === i"
+                [class.border-tenant-500]="selectedHeatmapDay() === i">
                 <span class="text-[10px] font-semibold text-text-secondary block">{{ day }}</span>
                 <div 
                   class="h-14 rounded-xl flex items-end justify-center pb-1 transition-all"

@@ -1,23 +1,9 @@
 import { Component, ChangeDetectionStrategy, inject, input, output, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { LmsDataService } from '../../services/lms-data.service';
-
-export interface NavChildItem {
-  label: string;
-  route: string;
-  icon: string;
-  badge?: string;
-}
-
-export interface NavItem {
-  label: string;
-  route?: string;
-  icon: string;
-  roles: string[];
-  badge?: string;
-  children?: NavChildItem[];
-}
+import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '../../models/navigation.model';
 
 @Component({
   selector: 'app-sidebar',
@@ -37,47 +23,39 @@ export class SidebarComponent {
   isCompact = computed(() => this.lms.adminLayoutPreferences().navigationMode === 'compact_rail');
   isTopMenu = computed(() => this.lms.adminLayoutPreferences().navigationMode === 'top_menu');
 
-  // Expanded state for nested menu items in full sidebar mode
-  expandedMenus = signal<Record<string, boolean>>({
-    'Organizations': true
-  });
+  // Expanded menus state map
+  expandedMenus = signal<Record<string, boolean>>({});
 
-  navItems: NavItem[] = [
-    { label: 'Dashboard', route: '/dashboard', icon: 'space_dashboard', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
-    { 
-      label: 'Organizations', 
-      route: '/tenants',
-      icon: 'corporate_fare', 
-      roles: ['super_admin', 'tenant_admin'],
-      children: [
-        { label: 'Organization List', route: '/tenants', icon: 'domain' },
-        { label: 'Create Organization', route: '/tenants/create', icon: 'domain_add', badge: 'Wizard' }
-      ]
-    },
-    { 
-      label: 'LMS Instances', 
-      route: '/lms',
-      icon: 'layers', 
-      roles: ['super_admin', 'tenant_admin'],
-      children: [
-        { label: 'LMS Instances Grid', route: '/lms', icon: 'grid_view' },
-        { label: 'Create LMS', route: '/lms/create', icon: 'add_circle', badge: 'Wizard' }
-      ]
-    },
-    { label: 'Courses & Catalog', route: '/courses', icon: 'school', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
-    { label: 'Users & Personnel', route: '/users', icon: 'groups', roles: ['super_admin', 'tenant_admin', 'instructor'] },
-    { label: 'Compliance & Analytics', route: '/analytics', icon: 'analytics', roles: ['super_admin', 'tenant_admin'] },
-    { label: 'Certificates Vault', route: '/certificates', icon: 'verified', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
-    { label: 'Live Webinars', route: '/webinars', icon: 'videocam', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
-    { label: 'My Profile', route: '/profile', icon: 'account_circle', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
-    { label: 'Tenant Branding', route: '/settings', icon: 'palette', roles: ['super_admin', 'tenant_admin'] },
-  ];
+  navItems: NavItem[] = APP_NAV_ITEMS;
+
+  constructor() {
+    // Initial sync on startup
+    this.syncActiveMenuWithRoute();
+
+    // Whenever a menu item / route is selected, close all other menus and leave only the selected menu open
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.syncActiveMenuWithRoute();
+    });
+  }
+
+  private syncActiveMenuWithRoute() {
+    const currentUrl = this.router.url;
+    const activeParent = this.navItems.find(item => item.children && item.children.length > 0 && isNavigationItemActive(currentUrl, item));
+    if (activeParent) {
+      this.expandedMenus.set({ [activeParent.label]: true });
+    } else {
+      this.expandedMenus.set({});
+    }
+  }
 
   toggleMenu(menuLabel: string, event?: Event) {
     if (event) {
       event.preventDefault();
       event.stopPropagation();
     }
+    // Allow opening multiple menus when exploring/clicking headers
     this.expandedMenus.update(current => ({
       ...current,
       [menuLabel]: !current[menuLabel]
@@ -88,15 +66,16 @@ export class SidebarComponent {
     return !!this.expandedMenus()[menuLabel];
   }
 
-  isRouteActive(route?: string, children?: NavChildItem[]): boolean {
+  isRouteActive(item: NavItem): boolean {
+    return isNavigationItemActive(this.router.url, item);
+  }
+
+  isChildActive(childRoute: string): boolean {
     const currentUrl = this.router.url;
-    if (route && (currentUrl === route || (route !== '/dashboard' && currentUrl.startsWith(route)))) {
-      return true;
+    if (childRoute === '/tenants' || childRoute === '/courses' || childRoute === '/lms') {
+      return currentUrl === childRoute;
     }
-    if (children) {
-      return children.some(c => c.route === currentUrl || (c.route !== '/dashboard' && currentUrl.startsWith(c.route)));
-    }
-    return false;
+    return currentUrl === childRoute || currentUrl.startsWith(childRoute);
   }
 
   isAllowed(roles: string[]): boolean {
@@ -111,4 +90,3 @@ export class SidebarComponent {
     }
   }
 }
-

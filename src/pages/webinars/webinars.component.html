@@ -57,7 +57,7 @@
 
           <!-- Host Info -->
           <div class="flex items-center gap-2.5 mt-4 pt-3 border-t border-base-300/60">
-            <img [src]="webinar.hostAvatar || webinar.instructorAvatar" [alt]="webinar.hostName || webinar.instructor" class="w-7 h-7 rounded-full object-cover ring-1 ring-base-300" referrerpolicy="no-referrer" />
+            <img [src]="webinar.hostAvatar || webinar.instructorAvatar" [alt]="webinar.hostName || webinar.instructor" class="w-7 h-7 rounded-full object-cover border border-base-300" referrerpolicy="no-referrer" />
             <div class="text-xs">
               <span class="font-bold text-text-primary">{{ webinar.hostName || webinar.instructor }}</span>
               <span class="text-text-secondary text-[11px] block">Session Host</span>
@@ -166,7 +166,7 @@
 
             <!-- Slide Graphic Content -->
             <div class="my-auto flex flex-col items-center justify-center space-y-2">
-              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full ring-4 ring-tenant-500 overflow-hidden shadow-lg mb-1">
+              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-4 border-tenant-500 overflow-hidden shadow-lg mb-1">
                 <img [src]="room.hostAvatar || room.instructorAvatar" [alt]="room.hostName || room.instructor" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
               </div>
               <h3 class="text-white font-bold text-sm sm:text-base leading-tight">{{ room.hostName || room.instructor }}</h3>
@@ -232,7 +232,7 @@
         <div class="flex items-center gap-2 overflow-x-auto py-1 sm:py-2 px-1 scrollbar-none">
           @for (user of lms.tenantUsers().slice(0, 5); track user.id) {
             <div class="px-2.5 py-1.5 rounded-xl bg-black/50 backdrop-blur-md border border-white/10 flex items-center gap-2 text-white text-xs flex-shrink-0 min-w-32">
-              <img [src]="user.avatar" [alt]="user.name" class="w-6 h-6 rounded-full object-cover ring-1 ring-white/20" referrerpolicy="no-referrer" />
+              <img [src]="user.avatar" [alt]="user.name" class="w-6 h-6 rounded-full object-cover border border-white/20" referrerpolicy="no-referrer" />
               <div class="truncate">
                 <span class="block truncate text-[11px] font-medium leading-none">{{ user.name }}</span>
                 <span class="text-[9px] text-white/50 capitalize">{{ user.role.replace('_', ' ') }}</span>
@@ -454,7 +454,7 @@
             <!-- Host -->
             <div class="p-2.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
               <div class="flex items-center gap-2.5">
-                <img [src]="room.hostAvatar || room.instructorAvatar" [alt]="room.hostName" class="w-8 h-8 rounded-full object-cover ring-2 ring-tenant-500" referrerpolicy="no-referrer" />
+                <img [src]="room.hostAvatar || room.instructorAvatar" [alt]="room.hostName" class="w-8 h-8 rounded-full object-cover border-2 border-tenant-500" referrerpolicy="no-referrer" />
                 <div>
                   <span class="font-bold text-xs text-white block">{{ room.hostName || room.instructor }}</span>
                   <span class="text-[10px] text-tenant-300 font-semibold">Session Host / Presenter</span>

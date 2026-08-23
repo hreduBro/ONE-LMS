@@ -44,7 +44,7 @@
         [ngModel]="searchQuery()" 
         (ngModelChange)="onSearchChange($event)"
         placeholder="Search courses, instructors, topics..."
-        class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+        class="w-full pl-9 pr-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 focus:ring-0" />
     </div>
 
     <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
@@ -53,7 +53,7 @@
         <select 
           [ngModel]="selectedLevel()" 
           (ngModelChange)="selectedLevel.set($event); onFilterChange()"
-          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
+          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 focus:ring-0">
           @for (lvl of levels; track lvl) {
             <option [value]="lvl">{{ lvl }}</option>
           }
@@ -202,7 +202,7 @@
         <select 
           [value]="pageSize()"
           (change)="setPageSize(+$any($event.target).value)"
-          class="px-2 py-1 rounded-lg bg-base-200 border border-base-300 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-tenant-500">
+          class="px-2 py-1 rounded-lg bg-base-200 border border-base-300 text-xs font-semibold focus:outline-none focus:border-tenant-500">
           <option [value]="3">3</option>
           <option [value]="6">6</option>
           <option [value]="12">12</option>
@@ -334,7 +334,7 @@
               type="checkbox" 
               [(ngModel)]="newCourse.isMandatory" 
               name="isMandatory"
-              class="rounded text-tenant-500 focus:ring-tenant-500" />
+              class="rounded text-tenant-500 focus:ring-0" />
             <span>Mark as Mandatory Organizational Compliance</span>
           </label>
 

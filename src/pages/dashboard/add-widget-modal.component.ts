@@ -35,7 +35,7 @@ import { DashboardWidget, DashboardWidgetType } from '../../models/lms.model';
               type="text" 
               [(ngModel)]="searchQuery" 
               placeholder="Search widgets, charts, KPIs..." 
-              class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-base-100 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+              class="w-full pl-9 pr-3 py-1.5 rounded-xl bg-base-100 border border-base-300 text-xs focus:outline-none focus:border-tenant-500" />
           </div>
 
           <div class="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">

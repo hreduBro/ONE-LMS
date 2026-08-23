@@ -34,7 +34,7 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
               [(ngModel)]="formTitle" 
               name="formTitle"
               required
-              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500" />
           </div>
 
           <div>
@@ -96,7 +96,7 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
                     type="checkbox" 
                     [checked]="formRoles.includes(r.role)"
                     (change)="toggleRole(r.role)"
-                    class="rounded border-base-300 text-tenant-600 focus:ring-tenant-500 w-4 h-4" />
+                    class="rounded border-base-300 text-tenant-600 focus:ring-0 w-4 h-4" />
                   <span class="font-medium text-text-primary">{{ r.label }}</span>
                 </label>
               }

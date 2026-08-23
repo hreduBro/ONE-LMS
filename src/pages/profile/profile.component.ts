@@ -48,11 +48,11 @@ interface ProfileTab {
                 <img 
                   [src]="activeUser().avatar" 
                   [alt]="activeUser().name"
-                  class="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-cover ring-4 ring-base-100 shadow-xl bg-base-200"
+                  class="w-28 h-28 sm:w-36 sm:h-36 rounded-3xl object-cover border-4 border-base-100 shadow-xl bg-base-200"
                   referrerpolicy="no-referrer" />
                 
                 <!-- Online Status Dot -->
-                <span class="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-emerald-500 ring-4 ring-base-100 flex items-center justify-center text-white" title="Active Online">
+                <span class="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-emerald-500 border-2 border-base-100 flex items-center justify-center text-white" title="Active Online">
                   <span class="material-symbols-outlined text-xs">check</span>
                 </span>
 
@@ -238,7 +238,7 @@ interface ProfileTab {
                     name="userName"
                     [disabled]="!isEditing()"
                     required
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
                 </div>
 
                 <div>
@@ -249,7 +249,7 @@ interface ProfileTab {
                     name="userEmail"
                     [disabled]="!isEditing()"
                     required
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
                 </div>
 
                 <div>
@@ -258,7 +258,7 @@ interface ProfileTab {
                     [(ngModel)]="editForm.department" 
                     name="userDept"
                     [disabled]="!isEditing()"
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed">
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed">
                     @for (dept of lms.activeTenant().departments; track dept) {
                       <option [value]="dept">{{ dept }}</option>
                     }
@@ -273,7 +273,7 @@ interface ProfileTab {
                     name="userPhone"
                     placeholder="+880 1713 000000"
                     [disabled]="!isEditing()"
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
                 </div>
 
                 <div>
@@ -284,7 +284,7 @@ interface ProfileTab {
                     name="userTitle"
                     placeholder="e.g. Senior Microfinance Officer"
                     [disabled]="!isEditing()"
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed" />
                 </div>
 
                 <div>
@@ -293,7 +293,7 @@ interface ProfileTab {
                     [(ngModel)]="editForm.timezone" 
                     name="userTimezone"
                     [disabled]="!isEditing()"
-                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed font-mono text-xs">
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed font-mono text-xs">
                     <option value="Asia/Dhaka">Asia/Dhaka (GMT+6)</option>
                     <option value="Asia/Singapore">Asia/Singapore (GMT+8)</option>
                     <option value="Europe/London">Europe/London (GMT+0)</option>
@@ -311,7 +311,7 @@ interface ProfileTab {
                   rows="3"
                   placeholder="Tell your team about your learning goals and specialization..."
                   [disabled]="!isEditing()"
-                  class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:ring-2 focus:ring-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed"></textarea>
+                  class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none focus:border-tenant-500 disabled:opacity-75 disabled:cursor-not-allowed"></textarea>
               </div>
 
               @if (isEditing()) {
@@ -742,8 +742,8 @@ interface ProfileTab {
               <button 
                 type="button"
                 (click)="selectPresetAvatar(av)"
-                class="p-1 rounded-2xl border-2 transition-all hover:scale-105"
-                [class]="activeUser().avatar === av ? 'border-tenant-500 ring-2 ring-tenant-500/30' : 'border-base-300 hover:border-tenant-300'">
+                class="p-1 rounded-2xl border-2 transition-all hover:scale-105 focus:outline-none focus:ring-0 outline-none"
+                [class]="activeUser().avatar === av ? 'border-2 border-tenant-500 shadow-sm' : 'border border-base-300 hover:border-tenant-300'">
                 <img [src]="av" class="w-full h-16 rounded-xl object-cover" referrerpolicy="no-referrer" />
               </button>
             }
@@ -756,7 +756,7 @@ interface ProfileTab {
                 type="url" 
                 [(ngModel)]="customAvatarUrl" 
                 placeholder="https://..." 
-                class="flex-1 px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-1 focus:ring-tenant-500" />
+                class="flex-1 px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500" />
               <button 
                 type="button"
                 [disabled]="!customAvatarUrl.trim()"

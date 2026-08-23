@@ -61,6 +61,9 @@
       darkMode: 'class',
       theme: {
         extend: {
+          ringColor: {
+            DEFAULT: 'transparent'
+          },
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
             serif: ['Cinzel', 'serif'],
@@ -68,15 +71,15 @@
           },
           colors: {
             tenant: {
-              50: 'var(--tenant-50, #eef2ff)',
-              100: 'var(--tenant-100, #e0e7ff)',
-              200: 'var(--tenant-200, #c7d2fe)',
-              300: 'var(--tenant-300, #a5b4fc)',
-              400: 'var(--tenant-400, #818cf8)',
-              500: 'var(--tenant-primary, #6366f1)',
-              600: 'var(--tenant-primary-hover, #4f46e5)',
-              700: 'var(--tenant-primary-dark, #4338ca)',
-              accent: 'var(--tenant-accent, #ec4899)',
+              50: 'var(--tenant-50, #FDF2F8)',
+              100: 'var(--tenant-100, #FCE7F3)',
+              200: 'var(--tenant-200, #FBCFE8)',
+              300: 'var(--tenant-300, #F9A8D4)',
+              400: 'var(--tenant-400, #F472B6)',
+              500: 'var(--tenant-primary, #EC008C)',
+              600: 'var(--tenant-primary-hover, #D8007E)',
+              700: 'var(--tenant-primary-dark, #B8006C)',
+              accent: 'var(--tenant-accent, #C40072)',
             },
             'brand-primary': 'var(--brand-primary)',
             'brand-secondary': 'var(--brand-secondary)',
@@ -91,6 +94,13 @@
     }
   </script>
   <style>
+    *, ::before, ::after {
+      --tw-ring-color: transparent !important;
+      --tw-ring-offset-color: transparent !important;
+      --tw-ring-offset-shadow: 0 0 #0000 !important;
+      --tw-ring-shadow: 0 0 #0000 !important;
+    }
+
     :root {
       --tenant-primary: #EC008C;
       --tenant-primary-hover: #D8007E;
@@ -468,7 +478,6 @@
   }
 }
 </script>
-<link rel="stylesheet" href="/index.css">
 </head>
 <body class="bg-base-200 text-text-primary antialiased min-h-screen">
   <app-root></app-root>

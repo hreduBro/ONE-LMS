@@ -1,9 +1,10 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { LmsDataService } from '../../services/lms-data.service';
 import { ThemeService } from '../../services/theme.service';
+import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '../../models/navigation.model';
 
 @Component({
   selector: 'app-mobile-nav',
@@ -16,27 +17,27 @@ import { ThemeService } from '../../services/theme.service';
         <!-- 1. Dashboard -->
         <a 
           routerLink="/dashboard"
-          routerLinkActive="bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold"
+          [routerLinkActive]="'bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 font-bold'"
           [routerLinkActiveOptions]="{ exact: true }"
           #homeRla="routerLinkActive"
-          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative"
+          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative focus:outline-none focus:ring-0 outline-none"
           [class]="homeRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/50 font-medium'">
           
           <div class="relative flex items-center justify-center">
-            <span class="material-symbols-outlined text-2xl">{{ homeRla.isActive ? 'space_dashboard' : 'space_dashboard' }}</span>
+            <span class="material-symbols-outlined text-2xl">space_dashboard</span>
             @if (homeRla.isActive) {
               <span class="absolute -bottom-1 w-1.5 h-1.5 rounded-full bg-tenant-500"></span>
             }
           </div>
-          <span class="text-[10px] tracking-tight mt-0.5">Home</span>
+          <span class="text-[10px] tracking-tight mt-0.5">Dashboard</span>
         </a>
 
         <!-- 2. Courses -->
         <a 
           routerLink="/courses"
-          routerLinkActive="bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold"
+          [routerLinkActive]="'bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 font-bold'"
           #coursesRla="routerLinkActive"
-          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative"
+          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative focus:outline-none focus:ring-0 outline-none"
           [class]="coursesRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/50 font-medium'">
           
           <div class="relative flex items-center justify-center">
@@ -48,12 +49,12 @@ import { ThemeService } from '../../services/theme.service';
           <span class="text-[10px] tracking-tight mt-0.5">Courses</span>
         </a>
 
-        <!-- 3. Live Virtual Classroom -->
+        <!-- 3. Live Classrooms -->
         <a 
           routerLink="/webinars"
-          routerLinkActive="bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold"
+          [routerLinkActive]="'bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 font-bold'"
           #webinarsRla="routerLinkActive"
-          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative"
+          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative focus:outline-none focus:ring-0 outline-none"
           [class]="webinarsRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/50 font-medium'">
           
           <div class="relative flex items-center justify-center">
@@ -68,13 +69,13 @@ import { ThemeService } from '../../services/theme.service';
           <span class="text-[10px] tracking-tight mt-0.5">Live Class</span>
         </a>
 
-        <!-- 4. Multi-Tenant or Analytics (Role-dependent) -->
+        <!-- 4. Analytics or Certificates based on role -->
         @if (lms.activeRole() === 'super_admin' || lms.activeRole() === 'tenant_admin') {
           <a 
             routerLink="/analytics"
-            routerLinkActive="bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold"
+            [routerLinkActive]="'bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 font-bold'"
             #analyticsRla="routerLinkActive"
-            class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative"
+            class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative focus:outline-none focus:ring-0 outline-none"
             [class]="analyticsRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/50 font-medium'">
             
             <div class="relative flex items-center justify-center">
@@ -88,9 +89,9 @@ import { ThemeService } from '../../services/theme.service';
         } @else {
           <a 
             routerLink="/certificates"
-            routerLinkActive="bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold"
+            [routerLinkActive]="'bg-tenant-500/15 dark:bg-tenant-500/25 text-tenant-700 dark:text-tenant-200 font-bold'"
             #certsRla="routerLinkActive"
-            class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative"
+            class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl transition-all active:scale-95 flex-1 relative focus:outline-none focus:ring-0 outline-none"
             [class]="certsRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/50 font-medium'">
             
             <div class="relative flex items-center justify-center">
@@ -106,7 +107,7 @@ import { ThemeService } from '../../services/theme.service';
         <!-- 5. More Menu Drawer Trigger -->
         <button 
           (click)="showMoreDrawer.set(true)"
-          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200/50 transition-colors active:scale-95 flex-1">
+          class="flex flex-col items-center justify-center py-1 px-2.5 min-w-[56px] min-h-[44px] rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200/50 transition-colors active:scale-95 flex-1 cursor-pointer focus:outline-none focus:ring-0 outline-none">
           <span class="material-symbols-outlined text-2xl">menu</span>
           <span class="text-[10px] tracking-tight mt-0.5 font-medium">More</span>
         </button>
@@ -133,177 +134,97 @@ import { ThemeService } from '../../services/theme.service';
               </div>
               <div class="min-w-0">
                 <h3 class="font-bold text-sm text-text-primary truncate">{{ lms.activeTenant().name }}</h3>
-                <span class="text-[11px] text-text-secondary truncate block">{{ lms.activeUser().name }} ({{ lms.activeRole() }})</span>
+                <span class="text-[11px] text-text-secondary truncate block">{{ lms.activeUser().name }} ({{ lms.activeRole().replace('_', ' ') }})</span>
               </div>
             </div>
             <button 
               (click)="showMoreDrawer.set(false)" 
-              class="w-9 h-9 rounded-xl bg-base-200 hover:bg-base-300 flex items-center justify-center text-text-secondary flex-shrink-0">
+              class="w-9 h-9 rounded-xl bg-base-200 hover:bg-base-300 flex items-center justify-center text-text-secondary flex-shrink-0 cursor-pointer focus:outline-none focus:ring-0 outline-none">
               <span class="material-symbols-outlined text-xl">close</span>
             </button>
           </div>
 
-          <!-- Section: Organization Management (Nested Sub-items) -->
-          @if (lms.activeRole() === 'super_admin' || lms.activeRole() === 'tenant_admin') {
+          <!-- Section: Grouped Items with Children (Organizations, LMS Instances, Courses & Catalog) -->
+          @for (group of groupedNavItems(); track group.label) {
             <div class="space-y-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Organizations</span>
-              <div class="grid grid-cols-2 gap-2.5">
-                <a 
-                  routerLink="/tenants" 
-                  (click)="showMoreDrawer.set(false)"
-                  routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                  [routerLinkActiveOptions]="{ exact: true }"
-                  #orgsRla="routerLinkActive"
-                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
-                  [class]="orgsRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">corporate_fare</span>
-                  <div class="text-left min-w-0 flex-1">
-                    <span class="font-bold text-xs text-text-primary block truncate">Org Directory</span>
-                    <span class="text-[10px] text-text-secondary block truncate">Browse workspaces</span>
-                  </div>
-                  @if (orgsRla.isActive) {
-                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                  }
-                </a>
-
-                <a 
-                  routerLink="/tenants/create" 
-                  (click)="showMoreDrawer.set(false)"
-                  routerLinkActive="bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40"
-                  #createOrgRla="routerLinkActive"
-                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
-                  [class]="createOrgRla.isActive ? 'bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40' : 'bg-tenant-500/10 hover:bg-tenant-500/20 border-tenant-500/30'">
-                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">domain_add</span>
-                  <div class="text-left min-w-0 flex-1">
-                    <span class="font-bold text-xs text-text-primary flex items-center gap-1">
-                      Create Org
-                      <span class="text-[8px] bg-tenant-500 text-white px-1 py-0.2 rounded font-bold">Wizard</span>
-                    </span>
-                    <span class="text-[10px] text-text-secondary block truncate">4-Step setup</span>
-                  </div>
-                  @if (createOrgRla.isActive) {
-                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                  }
-                </a>
+              <div class="flex items-center justify-between">
+                <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-xs">{{ group.icon }}</span>
+                  {{ group.label }}
+                </span>
+                @if (group.badge) {
+                  <span class="text-[9px] px-1.5 py-0.2 rounded-md font-semibold bg-tenant-100 dark:bg-tenant-950/80 text-tenant-700 dark:text-tenant-300">
+                    {{ group.badge }}
+                  </span>
+                }
               </div>
-            </div>
 
-            <!-- Section: LMS Instances Management -->
-            <div class="space-y-2">
-              <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">LMS Instances</span>
               <div class="grid grid-cols-2 gap-2.5">
-                <a 
-                  routerLink="/lms" 
-                  (click)="showMoreDrawer.set(false)"
-                  routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                  [routerLinkActiveOptions]="{ exact: true }"
-                  #lmsListRla="routerLinkActive"
-                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
-                  [class]="lmsListRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">layers</span>
-                  <div class="text-left min-w-0 flex-1">
-                    <span class="font-bold text-xs text-text-primary block truncate">LMS Instances</span>
-                    <span class="text-[10px] text-text-secondary block truncate">Manage portals</span>
-                  </div>
-                  @if (lmsListRla.isActive) {
-                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                  }
-                </a>
-
-                <a 
-                  routerLink="/lms/create" 
-                  (click)="showMoreDrawer.set(false)"
-                  routerLinkActive="bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40"
-                  #createLmsRla="routerLinkActive"
-                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
-                  [class]="createLmsRla.isActive ? 'bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40' : 'bg-tenant-500/10 hover:bg-tenant-500/20 border-tenant-500/30'">
-                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">add_circle</span>
-                  <div class="text-left min-w-0 flex-1">
-                    <span class="font-bold text-xs text-text-primary flex items-center gap-1">
-                      Create LMS
-                      <span class="text-[8px] bg-tenant-500 text-white px-1 py-0.2 rounded font-bold">Wizard</span>
-                    </span>
-                    <span class="text-[10px] text-text-secondary block truncate">Allocate resources</span>
-                  </div>
-                  @if (createLmsRla.isActive) {
-                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                  }
-                </a>
+                @for (child of group.children; track child.route) {
+                  <a 
+                    [routerLink]="child.route" 
+                    (click)="showMoreDrawer.set(false)"
+                    class="p-3 rounded-2xl transition-all flex items-center gap-2.5 cursor-pointer focus:outline-none focus:ring-0 outline-none border"
+                    [class]="isChildActive(child.route) 
+                      ? 'bg-tenant-50 dark:bg-tenant-500/20 border-transparent text-tenant-700 dark:text-tenant-200' 
+                      : 'bg-base-200/70 hover:bg-base-300/70 border-transparent'">
+                    
+                    <span class="material-symbols-outlined text-tenant-600 dark:text-tenant-400 text-xl flex-shrink-0">{{ child.icon }}</span>
+                    <div class="text-left min-w-0 flex-1">
+                      <div class="flex items-center gap-1">
+                        <span class="font-bold text-xs text-text-primary truncate block">{{ child.label }}</span>
+                        @if (child.badge) {
+                          <span class="text-[8px] px-1 py-0.2 rounded font-bold uppercase"
+                                [class]="child.badge === 'Wizard' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'bg-base-300 text-text-secondary'">
+                            {{ child.badge }}
+                          </span>
+                        }
+                      </div>
+                      @if (child.description) {
+                        <span class="text-[10px] text-text-secondary block truncate">{{ child.description }}</span>
+                      }
+                    </div>
+                    @if (isChildActive(child.route)) {
+                      <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
+                    }
+                  </a>
+                }
               </div>
             </div>
           }
 
-          <!-- Quick Navigation Links Grid -->
+          <!-- Section: Single Nav Items -->
           <div class="space-y-2">
             <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">Workspace Modules</span>
             <div class="grid grid-cols-2 gap-2.5">
-              <a 
-                routerLink="/users" 
-                (click)="showMoreDrawer.set(false)"
-                routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                #usersRla="routerLinkActive"
-                class="p-3 rounded-2xl border transition-all flex items-center gap-3"
-                [class]="usersRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                <span class="material-symbols-outlined text-indigo-500 text-xl flex-shrink-0">groups</span>
-                <div class="text-left min-w-0 flex-1">
-                  <span class="font-bold text-xs text-text-primary block truncate">Users & Teams</span>
-                  <span class="text-[10px] text-text-secondary block truncate">Directory & roles</span>
-                </div>
-                @if (usersRla.isActive) {
-                  <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                }
-              </a>
-
-              <a 
-                routerLink="/certificates" 
-                (click)="showMoreDrawer.set(false)"
-                routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                #certsMoreRla="routerLinkActive"
-                class="p-3 rounded-2xl border transition-all flex items-center gap-3"
-                [class]="certsMoreRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                <span class="material-symbols-outlined text-amber-500 text-xl flex-shrink-0">verified</span>
-                <div class="text-left min-w-0 flex-1">
-                  <span class="font-bold text-xs text-text-primary block truncate">Certificates</span>
-                  <span class="text-[10px] text-text-secondary block truncate">Credentials vault</span>
-                </div>
-                @if (certsMoreRla.isActive) {
-                  <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                }
-              </a>
-
-              <a 
-                routerLink="/analytics" 
-                (click)="showMoreDrawer.set(false)"
-                routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                #analyticsMoreRla="routerLinkActive"
-                class="p-3 rounded-2xl border transition-all flex items-center gap-3"
-                [class]="analyticsMoreRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                <span class="material-symbols-outlined text-emerald-500 text-xl flex-shrink-0">analytics</span>
-                <div class="text-left min-w-0 flex-1">
-                  <span class="font-bold text-xs text-text-primary block truncate">Analytics</span>
-                  <span class="text-[10px] text-text-secondary block truncate">KPIs & reporting</span>
-                </div>
-                @if (analyticsMoreRla.isActive) {
-                  <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                }
-              </a>
-
-              <a 
-                routerLink="/settings" 
-                (click)="showMoreDrawer.set(false)"
-                routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
-                #settingsRla="routerLinkActive"
-                class="p-3 rounded-2xl border transition-all flex items-center gap-3"
-                [class]="settingsRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
-                <span class="material-symbols-outlined text-purple-500 text-xl flex-shrink-0">palette</span>
-                <div class="text-left min-w-0 flex-1">
-                  <span class="font-bold text-xs text-text-primary block truncate">Branding</span>
-                  <span class="text-[10px] text-text-secondary block truncate">Theme customizer</span>
-                </div>
-                @if (settingsRla.isActive) {
-                  <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
-                }
-              </a>
+              @for (item of directNavItems(); track item.label) {
+                <a 
+                  [routerLink]="item.route" 
+                  (click)="showMoreDrawer.set(false)"
+                  class="p-3 rounded-2xl transition-all flex items-center gap-2.5 cursor-pointer focus:outline-none focus:ring-0 outline-none border"
+                  [class]="isItemActive(item) 
+                    ? 'bg-tenant-50 dark:bg-tenant-500/20 border-transparent text-tenant-700 dark:text-tenant-200' 
+                    : 'bg-base-200/70 hover:bg-base-300/70 border-transparent'">
+                  
+                  <span class="material-symbols-outlined text-tenant-600 dark:text-tenant-400 text-xl flex-shrink-0">{{ item.icon }}</span>
+                  <div class="text-left min-w-0 flex-1">
+                    <div class="flex items-center gap-1">
+                      <span class="font-bold text-xs text-text-primary block truncate">{{ item.label }}</span>
+                      @if (item.badge) {
+                        <span class="text-[8px] px-1 py-0.2 rounded font-bold uppercase bg-tenant-100 text-tenant-700 dark:bg-tenant-950/80 dark:text-tenant-200">
+                          {{ item.badge }}
+                        </span>
+                      }
+                    </div>
+                    @if (item.description) {
+                      <span class="text-[10px] text-text-secondary block truncate">{{ item.description }}</span>
+                    }
+                  </div>
+                  @if (isItemActive(item)) {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
+                  }
+                </a>
+              }
             </div>
           </div>
 
@@ -316,19 +237,19 @@ import { ThemeService } from '../../services/theme.service';
               <div class="flex items-center gap-1 bg-base-100 p-1 rounded-xl border border-base-300">
                 <button 
                   (click)="themeService.setThemeMode('light')"
-                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer focus:outline-none focus:ring-0 outline-none"
                   [class]="themeService.themeMode() === 'light' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary'">
                   Light
                 </button>
                 <button 
                   (click)="themeService.setThemeMode('dark')"
-                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer focus:outline-none focus:ring-0 outline-none"
                   [class]="themeService.themeMode() === 'dark' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary'">
                   Dark
                 </button>
                 <button 
                   (click)="themeService.setThemeMode('system')"
-                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                  class="px-2 py-1 rounded-lg text-xs font-medium transition-colors cursor-pointer focus:outline-none focus:ring-0 outline-none"
                   [class]="themeService.themeMode() === 'system' ? 'bg-tenant-500 text-white font-bold shadow-xs' : 'text-text-secondary'">
                   Auto
                 </button>
@@ -357,7 +278,7 @@ import { ThemeService } from '../../services/theme.service';
             <button 
               type="button" 
               (click)="showMoreDrawer.set(false)"
-              class="w-full py-3 rounded-2xl bg-base-200 hover:bg-base-300 text-text-primary text-xs font-bold transition-colors">
+              class="w-full py-3 rounded-2xl bg-base-200 hover:bg-base-300 text-text-primary text-xs font-bold transition-colors cursor-pointer focus:outline-none focus:ring-0 outline-none">
               Close Menu
             </button>
           </div>
@@ -371,6 +292,33 @@ import { ThemeService } from '../../services/theme.service';
 export class MobileNavComponent {
   lms = inject(LmsDataService);
   themeService = inject(ThemeService);
+  router = inject(Router);
   showMoreDrawer = signal<boolean>(false);
-}
 
+  navItems: NavItem[] = APP_NAV_ITEMS;
+
+  isAllowed(roles: string[]): boolean {
+    const activeRole = this.lms.activeRole();
+    return roles.includes(activeRole);
+  }
+
+  groupedNavItems() {
+    return this.navItems.filter(item => item.children && item.children.length > 0 && this.isAllowed(item.roles));
+  }
+
+  directNavItems() {
+    return this.navItems.filter(item => (!item.children || item.children.length === 0) && this.isAllowed(item.roles));
+  }
+
+  isItemActive(item: NavItem): boolean {
+    return isNavigationItemActive(this.router.url, item);
+  }
+
+  isChildActive(childRoute: string): boolean {
+    const currentUrl = this.router.url;
+    if (childRoute === '/tenants' || childRoute === '/courses' || childRoute === '/lms') {
+      return currentUrl === childRoute;
+    }
+    return currentUrl === childRoute || currentUrl.startsWith(childRoute);
+  }
+}

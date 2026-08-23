@@ -222,7 +222,7 @@
               (ngModelChange)="onLmsNameChange($event)"
               maxlength="99"
               placeholder="e.g. BRAC Microfinance Learning Portal"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
               [ngClass]="errors()['lmsName'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (errors()['lmsName']) {
               <p class="text-[11px] text-rose-500 mt-1">{{ errors()['lmsName'] }}</p>
@@ -240,7 +240,7 @@
               <select 
                 [ngModel]="programmeDepartment()" 
                 (ngModelChange)="selectDepartment($event)"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
                 [ngClass]="errors()['programmeDepartment'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'">
                 <option value="" disabled selected>Select Programme / Department</option>
                 @for (dept of departments(); track dept) {
@@ -255,7 +255,7 @@
                   [ngModel]="customDepartment()" 
                   (ngModelChange)="customDepartment.set($event)"
                   placeholder="Enter new department name..."
-                  class="flex-1 px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 font-medium" />
+                  class="flex-1 px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 font-medium" />
                 <button 
                   type="button" 
                   (click)="saveCustomDepartment()"
@@ -284,37 +284,35 @@
               
               <!-- Private Option -->
               <label 
-                class="p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3"
-                [class]="lmsType() === 'Private' ? 'bg-tenant-50/70 dark:bg-tenant-950/40 border-tenant-500 ring-2 ring-tenant-500/20' : 'bg-base-200 border-base-300 hover:bg-base-300/60'">
+                (click)="lmsType.set('Private')"
+                class="p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3.5 focus:outline-none focus:ring-0 outline-none"
+                [class]="lmsType() === 'Private' ? 'bg-tenant-50/70 dark:bg-tenant-950/40 border-2 border-tenant-500 shadow-xs' : 'bg-base-200 border-base-300 hover:bg-base-300/60'">
                 <input 
                   type="radio" 
-                  name="lmsTypeRadio" 
+                  name="lmsType" 
                   value="Private" 
-                  [ngModel]="lmsType()"
-                  (ngModelChange)="lmsType.set($event)" 
-                  class="mt-0.5 text-tenant-600 focus:ring-tenant-500" />
-                <div>
-                  <div class="text-xs font-bold text-text-primary flex items-center gap-1.5">
-                    <span class="material-symbols-outlined text-sm text-indigo-500">lock</span>
+                  [checked]="lmsType() === 'Private'"
+                  class="mt-0.5 text-tenant-600 focus:ring-0" />
+                <div class="space-y-1">
+                  <div class="flex items-center gap-1.5 font-bold text-xs text-text-primary">
+                    <span class="material-symbols-outlined text-sm text-tenant-600">lock</span>
                     Private LMS
                   </div>
-                  <p class="text-[11px] text-text-secondary leading-relaxed mt-0.5">
-                    Trainee portal requires authenticated login. Open public registration is restricted.
-                  </p>
+                  <p class="text-[11px] text-text-secondary leading-relaxed">Restricted, internal employee onboarding and compliance portal with strict access boundaries.</p>
                 </div>
               </label>
 
               <!-- Public Option -->
               <label 
-                class="p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3"
-                [class]="lmsType() === 'Public' ? 'bg-tenant-50/70 dark:bg-tenant-950/40 border-tenant-500 ring-2 ring-tenant-500/20' : 'bg-base-200 border-base-300 hover:bg-base-300/60'">
+                class="p-4 rounded-2xl border transition-all cursor-pointer flex items-start gap-3 focus:outline-none focus:ring-0 outline-none"
+                [class]="lmsType() === 'Public' ? 'bg-tenant-50/70 dark:bg-tenant-950/40 border-2 border-tenant-500 shadow-xs' : 'bg-base-200 border-base-300 hover:bg-base-300/60'">
                 <input 
                   type="radio" 
                   name="lmsTypeRadio" 
                   value="Public" 
                   [ngModel]="lmsType()"
                   (ngModelChange)="lmsType.set($event)" 
-                  class="mt-0.5 text-tenant-600 focus:ring-tenant-500" />
+                  class="mt-0.5 text-tenant-600 focus:ring-0" />
                 <div>
                   <div class="text-xs font-bold text-text-primary flex items-center gap-1.5">
                     <span class="material-symbols-outlined text-sm text-sky-500">public</span>
@@ -340,7 +338,7 @@
               [ngModel]="urlDomain()" 
               (ngModelChange)="onUrlChange($event)"
               placeholder="e.g. microfinance.learn.brac.net"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="errors()['urlDomain'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (errors()['urlDomain']) {
               <p class="text-[11px] text-rose-500 mt-1">{{ errors()['urlDomain'] }}</p>
@@ -358,7 +356,7 @@
             <select 
               [ngModel]="selectedTimezone()" 
               (ngModelChange)="selectedTimezone.set($event)"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium">
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium">
               @for (tz of timezones; track tz.display) {
                 <option [value]="tz.stored">{{ tz.display }}</option>
               }
@@ -374,7 +372,7 @@
               rows="2" 
               maxlength="255"
               placeholder="Brief summary of this LMS's scope, workforce audience, and training priorities..."
-              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all resize-none"></textarea>
+              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all resize-none"></textarea>
           </div>
 
           <!-- Goal / Purpose -->
@@ -386,7 +384,7 @@
               rows="2" 
               maxlength="255"
               placeholder="Key target learning outcomes, certificates reach, or compliance objectives..."
-              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all resize-none"></textarea>
+              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all resize-none"></textarea>
           </div>
 
           <!-- LMS Logo Upload -->
@@ -566,7 +564,7 @@
                 [ngModel]="databaseSizeGb()" 
                 (ngModelChange)="databaseSizeGb.set($event)"
                 placeholder="e.g. 50"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono font-bold"
                 [ngClass]="errors()['databaseSizeGb'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
               <span class="absolute right-3.5 top-2.5 text-xs font-bold text-text-secondary font-mono">GB</span>
             </div>
@@ -589,7 +587,7 @@
                 [ngModel]="fileStorageGb()" 
                 (ngModelChange)="fileStorageGb.set($event)"
                 placeholder="e.g. 100"
-                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono font-bold"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono font-bold"
                 [ngClass]="errors()['fileStorageGb'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
               <span class="absolute right-3.5 top-2.5 text-xs font-bold text-text-secondary font-mono">GB</span>
             </div>
@@ -624,7 +622,7 @@
                   max="100" 
                   [ngModel]="usageAlertThresholdPct()"
                   (ngModelChange)="usageAlertThresholdPct.set($event)"
-                  class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs font-mono font-bold text-center focus:outline-none focus:ring-2 focus:ring-tenant-500" />
+                  class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs font-mono font-bold text-center focus:outline-none focus:border-tenant-500" />
                 <span class="absolute right-3 top-2 text-xs font-bold text-text-secondary">%</span>
               </div>
             </div>
@@ -736,7 +734,7 @@
               [ngModel]="adminName()" 
               (ngModelChange)="adminName.set($event)"
               placeholder="e.g. Shakil Mahmud"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
               [ngClass]="errors()['adminName'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (errors()['adminName']) {
               <p class="text-[11px] text-rose-500 mt-1">{{ errors()['adminName'] }}</p>
@@ -755,7 +753,7 @@
               (ngModelChange)="adminContactNumber.set($event)"
               maxlength="11"
               placeholder="01712345678"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono font-medium"
               [ngClass]="errors()['adminContactNumber'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (errors()['adminContactNumber']) {
               <p class="text-[11px] text-rose-500 mt-1">{{ errors()['adminContactNumber'] }}</p>
@@ -772,7 +770,7 @@
               [ngModel]="adminEmail()" 
               (ngModelChange)="adminEmail.set($event)"
               placeholder="shakil.m@brac.net"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
               [ngClass]="errors()['adminEmail'] ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (errors()['adminEmail']) {
               <p class="text-[11px] text-rose-500 mt-1">{{ errors()['adminEmail'] }}</p>

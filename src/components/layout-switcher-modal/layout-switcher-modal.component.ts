@@ -39,9 +39,9 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setNavigationMode('sidebar')"
-                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
+                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28 focus:outline-none focus:ring-0 outline-none"
                 [class]="prefs().navigationMode === 'sidebar' 
-                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
+                  ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
@@ -59,9 +59,9 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setNavigationMode('top_menu')"
-                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
+                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28 focus:outline-none focus:ring-0 outline-none"
                 [class]="prefs().navigationMode === 'top_menu' 
-                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
+                  ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
@@ -79,9 +79,9 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setNavigationMode('compact_rail')"
-                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28"
+                class="p-3 rounded-xl border text-left transition-all relative flex flex-col justify-between h-28 focus:outline-none focus:ring-0 outline-none"
                 [class]="prefs().navigationMode === 'compact_rail' 
-                  ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' 
+                  ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' 
                   : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div>
                   <div class="flex items-center justify-between mb-1.5">
@@ -111,8 +111,8 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setThemeMode('system')"
-                class="p-2.5 rounded-xl border text-left transition-all"
-                [class]="themeService.themeMode() === 'system' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                class="p-2.5 rounded-xl border text-left transition-all focus:outline-none focus:ring-0 outline-none"
+                [class]="themeService.themeMode() === 'system' ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div class="flex items-center justify-between mb-1">
                   <span class="material-symbols-outlined text-base" [class]="themeService.themeMode() === 'system' ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary'">devices</span>
                   @if (themeService.themeMode() === 'system') {
@@ -126,8 +126,8 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setThemeMode('light')"
-                class="p-2.5 rounded-xl border text-left transition-all"
-                [class]="themeService.themeMode() === 'light' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                class="p-2.5 rounded-xl border text-left transition-all focus:outline-none focus:ring-0 outline-none"
+                [class]="themeService.themeMode() === 'light' ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div class="flex items-center justify-between mb-1">
                   <span class="material-symbols-outlined text-base text-amber-500">light_mode</span>
                   @if (themeService.themeMode() === 'light') {
@@ -141,8 +141,8 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
               <button
                 type="button"
                 (click)="setThemeMode('dark')"
-                class="p-2.5 rounded-xl border text-left transition-all"
-                [class]="themeService.themeMode() === 'dark' ? 'border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
+                class="p-2.5 rounded-xl border text-left transition-all focus:outline-none focus:ring-0 outline-none"
+                [class]="themeService.themeMode() === 'dark' ? 'border-2 border-tenant-500 bg-tenant-50/60 dark:bg-tenant-500/20 shadow-xs' : 'border-base-300 bg-base-200/50 hover:bg-base-200'">
                 <div class="flex items-center justify-between mb-1">
                   <span class="material-symbols-outlined text-base text-indigo-400">dark_mode</span>
                   @if (themeService.themeMode() === 'dark') {
@@ -212,7 +212,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                 type="checkbox" 
                 [checked]="prefs().stickyHeader"
                 (change)="toggleStickyHeader()"
-                class="rounded border-base-300 text-tenant-600 focus:ring-tenant-500 w-4 h-4" />
+                class="rounded border-base-300 text-tenant-600 focus:ring-0 w-4 h-4" />
             </label>
 
             <label class="flex items-center justify-between p-2.5 rounded-xl bg-base-200/60 border border-base-300 cursor-pointer">
@@ -223,7 +223,7 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
                 type="checkbox" 
                 [checked]="prefs().showBreadcrumbs"
                 (change)="toggleBreadcrumbs()"
-                class="rounded border-base-300 text-tenant-600 focus:ring-tenant-500 w-4 h-4" />
+                class="rounded border-base-300 text-tenant-600 focus:ring-0 w-4 h-4" />
             </label>
           </div>
         </div>

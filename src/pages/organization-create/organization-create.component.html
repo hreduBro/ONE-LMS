@@ -198,7 +198,7 @@
               formControlName="organizationName" 
               maxlength="99"
               placeholder="e.g. Apex Global Health Academy"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all"
               [ngClass]="isFieldInvalid(basicInfoForm, 'organizationName') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'organizationName')) {
               <p class="text-[11px] text-rose-500 mt-1">Organization Name is required (up to 99 characters).</p>
@@ -232,7 +232,7 @@
               formControlName="websiteUrl" 
               maxlength="99"
               placeholder="https://academy.apexhealth.org"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="isFieldInvalid(basicInfoForm, 'websiteUrl') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'websiteUrl')) {
               <p class="text-[11px] text-rose-500 mt-1">Must be a valid URL starting with http:// or https:// without spaces.</p>
@@ -247,7 +247,7 @@
             </label>
             <select 
               formControlName="timezone"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all">
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all">
               @for (tz of timezoneOptions; track tz.display) {
                 <option [value]="tz.stored">
                   {{ tz.display }}
@@ -263,7 +263,7 @@
               type="email" 
               formControlName="organizationEmail" 
               placeholder="contact@apexhealth.org"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all"
               [ngClass]="isFieldInvalid(basicInfoForm, 'organizationEmail') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'organizationEmail')) {
               <p class="text-[11px] text-rose-500 mt-1">Please provide a valid email ending with domain extension (.com, .org, .bd, etc).</p>
@@ -278,7 +278,7 @@
               formControlName="tagline" 
               maxlength="255"
               placeholder="e.g. Pioneering Clinical Excellence & Healthcare Compliance"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all" />
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all" />
           </div>
 
           <!-- Description/Summary (Max 255) -->
@@ -289,7 +289,7 @@
               rows="2" 
               maxlength="255"
               placeholder="Provide a brief summary of the organization purpose, workforce scope, and training priorities..."
-              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all resize-none"></textarea>
+              class="w-full px-3.5 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all resize-none"></textarea>
           </div>
 
           <!-- Organization Logo Upload (§3.1.2) -->
@@ -302,7 +302,7 @@
                 (dragover)="onLogoDragOver($event)"
                 (dragleave)="onLogoDragLeave($event)"
                 (drop)="onLogoDrop($event)"
-                [class]="isDraggingLogo() ? 'border-tenant-500 bg-tenant-50/30 ring-2 ring-tenant-500/30' : 'border-base-300 bg-base-200/60'"
+                [class]="isDraggingLogo() ? 'border-tenant-500 bg-tenant-50/30' : 'border-base-300 bg-base-200/60'"
                 class="sm:col-span-2 border-2 border-dashed rounded-2xl p-4 text-center transition-all flex flex-col items-center justify-center min-h-[120px] relative">
                 
                 <input 
@@ -384,7 +384,7 @@
               formControlName="line1" 
               maxlength="150"
               placeholder="e.g. Plot 24, Road 11, Block B, Commercial Zone"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all"
               [ngClass]="isFieldInvalid(basicInfoForm, 'line1') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'line1')) {
               <p class="text-[11px] text-rose-500 mt-1">Address Line 1 is required (up to 150 characters).</p>
@@ -399,7 +399,7 @@
               formControlName="line2" 
               maxlength="150"
               placeholder="e.g. Floor 8, Suite 802, Academy Tower"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all" />
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all" />
           </div>
 
           <!-- Division * (§3.2.1) -->
@@ -413,7 +413,7 @@
             <select 
               formControlName="division"
               (change)="onDivisionChange($any($event.target).value)"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
               [ngClass]="isFieldInvalid(basicInfoForm, 'division') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'">
               <option value="" disabled selected>Select Division</option>
               @for (div of divisionsList; track div) {
@@ -440,7 +440,7 @@
             </div>
             <select 
               formControlName="district"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-medium"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
               [ngClass]="isFieldInvalid(basicInfoForm, 'district') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'">
               <option value="" disabled selected>
                 {{ selectedDivision() ? 'Select District (' + selectedDivision() + ')' : 'First select a Division above' }}
@@ -465,7 +465,7 @@
               formControlName="postalCode" 
               maxlength="10"
               placeholder="e.g. 1212"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="isFieldInvalid(basicInfoForm, 'postalCode') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'postalCode')) {
               <p class="text-[11px] text-rose-500 mt-1">Postal Code is required and must contain numeric digits only.</p>
@@ -499,7 +499,7 @@
               formControlName="adminName" 
               maxlength="99"
               placeholder="e.g. Dr. Sarah Jenkins"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all"
               [ngClass]="isFieldInvalid(basicInfoForm, 'adminName') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'adminName')) {
               <p class="text-[11px] text-rose-500 mt-1">Admin Name is required.</p>
@@ -517,7 +517,7 @@
               formControlName="contactNumber" 
               maxlength="11"
               placeholder="01712345678"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="isFieldInvalid(basicInfoForm, 'contactNumber') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'contactNumber')) {
               <p class="text-[11px] text-rose-500 mt-1">Must be exactly 11 digits starting with 013, 014, 015, 016, 017, 018, or 019.</p>
@@ -533,7 +533,7 @@
               type="email" 
               formControlName="contactEmail" 
               placeholder="admin@apexhealth.org"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all"
               [ngClass]="isFieldInvalid(basicInfoForm, 'contactEmail') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(basicInfoForm, 'contactEmail')) {
               <p class="text-[11px] text-rose-500 mt-1">Contact Email is required with valid domain extension (.com, .org, .bd, etc).</p>
@@ -696,7 +696,7 @@
               min="1"
               [max]="lms.platformCapacity().dbAvailableGb"
               placeholder="e.g. 250"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="isFieldInvalid(resourcesForm, 'databaseSizeGb') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(resourcesForm, 'databaseSizeGb')) {
               <p class="text-[11px] text-rose-500 mt-1">Database Size is required and cannot exceed {{ lms.platformCapacity().dbAvailableGb }} GB.</p>
@@ -717,7 +717,7 @@
               min="1"
               [max]="lms.platformCapacity().fileAvailableGb"
               placeholder="e.g. 500"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-mono"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-mono"
               [ngClass]="isFieldInvalid(resourcesForm, 'fileStorageGb') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'" />
             @if (isFieldInvalid(resourcesForm, 'fileStorageGb')) {
               <p class="text-[11px] text-rose-500 mt-1">File Storage is required and cannot exceed {{ lms.platformCapacity().fileAvailableGb }} GB.</p>
@@ -755,7 +755,7 @@
             </label>
             <select 
               formControlName="dataSharingMode"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:ring-2 focus:ring-tenant-500 transition-all font-semibold">
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all font-semibold">
               <option value="Yes – Shared">Yes – Shared (Repository shared across all LMS under this org)</option>
               <option value="No – Segregated">No – Segregated (Data segregated across any LMS under this org)</option>
               <option value="Custom">Custom (Configure custom data sharing batches & groups)</option>
