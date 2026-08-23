@@ -322,6 +322,18 @@
               <span class="material-symbols-outlined text-sm">edit</span>
             </button>
             <button 
+              (click)="manageOrgLms(tenant.id, $event)"
+              class="p-2 rounded-xl text-tenant-600 hover:text-tenant-700 hover:bg-tenant-50 dark:hover:bg-tenant-950 transition-colors text-xs flex items-center gap-1"
+              title="Manage LMS Instances for this Organization">
+              <span class="material-symbols-outlined text-sm">layers</span>
+            </button>
+            <button 
+              (click)="createOrgLms(tenant.id, $event)"
+              class="p-2 rounded-xl text-tenant-600 hover:text-tenant-700 hover:bg-tenant-50 dark:hover:bg-tenant-950 transition-colors text-xs flex items-center gap-1"
+              title="+ Create LMS for this Organization">
+              <span class="material-symbols-outlined text-sm">add_circle</span>
+            </button>
+            <button 
               (click)="toggleStatus(tenant.id, $event)"
               class="p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-300 transition-colors text-xs"
               [title]="tenant.status === 'Active' ? 'Set Inactive/Suspended' : 'Activate Organization'">

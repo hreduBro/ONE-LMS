@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { OrganizationCreateComponent } from './pages/organization-create/organization-create.component';
+import { LmsListComponent } from './pages/lms-list/lms-list.component';
+import { LmsCreateComponent } from './pages/lms-create/lms-create.component';
 import { CoursesComponent } from './pages/courses/courses.component';
 import { CoursePlayerComponent } from './pages/course-player/course-player.component';
 import { UsersComponent } from './pages/users/users.component';
@@ -18,6 +20,8 @@ export const routes: Routes = [
   { path: 'tenants', component: TenantsComponent, title: 'Organizations | Multi-Tenant LMS' },
   { path: 'tenants/create', component: OrganizationCreateComponent, title: 'Create Organization | Multi-Tenant LMS' },
   { path: 'organization/create', component: OrganizationCreateComponent, title: 'Create Organization | Multi-Tenant LMS' },
+  { path: 'lms', component: LmsListComponent, title: 'LMS Instances | Multi-Tenant LMS' },
+  { path: 'lms/create', component: LmsCreateComponent, title: 'Create LMS Instance | Multi-Tenant LMS' },
   { path: 'courses', component: CoursesComponent, title: 'Courses | Multi-Tenant LMS' },
   { path: 'courses/:id/learn', component: CoursePlayerComponent, title: 'Classroom Player | Multi-Tenant LMS' },
   { path: 'users', component: UsersComponent, title: 'Personnel Directory | Multi-Tenant LMS' },

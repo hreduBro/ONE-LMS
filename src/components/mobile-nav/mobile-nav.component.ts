@@ -187,6 +187,50 @@ import { ThemeService } from '../../services/theme.service';
                 </a>
               </div>
             </div>
+
+            <!-- Section: LMS Instances Management -->
+            <div class="space-y-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-text-secondary">LMS Instances</span>
+              <div class="grid grid-cols-2 gap-2.5">
+                <a 
+                  routerLink="/lms" 
+                  (click)="showMoreDrawer.set(false)"
+                  routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30"
+                  [routerLinkActiveOptions]="{ exact: true }"
+                  #lmsListRla="routerLinkActive"
+                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
+                  [class]="lmsListRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 border-tenant-500/40 ring-1 ring-tenant-500/30' : 'bg-base-200/70 hover:bg-base-300/70 border-base-300/60'">
+                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">layers</span>
+                  <div class="text-left min-w-0 flex-1">
+                    <span class="font-bold text-xs text-text-primary block truncate">LMS Instances</span>
+                    <span class="text-[10px] text-text-secondary block truncate">Manage portals</span>
+                  </div>
+                  @if (lmsListRla.isActive) {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
+                  }
+                </a>
+
+                <a 
+                  routerLink="/lms/create" 
+                  (click)="showMoreDrawer.set(false)"
+                  routerLinkActive="bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40"
+                  #createLmsRla="routerLinkActive"
+                  class="p-3 rounded-2xl border transition-all flex items-center gap-2.5"
+                  [class]="createLmsRla.isActive ? 'bg-tenant-500/20 border-tenant-500 ring-1 ring-tenant-500/40' : 'bg-tenant-500/10 hover:bg-tenant-500/20 border-tenant-500/30'">
+                  <span class="material-symbols-outlined text-tenant-600 text-xl flex-shrink-0">add_circle</span>
+                  <div class="text-left min-w-0 flex-1">
+                    <span class="font-bold text-xs text-text-primary flex items-center gap-1">
+                      Create LMS
+                      <span class="text-[8px] bg-tenant-500 text-white px-1 py-0.2 rounded font-bold">Wizard</span>
+                    </span>
+                    <span class="text-[10px] text-text-secondary block truncate">Allocate resources</span>
+                  </div>
+                  @if (createLmsRla.isActive) {
+                    <span class="material-symbols-outlined text-xs text-tenant-600 dark:text-tenant-300 flex-shrink-0">check_circle</span>
+                  }
+                </a>
+              </div>
+            </div>
           }
 
           <!-- Quick Navigation Links Grid -->

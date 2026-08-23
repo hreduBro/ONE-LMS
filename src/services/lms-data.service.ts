@@ -21,6 +21,16 @@ import {
   OrganizationResourceAllocation,
   PlatformCapacity
 } from '../models/organization.model';
+import {
+  LmsInstance,
+  LmsDraft,
+  LmsStatus,
+  LmsType,
+  LmsBasicInfo,
+  LmsResourceAllocation,
+  LmsAdminInfo,
+  OrganizationCapacitySnapshot
+} from '../models/lms-instance.model';
 
 const INITIAL_TENANTS: Tenant[] = [
   {
@@ -1637,6 +1647,223 @@ const INITIAL_AUDIT_LOGS: AuditLog[] = [
   }
 ];
 
+const INITIAL_LMS_INSTANCES: LmsInstance[] = [
+  {
+    id: 'LMS-1972-01',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Active',
+    isDraft: false,
+    createdAt: '2024-03-01',
+    updatedAt: '2024-03-01',
+    basicInfo: {
+      lmsName: 'BRAC Microfinance Learning Portal',
+      programmeDepartment: 'Microfinance & Financial Inclusion',
+      summary: 'Specialized enterprise LMS managing field officer certifications, client protection ethics, and digitized credit recovery workflows across 64 districts.',
+      goal: 'Certify 15,000+ branch accountants, program organizers, and area managers on responsible lending compliance.',
+      lmsType: 'Private',
+      urlDomain: 'microfinance.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=200&q=80',
+        fileName: 'brac-mf-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 200,
+      fileStorageGb: 600,
+      usageAlertThresholdPct: 85
+    },
+    admins: [
+      {
+        name: 'Tanvir Hossain',
+        email: 'tanvir.admin@brac.net',
+        contactNumber: '01711002233',
+        role: 'LMS Admin',
+        invitationStatus: 'accepted'
+      }
+    ]
+  },
+  {
+    id: 'LMS-1972-02',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Active',
+    isDraft: false,
+    createdAt: '2024-06-15',
+    updatedAt: '2024-06-15',
+    basicInfo: {
+      lmsName: 'BRAC Ultra-Poor Graduation Academy',
+      programmeDepartment: 'Ultra-Poor Graduation',
+      summary: 'Global learning hub for researchers, coaches, and development practitioners mastering the 24-month multidimensional graduation methodology.',
+      goal: 'Scale evidence-based poverty graduation interventions globally through interactive masterclasses and field assessment rubrics.',
+      lmsType: 'Public',
+      urlDomain: 'upg-academy.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=200&q=80',
+        fileName: 'upg-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 150,
+      fileStorageGb: 400,
+      usageAlertThresholdPct: 80
+    },
+    admins: [
+      {
+        name: 'Dr. Imran Matin',
+        email: 'imran.matin@brac.net',
+        contactNumber: '01712003344',
+        role: 'LMS Admin',
+        invitationStatus: 'accepted'
+      }
+    ]
+  },
+  {
+    id: 'LMS-1972-03',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Under Processing',
+    isDraft: false,
+    provisioningProgress: 65,
+    createdAt: '2025-02-21',
+    updatedAt: '2025-02-21',
+    basicInfo: {
+      lmsName: 'Play Labs Early Childhood Portal',
+      programmeDepartment: 'Education & Youth Skills (BEP)',
+      summary: 'Community early-learning facilitator toolkit, child psychology observation modules, and interactive play pedagogy.',
+      goal: 'Provide 3,000+ Play Lab teachers with gamified lesson plans and parent engagement frameworks.',
+      lmsType: 'Public',
+      urlDomain: 'playlabs.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=200&q=80',
+        fileName: 'playlabs-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 100,
+      fileStorageGb: 250,
+      usageAlertThresholdPct: 80
+    },
+    admins: [
+      {
+        name: 'Nusrat Jahan',
+        email: 'nusrat.jahan@brac.net',
+        contactNumber: '01713004455',
+        role: 'LMS Admin',
+        invitationStatus: 'pending'
+      }
+    ]
+  },
+  {
+    id: 'LMS-5520-01',
+    organizationId: 'tenant-lumina',
+    organizationNumericId: '5520',
+    organizationName: 'Lumina Spatial Labs',
+    status: 'Active',
+    isDraft: false,
+    createdAt: '2024-04-10',
+    updatedAt: '2024-04-10',
+    basicInfo: {
+      lmsName: 'Spatial UI & Neural Dynamics Academy',
+      programmeDepartment: 'Spatial UI & Generative Vision',
+      summary: 'High-performance interactive simulation canvas for optical refraction, glassmorphic UI architecture, and autonomous agent orchestration.',
+      goal: 'Train engineers on spatial computing headsets and WebGPU shader pipelines.',
+      lmsType: 'Private',
+      urlDomain: 'spatial.academy.lumina-glass.io',
+      timezone: 'Asia/Dhaka'
+    },
+    resources: {
+      databaseSizeGb: 150,
+      fileStorageGb: 450,
+      usageAlertThresholdPct: 80
+    },
+    admins: [
+      {
+        name: 'Aria Vance',
+        email: 'aria.admin@lumina-glass.io',
+        contactNumber: '01799887766',
+        role: 'LMS Admin',
+        invitationStatus: 'accepted'
+      }
+    ]
+  },
+  {
+    id: 'LMS-4821-01',
+    organizationId: 'tenant-acme',
+    organizationNumericId: '4821',
+    organizationName: 'Acme Global Enterprise',
+    status: 'Active',
+    isDraft: false,
+    createdAt: '2024-02-05',
+    updatedAt: '2024-02-05',
+    basicInfo: {
+      lmsName: 'Enterprise Cloud & Zero Trust Security',
+      programmeDepartment: 'Engineering',
+      summary: 'Corporate compliance, Zero Trust SOC-2 credential governance, and Kubernetes cluster engineering portal.',
+      goal: 'Achieve 100% staff certification on phishing resistance and secure cloud deployment.',
+      lmsType: 'Private',
+      urlDomain: 'eng.academy.acme.com',
+      timezone: 'Asia/Dhaka'
+    },
+    resources: {
+      databaseSizeGb: 100,
+      fileStorageGb: 200,
+      usageAlertThresholdPct: 80
+    },
+    admins: [
+      {
+        name: 'Clara Oswald',
+        email: 'clara.admin@acme.com',
+        contactNumber: '01712345678',
+        role: 'LMS Admin',
+        invitationStatus: 'accepted'
+      }
+    ]
+  }
+];
+
+const INITIAL_LMS_DRAFTS: LmsDraft[] = [
+  {
+    id: 'LMS-DRAFT-1972-88',
+    organizationId: 'tenant-brac',
+    organizationName: 'BRAC',
+    status: 'In-Progress',
+    isDraft: true,
+    lastCompletedStep: 'basic-info',
+    createdAt: '2025-02-20',
+    updatedAt: '2025-02-20',
+    basicInfo: {
+      lmsName: 'Climate Resilience & Disaster Adaptation LMS',
+      programmeDepartment: 'Climate Change & Disaster Management',
+      summary: 'Emergency evacuation logistics, cyclone shelter training, and climate micro-insurance modules for coastal branches.',
+      goal: 'Prepare 5,000 community volunteers for rapid cyclone response.',
+      lmsType: 'Public',
+      urlDomain: 'climate.learn.brac.net',
+      timezone: 'Asia/Dhaka'
+    },
+    resources: {
+      databaseSizeGb: 80,
+      fileStorageGb: 200,
+      usageAlertThresholdPct: 75
+    },
+    admins: [
+      {
+        name: 'Shakil Anwar',
+        email: 'shakil.anwar@brac.net',
+        contactNumber: '01714005566',
+        role: 'LMS Admin',
+        invitationStatus: 'pending'
+      }
+    ]
+  }
+];
+
 export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
   {
     id: 'w-announcement-1',
@@ -2127,6 +2354,256 @@ export class LmsDataService {
     );
 
     return newTenant;
+  }
+
+  // =========================================================================
+  // LMS INSTANCE LIFECYCLE & CAPACITY MANAGEMENT (§4.1, §6.3, §6.4, §8)
+  // =========================================================================
+  lmsInstances = signal<LmsInstance[]>(INITIAL_LMS_INSTANCES);
+  lmsDrafts = signal<LmsDraft[]>(INITIAL_LMS_DRAFTS);
+
+  // LMS Instances scoped to the active organization (§0, §1)
+  activeOrgLmsInstances = computed<LmsInstance[]>(() => {
+    const currentOrgId = this.activeTenantId();
+    return this.lmsInstances().filter(l => l.organizationId === currentOrgId);
+  });
+
+  // LMS Drafts scoped to the active organization
+  activeOrgLmsDrafts = computed<LmsDraft[]>(() => {
+    const currentOrgId = this.activeTenantId();
+    return this.lmsDrafts().filter(d => d.organizationId === currentOrgId);
+  });
+
+  // Organization-level capacity snapshot (§4.1)
+  // Bounded by the active Organization's own allocated capacity, not platform-wide capacity!
+  activeOrgCapacitySnapshot = computed<OrganizationCapacitySnapshot>(() => {
+    const org = this.activeTenant();
+    const existingLms = this.activeOrgLmsInstances();
+
+    // YYYY = Total DB & File Storage allocated to this Organization
+    const dbTotalGb = org.resourceAllocation?.databaseSizeGb || (org.stats?.storageLimitGb ? Math.round(org.stats.storageLimitGb * 0.4) : 500);
+    const fileTotalGb = org.resourceAllocation?.fileStorageGb || org.stats?.storageLimitGb || 1000;
+
+    // XXX = Amount already allocated to existing LMS instances under this Organization
+    const dbUsedGb = existingLms.reduce((sum, lms) => sum + (lms.resources.databaseSizeGb || 0), 0);
+    const fileUsedGb = existingLms.reduce((sum, lms) => sum + (lms.resources.fileStorageGb || 0), 0);
+
+    // DB & File Available = (YYYY - XXX) GB
+    const dbAvailableGb = Math.max(0, dbTotalGb - dbUsedGb);
+    const fileAvailableGb = Math.max(0, fileTotalGb - fileUsedGb);
+
+    return {
+      dbTotalGb,
+      dbUsedGb,
+      dbAvailableGb,
+      fileTotalGb,
+      fileUsedGb,
+      fileAvailableGb
+    };
+  });
+
+  // Generate unique LMS ID within platform/organization (§6.3)
+  generateUniqueLmsId(orgNumericId?: string): string {
+    const orgPrefix = orgNumericId || this.activeTenant().numericId || 'ORG';
+    const existingIds = new Set<string>();
+    this.lmsInstances().forEach(l => existingIds.add(l.id));
+    this.lmsDrafts().forEach(d => existingIds.add(d.id));
+
+    let generated = '';
+    let attempts = 0;
+    do {
+      const suffix = Math.floor(10 + Math.random() * 90).toString();
+      generated = `LMS-${orgPrefix}-${suffix}`;
+      attempts++;
+    } while (existingIds.has(generated) && attempts < 1000);
+
+    return generated;
+  }
+
+  // Get dynamic configured departments/programmes for an organization (§3.1.1)
+  getOrganizationDepartments(orgId?: string): string[] {
+    const targetId = orgId || this.activeTenantId();
+    const org = this.tenants().find(t => t.id === targetId);
+    const defaultList = ['Microfinance', 'Procurement', 'Health', 'Education & Youth Skills', 'Ultra-Poor Graduation', 'Climate Change & Disaster Management', 'Engineering', 'Leadership', 'General Administration'];
+    
+    if (org && org.departments && org.departments.length > 0) {
+      // Merge unique
+      const merged = Array.from(new Set([...org.departments, ...defaultList]));
+      return merged;
+    }
+    return defaultList;
+  }
+
+  // Add custom department/programme to an organization
+  addOrganizationDepartment(department: string, orgId?: string) {
+    const targetId = orgId || this.activeTenantId();
+    this.tenants.update(list => list.map(t => {
+      if (t.id === targetId) {
+        const existing = t.departments || [];
+        if (!existing.includes(department)) {
+          return { ...t, departments: [...existing, department] };
+        }
+      }
+      return t;
+    }));
+  }
+
+  // Save or update LMS draft (§3.2, §4.3, §5.3, §6.2)
+  saveLmsDraft(draft: LmsDraft): LmsDraft {
+    const existingIndex = this.lmsDrafts().findIndex(d => d.id === draft.id);
+    const updatedDraft: LmsDraft = {
+      ...draft,
+      isDraft: true,
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+
+    if (existingIndex >= 0) {
+      this.lmsDrafts.update(list => {
+        const copy = [...list];
+        copy[existingIndex] = updatedDraft;
+        return copy;
+      });
+    } else {
+      this.lmsDrafts.update(list => [updatedDraft, ...list]);
+    }
+
+    this.logAction(
+      'LMS Draft Saved',
+      `Saved draft for LMS "${draft.basicInfo.lmsName || draft.id}" under ${draft.organizationName} at step ${draft.lastCompletedStep}`,
+      'info'
+    );
+    return updatedDraft;
+  }
+
+  // Get LMS draft by ID
+  getLmsDraft(id?: string): LmsDraft | undefined {
+    if (!id) {
+      return this.lmsDrafts()[0];
+    }
+    return this.lmsDrafts().find(d => d.id === id);
+  }
+
+  // Delete LMS draft
+  deleteLmsDraft(id: string) {
+    this.lmsDrafts.update(list => list.filter(d => d.id !== id));
+    this.logAction('LMS Draft Removed', `Deleted LMS draft ID ${id}`, 'info');
+  }
+
+  // Finalize Creation: Create LMS in "Under Processing" status (§6.3, §6.4)
+  createLmsFromWizard(draft: LmsDraft): LmsInstance {
+    const org = this.activeTenant();
+    const lmsId = draft.id.startsWith('LMS-DRAFT-') 
+      ? this.generateUniqueLmsId(org.numericId)
+      : (draft.id || this.generateUniqueLmsId(org.numericId));
+
+    const newLms: LmsInstance = {
+      id: lmsId,
+      organizationId: org.id,
+      organizationNumericId: org.numericId,
+      organizationName: org.name,
+      status: 'Under Processing', // CRITICAL: LMS is always created in "Under Processing" status (never Active on creation)
+      isDraft: false,
+      provisioningProgress: 25, // Initial provisioning state
+      createdAt: new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      basicInfo: {
+        lmsName: draft.basicInfo.lmsName || 'New LMS Instance',
+        programmeDepartment: draft.basicInfo.programmeDepartment || 'General Administration',
+        summary: draft.basicInfo.summary || '',
+        goal: draft.basicInfo.goal || '',
+        lmsType: draft.basicInfo.lmsType || 'Private',
+        urlDomain: draft.basicInfo.urlDomain || `${draft.basicInfo.lmsName?.toLowerCase().replace(/[^a-z0-9]/g, '-') || 'lms'}.${org.domain}`,
+        timezone: draft.basicInfo.timezone || org.timezone || 'Asia/Dhaka',
+        logo: draft.basicInfo.logo
+      },
+      resources: {
+        databaseSizeGb: draft.resources.databaseSizeGb || 50,
+        fileStorageGb: draft.resources.fileStorageGb || 100,
+        usageAlertThresholdPct: draft.resources.usageAlertThresholdPct || 80
+      },
+      admins: draft.admins && draft.admins.length > 0 ? draft.admins : [
+        {
+          name: org.adminInfo?.adminName || 'LMS Administrator',
+          email: org.adminInfo?.contactEmail || 'admin@' + org.domain,
+          contactNumber: org.adminInfo?.contactNumber || '01710000000',
+          role: 'LMS Admin',
+          invitationStatus: 'pending'
+        }
+      ]
+    };
+
+    // Prepend to LMS list
+    this.lmsInstances.update(list => [newLms, ...list]);
+
+    // Create LMS Admin user record (cross-story dependency hook §9.1)
+    if (newLms.admins && newLms.admins.length > 0) {
+      newLms.admins.forEach((admin, idx) => {
+        const adminUser: User = {
+          id: `usr-lms-admin-${newLms.id}-${idx + 1}`,
+          tenantId: org.id,
+          name: admin.name,
+          email: admin.email,
+          phone: admin.contactNumber,
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+          role: 'tenant_admin',
+          department: newLms.basicInfo.programmeDepartment,
+          title: `LMS Admin – ${newLms.basicInfo.lmsName}`,
+          enrolledCourses: [],
+          completedCourses: [],
+          earnedCertificates: [],
+          points: 500,
+          badges: ['LMS Admin'],
+          lastActive: 'Just now',
+          status: 'Invited',
+          complianceStatus: 'Compliant'
+        };
+        this.users.update(uList => [adminUser, ...uList]);
+      });
+    }
+
+    // Clean up draft if this was created from a draft
+    if (draft.id) {
+      this.deleteLmsDraft(draft.id);
+    }
+
+    this.logAction(
+      'LMS Instance Created',
+      `LMS "${newLms.basicInfo.lmsName}" (ID: ${newLms.id}) created under ${org.name} with status "Under Processing"`,
+      'success'
+    );
+
+    return newLms;
+  }
+
+  // Hook to simulate activation of an LMS instance (§6.4, §9.4)
+  activateLmsInstance(lmsId: string) {
+    this.lmsInstances.update(list => list.map(lms => {
+      if (lms.id === lmsId) {
+        return {
+          ...lms,
+          status: 'Active',
+          provisioningProgress: 100,
+          updatedAt: new Date().toISOString().split('T')[0]
+        };
+      }
+      return lms;
+    }));
+
+    this.logAction(
+      'LMS Instance Activated',
+      `LMS Instance ID ${lmsId} status transitioned to "Active"`,
+      'success'
+    );
+  }
+
+  // Trigger notice email to LMS admin
+  sendLmsAdminNoticeEmail(contactEmail: string, adminName: string, lmsName: string): boolean {
+    this.logAction(
+      'LMS Admin Setup Notice Email Dispatched',
+      `Sent "LMS Setup Under Processing" notification email to ${adminName} (${contactEmail}) for ${lmsName}`,
+      'info'
+    );
+    return true;
   }
 
   // Trigger notice email to organization admin

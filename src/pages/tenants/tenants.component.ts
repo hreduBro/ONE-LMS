@@ -105,6 +105,18 @@ export class TenantsComponent {
     this.lms.switchTenant(id);
   }
 
+  manageOrgLms(tenantId: string, event: Event) {
+    event.stopPropagation();
+    this.lms.switchTenant(tenantId);
+    this.router.navigate(['/lms']);
+  }
+
+  createOrgLms(tenantId: string, event: Event) {
+    event.stopPropagation();
+    this.lms.switchTenant(tenantId);
+    this.router.navigate(['/lms/create']);
+  }
+
   toggleStatus(id: string, event: Event) {
     event.stopPropagation();
     this.lms.toggleTenantStatus(id);

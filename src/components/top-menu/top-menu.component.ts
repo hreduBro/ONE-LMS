@@ -178,6 +178,16 @@ export class TopMenuComponent {
       ]
     },
     { 
+      label: 'LMS Instances', 
+      route: '/lms', 
+      icon: 'layers', 
+      roles: ['super_admin', 'tenant_admin'],
+      children: [
+        { label: 'LMS Instances Grid', route: '/lms', icon: 'grid_view', description: 'View organization LMS instances' },
+        { label: 'Create LMS', route: '/lms/create', icon: 'add_circle', badge: 'Wizard', description: '4-step LMS creation wizard' }
+      ]
+    },
+    { 
       label: 'Courses & Catalog', 
       route: '/courses', 
       icon: 'school', 
