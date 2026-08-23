@@ -8,6 +8,15 @@ import { DashboardWidgetRendererComponent } from './dashboard-widget-renderer.co
 import { WidgetConfigModalComponent } from './widget-config-modal.component';
 import { AddWidgetModalComponent } from './add-widget-modal.component';
 
+export interface LayoutPreset {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  badge?: string;
+  widgetIds: string[];
+}
+
 @Component({
   selector: 'app-dashboard',
   imports: [
@@ -30,6 +39,10 @@ export class DashboardComponent {
   showAddWidgetModal = signal<boolean>(false);
   previewRole = signal<UserRole | null>(null);
   publishSuccessMessage = signal<string | null>(null);
+  toastMessage = signal<string | null>(null);
+
+  // Layout density mode: 'comfortable' | 'compact' | 'bento'
+  canvasDensity = signal<'comfortable' | 'compact' | 'bento'>('comfortable');
 
   // Working copy of widgets when inside builder mode
   draftWidgets = signal<DashboardWidget[]>([]);
@@ -53,9 +66,14 @@ export class DashboardComponent {
   // Effective displayed widgets
   displayedWidgets = computed<DashboardWidget[]>(() => {
     if (this.isBuilderMode()) {
+      const pRole = this.previewRole();
+      if (pRole) {
+        return this.draftWidgets().filter(w => w.visibleForRoles.includes(pRole));
+      }
       return this.draftWidgets();
     }
-    return this.activeDashboard().widgets;
+    const currentRole = this.activeRole();
+    return this.activeDashboard().widgets.filter(w => w.visibleForRoles.includes(currentRole));
   });
 
   // Visible widgets count for the active/preview role
@@ -63,6 +81,44 @@ export class DashboardComponent {
     const role = this.previewRole() || this.activeRole();
     return this.displayedWidgets().filter(w => w.visibleForRoles.includes(role)).length;
   });
+
+  // Available Presets
+  presets = [
+    {
+      id: 'executive',
+      name: 'Executive Cockpit',
+      description: 'KPI Matrix, Department Compliance & Enrollment Velocity',
+      icon: 'insights',
+      badge: 'Popular',
+    },
+    {
+      id: 'learner',
+      name: 'Learner Progression',
+      description: 'Active Courseware, XP Leaderboard & Learning Heatmap',
+      icon: 'school',
+      badge: 'Learner',
+    },
+    {
+      id: 'compliance',
+      name: 'Compliance & Audit',
+      description: 'Risk Gauge, Escalation Queue & Live Tamper-Proof Audit Feed',
+      icon: 'verified_user',
+      badge: 'Security',
+    },
+    {
+      id: 'all_in_one',
+      name: 'Full Enterprise Matrix',
+      description: 'Comprehensive 10-widget modular operations canvas',
+      icon: 'dashboard',
+      badge: 'Complete',
+    }
+  ];
+
+  // Show Toast
+  showToast(msg: string) {
+    this.toastMessage.set(msg);
+    setTimeout(() => this.toastMessage.set(null), 3500);
+  }
 
   // Enter Builder Mode
   enterBuilderMode() {
@@ -78,6 +134,90 @@ export class DashboardComponent {
     this.draftWidgets.set([]);
   }
 
+  // Apply Layout Preset
+  applyPreset(presetId: string) {
+    const allWidgets = JSON.parse(JSON.stringify(this.lms.activeTenantDashboard().widgets)) as DashboardWidget[];
+    
+    if (presetId === 'executive') {
+      const order = ['kpi_grid', 'chart_department_matrix', 'chart_enrollment_trends', 'escalation_queue', 'live_audit_feed', 'quick_actions'];
+      const filtered: DashboardWidget[] = [];
+      order.forEach((type, idx) => {
+        const found = allWidgets.find(w => w.type === type);
+        if (found) {
+          filtered.push({
+            ...found,
+            id: `w-${type}-${idx}`,
+            colSpan: (type === 'kpi_grid' ? 4 : 2) as any,
+            rowSpan: (type === 'kpi_grid' ? 1 : 2) as any
+          });
+        }
+      });
+      this.draftWidgets.set(filtered);
+      this.showToast('Applied "Executive Cockpit" layout preset');
+    } else if (presetId === 'learner') {
+      const order = ['announcement_banner', 'learner_in_progress', 'gamification_leaderboard', 'chart_activity_heatmap', 'upcoming_webinars'];
+      const filtered: DashboardWidget[] = [];
+      order.forEach((type, idx) => {
+        const found = allWidgets.find(w => w.type === type);
+        if (found) {
+          filtered.push({
+            ...found,
+            id: `w-${type}-${idx}`,
+            colSpan: (type === 'announcement_banner' ? 4 : type === 'learner_in_progress' ? 3 : type === 'gamification_leaderboard' ? 1 : 2) as any,
+            rowSpan: (type === 'announcement_banner' ? 1 : type === 'learner_in_progress' ? 3 : 2) as any
+          });
+        }
+      });
+      this.draftWidgets.set(filtered);
+      this.showToast('Applied "Learner Progression" layout preset');
+    } else if (presetId === 'compliance') {
+      const order = ['announcement_banner', 'chart_compliance_gauge', 'chart_department_matrix', 'escalation_queue', 'live_audit_feed'];
+      const filtered: DashboardWidget[] = [];
+      order.forEach((type, idx) => {
+        const found = allWidgets.find(w => w.type === type);
+        if (found) {
+          filtered.push({
+            ...found,
+            id: `w-${type}-${idx}`,
+            colSpan: (type === 'announcement_banner' ? 4 : 2) as any,
+            rowSpan: (type === 'announcement_banner' ? 1 : 2) as any
+          });
+        }
+      });
+      this.draftWidgets.set(filtered);
+      this.showToast('Applied "Compliance & Audit" layout preset');
+    } else {
+      // Full enterprise layout
+      this.resetLayout(false);
+      this.showToast('Applied "Full Enterprise Matrix" layout preset');
+    }
+  }
+
+  // Smart Auto-Arrange: packs columns & rows cleanly
+  autoArrangeLayout() {
+    this.draftWidgets.update(widgets => {
+      const copy = [...widgets];
+      return copy.map(w => {
+        let span = w.colSpan;
+        let rSpan = w.rowSpan || 2;
+        if (w.type === 'announcement_banner' || w.type === 'kpi_grid') {
+          span = 4;
+          rSpan = 1;
+        } else if (w.type === 'learner_in_progress') {
+          span = 3;
+          rSpan = 2;
+        } else if (w.type === 'gamification_leaderboard') {
+          span = 1;
+          rSpan = 2;
+        } else if (span > 2) {
+          span = 2;
+        }
+        return { ...w, colSpan: span as any, rowSpan: rSpan as any };
+      });
+    });
+    this.showToast('✨ Canvas widgets smartly balanced & arranged');
+  }
+
   // Publish Dashboard for Active Tenant
   publishDashboard() {
     const tenant = this.activeTenant();
@@ -91,11 +231,12 @@ export class DashboardComponent {
   }
 
   // Reset to Factory Default LMS Layout
-  resetLayout() {
-    if (confirm('Reset this tenant dashboard to default factory LMS layout?')) {
+  resetLayout(prompt = true) {
+    if (!prompt || confirm('Reset this tenant dashboard to default factory LMS layout?')) {
       const tenant = this.activeTenant();
       this.lms.resetTenantDashboard(tenant.id);
       this.draftWidgets.set(JSON.parse(JSON.stringify(this.lms.activeTenantDashboard().widgets)));
+      if (prompt) this.showToast('Reset to factory default layout');
     }
   }
 
@@ -103,11 +244,14 @@ export class DashboardComponent {
   onAddWidget(widget: DashboardWidget) {
     this.draftWidgets.update(list => [...list, widget]);
     this.showAddWidgetModal.set(false);
+    this.showToast(`Added "${widget.title}" to canvas`);
   }
 
   // Remove widget
   onRemoveWidget(id: string) {
+    const item = this.draftWidgets().find(w => w.id === id);
     this.draftWidgets.update(list => list.filter(w => w.id !== id));
+    this.showToast(`Removed "${item?.title || 'Widget'}"`);
   }
 
   // Duplicate widget
@@ -123,9 +267,10 @@ export class DashboardComponent {
       copyList.splice(index + 1, 0, copy);
       return copyList;
     });
+    this.showToast(`Duplicated "${widget.title}"`);
   }
 
-  // Move Up
+  // Move Up / Left
   onMoveUp(id: string) {
     this.draftWidgets.update(list => {
       const index = list.findIndex(w => w.id === id);
@@ -138,7 +283,7 @@ export class DashboardComponent {
     });
   }
 
-  // Move Down
+  // Move Down / Right
   onMoveDown(id: string) {
     this.draftWidgets.update(list => {
       const index = list.findIndex(w => w.id === id);
@@ -158,20 +303,62 @@ export class DashboardComponent {
     );
   }
 
+  // Change RowSpan Height
+  onChangeRowSpan(event: { id: string; rowSpan: 1 | 2 | 3 | 4 }) {
+    this.draftWidgets.update(list => 
+      list.map(w => w.id === event.id ? { ...w, rowSpan: event.rowSpan } : w)
+    );
+  }
+
+  // Change Dimensions (Both ColSpan & RowSpan)
+  onChangeDimensions(event: { id: string; colSpan: 1 | 2 | 3 | 4; rowSpan: 1 | 2 | 3 | 4 }) {
+    this.draftWidgets.update(list => 
+      list.map(w => w.id === event.id ? { ...w, colSpan: event.colSpan, rowSpan: event.rowSpan } : w)
+    );
+  }
+
   // Save Widget Config Edit
   onSaveWidgetConfig(updated: DashboardWidget) {
     this.draftWidgets.update(list => 
       list.map(w => w.id === updated.id ? updated : w)
     );
     this.editingWidget.set(null);
+    this.showToast(`Updated "${updated.title}" settings`);
   }
 
-  // Drag and Drop Handlers
+  // Drag and Drop Handlers (Sleek Ghost Image without ugly square block snapshot)
   onDragStart(event: DragEvent, index: number) {
     this.draggedIndex.set(index);
     if (event.dataTransfer) {
       event.dataTransfer.effectAllowed = 'move';
       event.dataTransfer.setData('text/plain', index.toString());
+
+      // Create an elegant, compact drag ghost badge
+      const widget = this.draftWidgets()[index];
+      const ghost = document.createElement('div');
+      ghost.style.position = 'absolute';
+      ghost.style.top = '-9999px';
+      ghost.style.left = '-9999px';
+      ghost.style.padding = '8px 16px';
+      ghost.style.borderRadius = '14px';
+      ghost.style.background = '#1e1b4b';
+      ghost.style.color = '#ffffff';
+      ghost.style.fontSize = '12px';
+      ghost.style.fontWeight = '600';
+      ghost.style.display = 'flex';
+      ghost.style.alignItems = 'center';
+      ghost.style.gap = '8px';
+      ghost.style.boxShadow = '0 10px 25px -5px rgba(0, 0, 0, 0.4)';
+      ghost.style.border = '1px solid rgba(99, 102, 241, 0.5)';
+      ghost.style.zIndex = '9999';
+      ghost.innerHTML = `<span>✋ Moving: ${widget?.title || 'Widget'} (${(widget?.colSpan || 2) * 25}% &times; ${widget?.rowSpan || 2}x)</span>`;
+      document.body.appendChild(ghost);
+      event.dataTransfer.setDragImage(ghost, 20, 20);
+      setTimeout(() => {
+        if (document.body.contains(ghost)) {
+          document.body.removeChild(ghost);
+        }
+      }, 0);
     }
   }
 
@@ -200,6 +387,7 @@ export class DashboardComponent {
         copy.splice(targetIndex, 0, movedItem);
         return copy;
       });
+      this.showToast('Reordered widget position');
     }
 
     this.draggedIndex.set(null);
@@ -211,18 +399,35 @@ export class DashboardComponent {
     this.dragOverIndex.set(null);
   }
 
-  // Utility to determine colSpan class for 12-column or 4-column CSS grid
+  // Utility to determine colSpan class for 12-column CSS grid with optimal symmetry
   getColSpanClass(span: 1 | 2 | 3 | 4): string {
     switch (span) {
       case 1:
-        return 'col-span-1 sm:col-span-2 lg:col-span-3'; // 1/4 (25%) of 12 cols
+        return 'col-span-1 sm:col-span-6 lg:col-span-3'; // 1/4 (25%) - 3 cols
       case 2:
-        return 'col-span-1 sm:col-span-2 lg:col-span-6'; // 1/2 (50%) of 12 cols
+        return 'col-span-1 sm:col-span-6 lg:col-span-6'; // 1/2 (50%) - 6 cols
       case 3:
-        return 'col-span-1 sm:col-span-2 lg:col-span-9'; // 3/4 (75%) of 12 cols
+        return 'col-span-1 sm:col-span-12 lg:col-span-9'; // 3/4 (75%) - 9 cols
       case 4:
       default:
-        return 'col-span-1 sm:col-span-2 lg:col-span-12'; // 100% of 12 cols
+        return 'col-span-1 sm:col-span-12 lg:col-span-12'; // 100% - 12 cols
+    }
+  }
+
+  // Utility to determine rowSpan & height class for symmetric alignment
+  getRowSpanClass(rowSpan?: 1 | 2 | 3 | 4): string {
+    const span = rowSpan || 2;
+    switch (span) {
+      case 1:
+        return 'min-h-[160px] lg:row-span-1';
+      case 3:
+        return 'min-h-[500px] lg:row-span-3';
+      case 4:
+        return 'min-h-[640px] lg:row-span-4';
+      case 2:
+      default:
+        return 'min-h-[360px] lg:row-span-2';
     }
   }
 }
+

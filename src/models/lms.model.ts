@@ -2,7 +2,7 @@ export type UserRole = 'super_admin' | 'tenant_admin' | 'instructor' | 'learner'
 export type TenantPlan = 'Starter' | 'Pro' | 'Enterprise';
 export type TenantStatus = 'Active' | 'Trial' | 'Suspended' | 'In-Progress';
 export type LessonType = 'video' | 'article' | 'quiz' | 'interactive_lab';
-export type CourseCategory = 'Engineering' | 'Compliance & Security' | 'Leadership' | 'Healthcare' | 'Finance' | 'AI & Data';
+export type CourseCategory = 'Engineering' | 'Compliance & Security' | 'Leadership' | 'Healthcare' | 'Finance' | 'AI & Data' | 'Microfinance & Compliance' | 'Ultra-Poor Graduation' | 'Education & Youth Skills';
 export type CourseLevel = 'Beginner' | 'Intermediate' | 'Advanced';
 
 export interface TenantBranding {
@@ -202,7 +202,7 @@ export interface LiveWebinar {
   attendeeCount: number;
   attendeesCount?: number;
   maxAttendees?: number;
-  platform: 'Zoom' | 'Teams' | 'Google Meet' | 'Built-in WebRTC' | 'MS Teams' | 'WebRTC';
+  platform: 'Zoom' | 'Teams' | 'Google Meet' | 'Built-in WebRTC' | 'MS Teams' | 'WebRTC' | 'BRAC Digital Stage (WebRTC)';
   status?: 'Upcoming' | 'Live' | 'Ended';
   joinUrl: string;
   courseId?: string;
@@ -269,6 +269,8 @@ export interface DashboardWidget {
   title: string;
   subtitle?: string;
   colSpan: 1 | 2 | 3 | 4; // Grid columns out of 4 (1 = 25%, 2 = 50%, 3 = 75%, 4 = 100%)
+  rowSpan?: 1 | 2 | 3 | 4; // Grid rows (1 = Compact ~220px, 2 = Standard ~380px, 3 = Tall ~540px, 4 = Deep ~700px)
+  heightPx?: number; // Optional custom height override in pixels
   visibleForRoles: UserRole[];
   config?: {
     highlightMetric?: 'learners' | 'compliance' | 'completion' | 'xp' | 'certificates' | 'seats';

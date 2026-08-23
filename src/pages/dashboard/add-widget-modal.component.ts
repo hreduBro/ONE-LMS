@@ -66,9 +66,14 @@ import { DashboardWidget, DashboardWidgetType } from '../../models/lms.model';
                       <span class="text-[10px] text-text-secondary font-medium">{{ item.category }}</span>
                     </div>
                   </div>
-                  <span class="text-[10px] px-2 py-0.5 rounded-md bg-base-100 text-text-secondary font-mono border border-base-300">
-                    {{ item.defaultColSpan * 25 }}% Width
-                  </span>
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-[10px] px-2 py-0.5 rounded-md bg-base-100 text-text-secondary font-mono border border-base-300">
+                      W: {{ item.defaultColSpan * 25 }}%
+                    </span>
+                    <span class="text-[10px] px-2 py-0.5 rounded-md bg-base-100 text-text-secondary font-mono border border-base-300">
+                      H: {{ item.defaultRowSpan }}x
+                    </span>
+                  </div>
                 </div>
 
                 <p class="text-xs text-text-secondary leading-relaxed mt-1">
@@ -134,6 +139,7 @@ export class AddWidgetModalComponent {
       type: template.type,
       title: template.name,
       colSpan: template.defaultColSpan,
+      rowSpan: template.defaultRowSpan || 2,
       visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner'],
       config: {
         bannerText: 'Tenant announcement directive for all active personnel.',

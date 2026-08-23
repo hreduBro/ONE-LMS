@@ -17,6 +17,37 @@
           document.documentElement.classList.remove('dark');
         }
       } catch(e) {}
+
+      // Gracefully prevent unhandled promise rejections and errors from third-party browser extensions (e.g. MetaMask, Web3 wallets)
+      window.addEventListener('unhandledrejection', function(event) {
+        if (event && event.reason) {
+          var reasonStr = '';
+          try {
+            reasonStr = (event.reason.message || event.reason.stack || event.reason.toString() || '').toLowerCase();
+          } catch(e) {}
+          if (reasonStr.indexOf('metamask') !== -1 || reasonStr.indexOf('ethereum') !== -1 || reasonStr.indexOf('wallet') !== -1) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.debug('[OmniLearn Extension Bridge] Handled third-party wallet event gracefully.');
+          }
+        }
+      });
+
+      window.addEventListener('error', function(event) {
+        if (event) {
+          var msg = '';
+          var filename = (event.filename || '').toLowerCase();
+          try {
+            msg = (event.message || (event.error && event.error.message) || '').toLowerCase();
+          } catch(e) {}
+          if (msg.indexOf('metamask') !== -1 || msg.indexOf('ethereum') !== -1 || msg.indexOf('wallet') !== -1 || filename.indexOf('chrome-extension') !== -1 || filename.indexOf('moz-extension') !== -1) {
+            event.preventDefault();
+            event.stopPropagation();
+            console.debug('[OmniLearn Extension Bridge] Handled third-party extension error gracefully.');
+            return true;
+          }
+        }
+      });
     })();
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -61,19 +92,19 @@
   </script>
   <style>
     :root {
-      --tenant-primary: #4f46e5;
-      --tenant-primary-hover: #4338ca;
-      --tenant-primary-dark: #3730a3;
-      --tenant-accent: #06b6d4;
-      --tenant-50: #eef2ff;
-      --tenant-100: #e0e7ff;
-      --tenant-200: #c7d2fe;
-      --tenant-300: #a5b4fc;
-      --tenant-400: #818cf8;
+      --tenant-primary: #EC008C;
+      --tenant-primary-hover: #D8007E;
+      --tenant-primary-dark: #B8006C;
+      --tenant-accent: #C40072;
+      --tenant-50: #FDF2F8;
+      --tenant-100: #FCE7F3;
+      --tenant-200: #FBCFE8;
+      --tenant-300: #F9A8D4;
+      --tenant-400: #F472B6;
       
-      /* Default Light Theme */
-      --brand-primary: #4f46e5;
-      --brand-secondary: #06b6d4;
+      /* Default Light Theme - BRAC Pantone Magenta */
+      --brand-primary: #EC008C;
+      --brand-secondary: #C40072;
       --base-100: #ffffff;
       --base-200: #f8fafc;
       --base-300: #f1f5f9;
@@ -87,15 +118,94 @@
       --base-300: #334155;
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
-      --tenant-50: rgba(99, 102, 241, 0.12);
-      --tenant-100: rgba(99, 102, 241, 0.22);
-      --tenant-200: #c7d2fe;
-      --tenant-300: #a5b4fc;
-      --tenant-400: #818cf8;
+      --tenant-50: rgba(236, 0, 140, 0.12);
+      --tenant-100: rgba(236, 0, 140, 0.22);
+      --tenant-200: #fbcfe8;
+      --tenant-300: #f9a8d4;
+      --tenant-400: #f472b6;
     }
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* ========================================================================= */
+    /* UNIVERSAL BRAC BUTTON GRADIENT SYSTEM                                    */
+    /* ========================================================================= */
+    .btn-gradient,
+    .btn-primary,
+    .btn-brac-gradient,
+    button:not([disabled]):is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]),
+    a:is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]) {
+      background: linear-gradient(135deg, #EC008C 0%, #C40072 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px 0 rgba(236, 0, 140, 0.32);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-gradient:hover,
+    .btn-primary:hover,
+    .btn-brac-gradient:hover,
+    button:not([disabled]):is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]):hover,
+    a:is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]):hover {
+      background: linear-gradient(135deg, #FF1A9B 0%, #D8007E 100%) !important;
+      box-shadow: 0 6px 20px 0 rgba(236, 0, 140, 0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-gradient:active,
+    .btn-primary:active,
+    .btn-brac-gradient:active,
+    button:not([disabled]):is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]):active,
+    a:is(.btn-gradient, .btn-primary, .btn-brac-gradient, [class*="bg-tenant-500"], [class*="bg-tenant-600"], [class*="bg-indigo-600"], [class*="bg-primary"]):active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px 0 rgba(236, 0, 140, 0.25);
+    }
+
+    /* Amber / Certificate gradient buttons */
+    button:not([disabled]):is([class*="bg-amber-500"], [class*="bg-amber-600"]),
+    a:is([class*="bg-amber-500"], [class*="bg-amber-600"]) {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px 0 rgba(245, 158, 11, 0.35);
+      transition: all 0.2s ease-in-out;
+    }
+    button:not([disabled]):is([class*="bg-amber-500"], [class*="bg-amber-600"]):hover,
+    a:is([class*="bg-amber-500"], [class*="bg-amber-600"]):hover {
+      background: linear-gradient(135deg, #FBBF24 0%, #EA580C 100%) !important;
+      transform: translateY(-1px);
+    }
+
+    /* Emerald / Success gradient buttons */
+    button:not([disabled]):is([class*="bg-emerald-500"], [class*="bg-emerald-600"]),
+    a:is([class*="bg-emerald-500"], [class*="bg-emerald-600"]) {
+      background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
+      transition: all 0.2s ease-in-out;
+    }
+    button:not([disabled]):is([class*="bg-emerald-500"], [class*="bg-emerald-600"]):hover,
+    a:is([class*="bg-emerald-500"], [class*="bg-emerald-600"]):hover {
+      background: linear-gradient(135deg, #34D399 0%, #047857 100%) !important;
+      transform: translateY(-1px);
+    }
+
+    /* Secondary gradient accent buttons */
+    .btn-gradient-secondary {
+      background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+      color: #B8006C;
+      border: 1px solid #FBCFE8;
+      transition: all 0.2s ease-in-out;
+    }
+    .dark .btn-gradient-secondary {
+      background: linear-gradient(135deg, rgba(236, 0, 140, 0.15) 0%, rgba(196, 0, 114, 0.25) 100%);
+      color: #F9A8D4;
+      border-color: rgba(236, 0, 140, 0.3);
+    }
+    .btn-gradient-secondary:hover {
+      background: linear-gradient(135deg, #FCE7F3 0%, #FBCFE8 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px 0 rgba(236, 0, 140, 0.15);
     }
 
     .material-symbols-outlined {

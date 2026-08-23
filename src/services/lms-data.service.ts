@@ -24,6 +24,67 @@ import {
 
 const INITIAL_TENANTS: Tenant[] = [
   {
+    id: 'tenant-brac',
+    numericId: '1972',
+    name: 'BRAC',
+    slug: 'brac',
+    domain: 'learn.brac.net',
+    websiteUrl: 'https://www.brac.net',
+    plan: 'Enterprise',
+    status: 'Active',
+    timezone: 'Asia/Dhaka',
+    description: 'World-leading development organisation empowering millions across social enterprises, microfinance, health, climate resilience, and education.',
+    address: {
+      line1: 'BRAC Centre, 75 Mohakhali',
+      line2: 'Level 18, Learning & People Division',
+      division: 'Dhaka',
+      district: 'Dhaka',
+      postalCode: '1212'
+    },
+    adminInfo: {
+      adminName: 'Farhana Ahmed',
+      contactNumber: '01713000000',
+      contactEmail: 'learning.admin@brac.net'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 800,
+      fileStorageGb: 2000,
+      usageAlertThresholdPct: 85,
+      dataSharingMode: 'Yes – Shared'
+    },
+    adminEmail: 'learning.admin@brac.net',
+    createdAt: '2023-01-01',
+    renewalDate: '2028-01-01',
+    branding: {
+      primaryColor: '#EC008C', // 100% Pantone Magenta (BRAC Standard)
+      accentColor: '#C40072',  // Deep Magenta Complement
+      tagline: 'Creating Opportunities For People To Realise Potential',
+      bannerUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
+      logoUrl: 'https://freelogopng.com/images/all_img/1679820004brac-icon.png',
+      customCssEnabled: true,
+      ssoProvider: 'Google Workspace'
+    },
+    departments: ['Microfinance & Financial Inclusion', 'Education & Youth Skills (BEP)', 'Health, Nutrition & Population', 'Climate Change & Disaster Management', 'Ultra-Poor Graduation', 'Gender, Justice & Diversity', 'Human Resources & Leadership'],
+    stats: {
+      seatLimit: 20000,
+      seatsUsed: 14850,
+      totalCourses: 56,
+      totalLearners: 14850,
+      completionRate: 94.8,
+      complianceRate: 98.7,
+      storageUsedGb: 680.5,
+      storageLimitGb: 2000
+    },
+    features: {
+      scormSupport: true,
+      aiTutor: true,
+      liveWebinars: true,
+      customCertificates: true,
+      whiteLabel: true,
+      customDomain: true
+    }
+  },
+  {
     id: 'tenant-acme',
     numericId: '4821',
     name: 'Acme Global Enterprise',
@@ -334,6 +395,190 @@ const INITIAL_TENANTS: Tenant[] = [
 ];
 
 const INITIAL_COURSES: Course[] = [
+  {
+    id: 'course-brac-101',
+    tenantId: 'tenant-brac',
+    title: 'BRAC Microfinance Operations & Client Protection Principles (2026)',
+    subtitle: 'Mandatory operational compliance, responsible lending, grievance redressal & field ethics',
+    description: 'Master BRAC’s gold-standard microfinance methodologies: group lending discipline, transparent pricing, client financial capability development, safeguarding against over-indebtedness, and digitized collection workflows.',
+    coverImage: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&w=800&q=80',
+    category: 'Microfinance & Compliance',
+    level: 'Intermediate',
+    durationMinutes: 120,
+    isMandatory: true,
+    complianceDeadlineDays: 14,
+    instructorName: 'Tanvir Hossain',
+    instructorTitle: 'Head of Microfinance Capacity Building, BRAC',
+    instructorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    rating: 4.96,
+    reviewCount: 1480,
+    enrolledCount: 12450,
+    certificateEnabled: true,
+    status: 'Published',
+    tags: ['BRAC Microfinance', 'Client Protection', 'Compliance', 'Smart Campaign'],
+    createdAt: '2025-01-05',
+    targetDepartments: ['Microfinance & Financial Inclusion', 'Education & Youth Skills (BEP)', 'Health, Nutrition & Population', 'Climate Change & Disaster Management', 'Ultra-Poor Graduation', 'Gender, Justice & Diversity', 'Human Resources & Leadership'],
+    modules: [
+      {
+        id: 'brac-mod-1',
+        title: 'Core Principles of Responsible Financial Inclusion',
+        durationMinutes: 45,
+        lessons: [
+          {
+            id: 'brac-les-1-1',
+            title: '1.1 The BRAC Village Organization (VO) Ecosystem',
+            type: 'video',
+            durationMinutes: 18,
+            summary: 'Understanding the grassroots structure of Village Organizations, social cohesion, and member-centric micro-enterprise financing.',
+            videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4',
+            resources: [
+              { title: 'BRAC_Microfinance_Field_Manual_2026.pdf', size: '3.8 MB', url: '#', type: 'PDF' },
+              { title: 'Client_Protection_Checklist.pdf', size: '1.2 MB', url: '#', type: 'PDF' }
+            ]
+          },
+          {
+            id: 'brac-les-1-2',
+            title: '1.2 Preventing Over-Indebtedness & Ethical Recovery Protocols',
+            type: 'article',
+            durationMinutes: 27,
+            summary: 'Strict code of conduct prohibiting coercive collection, safeguarding client dignity, and leveraging credit bureau assessments.',
+            contentHtml: `
+              <h3 class="text-xl font-bold mb-3 text-tenant-700 dark:text-tenant-200">The 7 Universal Client Protection Standards</h3>
+              <p class="mb-4 text-text-secondary leading-relaxed">BRAC is globally endorsed for client protection. Every field officer and branch manager is bound by strict ethical covenants preventing aggressive recovery, ensuring full pricing transparency, and maintaining confidential client records.</p>
+              
+              <div class="p-4 rounded-xl bg-tenant-50 dark:bg-tenant-200/10 border border-tenant-200 dark:border-tenant-200/20 mb-4">
+                <h4 class="font-semibold text-tenant-600 dark:text-tenant-200 mb-1 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-sm">verified_user</span> Standard of Conduct
+                </h4>
+                <p class="text-sm text-text-secondary">Field workers must never accept gifts, must record all collections digitally at the Village Organization meeting in the client's presence, and provide immediate SMS receipts.</p>
+              </div>
+            `,
+            resources: [
+              { title: 'Ethical_Field_Practices.pdf', size: '890 KB', url: '#', type: 'PDF' }
+            ]
+          }
+        ]
+      },
+      {
+        id: 'brac-mod-2',
+        title: 'Compliance Assessment & Certification Quiz',
+        durationMinutes: 75,
+        lessons: [
+          {
+            id: 'brac-les-2-1',
+            title: '2.1 Microfinance Client Protection & Ethics Exam',
+            type: 'quiz',
+            durationMinutes: 25,
+            summary: 'Mandatory 4-question assessment. Score at least 80% to earn the certified BRAC Client Protection credential.',
+            passingScorePercent: 80,
+            quizQuestions: [
+              {
+                id: 'bq1',
+                question: 'What is the primary objective of BRAC’s Village Organization (VO) model?',
+                options: [
+                  'Maximizing short-term institutional revenue',
+                  'Fostering peer solidarity, financial capability, and social empowerment',
+                  'Replacing commercial bank lending entirely',
+                  'Eliminating all local government health interventions'
+                ],
+                correctAnswerIndex: 1,
+                explanation: 'VO meetings serve as community empowerment hubs uniting financial services with social awareness and collective problem-solving.',
+                points: 25
+              },
+              {
+                id: 'bq2',
+                question: 'Under BRAC Client Protection standards, what action is strictly prohibited during collection?',
+                options: [
+                  'Issuing an electronic receipt via mobile POS',
+                  'Any form of coercive, abusive, or intimidating recovery practices',
+                  'Providing financial literacy counseling',
+                  'Verifying national identity numbers'
+                ],
+                correctAnswerIndex: 1,
+                explanation: 'Coercive collection or harassment violates BRAC fundamental ethos and leads to immediate termination and disciplinary action.',
+                points: 25
+              },
+              {
+                id: 'bq3',
+                question: 'How does BRAC safeguard microfinance clients from debt distress?',
+                options: [
+                  'By lending without repayment schedules',
+                  'Conducting thorough repayment capacity analysis and household cash-flow auditing',
+                  'Charging hidden processing surcharges',
+                  'Requiring physical gold collateral'
+                ],
+                correctAnswerIndex: 1,
+                explanation: 'Strict debt-to-income and cash-flow evaluations prevent over-indebtedness across all household members.',
+                points: 25
+              },
+              {
+                id: 'bq4',
+                question: 'What is the standard response if a client reports an operational grievance at the branch?',
+                options: [
+                  'Dismiss the inquiry if loan repayment is on time',
+                  'Log into the official Grievance Redressal Mechanism (GRM) ticket system within 24 hours',
+                  'Instruct the client to contact external media',
+                  'Confiscate the passbook indefinitely'
+                ],
+                correctAnswerIndex: 1,
+                explanation: 'All feedback is tracked in BRAC’s central GRM system with a 72-hour mandatory resolution window.',
+                points: 25
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'course-brac-102',
+    tenantId: 'tenant-brac',
+    title: 'Ultra-Poor Graduation (UPG) & Sustainable Livelihoods Masterclass',
+    subtitle: 'Proven holistic intervention to graduate extreme-poor households into self-reliance',
+    description: 'Study the globally acclaimed BRAC Graduation Approach—combining productive asset transfers, consumption support, financial inclusion, intensive coaching, and healthcare access.',
+    coverImage: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=800&q=80',
+    category: 'Ultra-Poor Graduation',
+    level: 'Advanced',
+    durationMinutes: 150,
+    isMandatory: false,
+    complianceDeadlineDays: 30,
+    instructorName: 'Dr. Imran Matin',
+    instructorTitle: 'Executive Director, BRAC Institute of Governance and Development (BIGD)',
+    instructorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    rating: 4.98,
+    reviewCount: 890,
+    enrolledCount: 6300,
+    certificateEnabled: true,
+    status: 'Published',
+    tags: ['UPG', 'Graduation Approach', 'Poverty Alleviation', 'Global Evidence'],
+    createdAt: '2025-01-12',
+    targetDepartments: ['Ultra-Poor Graduation', 'Microfinance & Financial Inclusion', 'Education & Youth Skills (BEP)'],
+    modules: []
+  },
+  {
+    id: 'course-brac-103',
+    tenantId: 'tenant-brac',
+    title: 'Play-Based Early Childhood Pedagogy (Play Labs)',
+    subtitle: 'Empowering children through joyful, child-centered experiential learning',
+    description: 'Equip educators and community tutors with playful learning methodologies, culturally contextual curriculum design, and social-emotional development metrics.',
+    coverImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80',
+    category: 'Education & Youth Skills',
+    level: 'Beginner',
+    durationMinutes: 90,
+    isMandatory: false,
+    instructorName: 'Nusrat Jahan',
+    instructorTitle: 'Early Childhood Education Lead',
+    instructorAvatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
+    rating: 4.92,
+    reviewCount: 520,
+    enrolledCount: 4100,
+    certificateEnabled: true,
+    status: 'Published',
+    tags: ['Play Labs', 'Early Learning', 'Pedagogy', 'Inclusive Education'],
+    createdAt: '2025-01-20',
+    targetDepartments: ['Education & Youth Skills (BEP)'],
+    modules: []
+  },
   {
     id: 'course-sec-101',
     tenantId: 'tenant-acme',
@@ -697,6 +942,75 @@ const INITIAL_COURSES: Course[] = [
 ];
 
 const INITIAL_USERS: User[] = [
+  // BRAC Users
+  {
+    id: 'usr-brac-1',
+    tenantId: 'tenant-brac',
+    name: 'Farhana Ahmed',
+    email: 'farhana.ahmed@brac.net',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80',
+    role: 'tenant_admin',
+    department: 'Human Resources & Leadership',
+    enrolledCourses: ['course-brac-101', 'course-brac-102'],
+    completedCourses: ['course-brac-101'],
+    earnedCertificates: ['cert-brac-101'],
+    points: 4850,
+    badges: ['Chief Learning Officer', 'BRAC Master Architect', 'Client Protection Steward'],
+    lastActive: 'Just now',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
+  {
+    id: 'usr-brac-2',
+    tenantId: 'tenant-brac',
+    name: 'Tanvir Hossain',
+    email: 'tanvir.h@brac.net',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    role: 'instructor',
+    department: 'Microfinance & Financial Inclusion',
+    enrolledCourses: ['course-brac-101'],
+    completedCourses: ['course-brac-101'],
+    earnedCertificates: ['cert-brac-101'],
+    points: 3900,
+    badges: ['Master Field Trainer', 'Financial Inclusion Lead'],
+    lastActive: '12 mins ago',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
+  {
+    id: 'usr-brac-3',
+    tenantId: 'tenant-brac',
+    name: 'Nusrat Jahan',
+    email: 'nusrat.jahan@brac.net',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    role: 'learner',
+    department: 'Education & Youth Skills (BEP)',
+    enrolledCourses: ['course-brac-101', 'course-brac-103'],
+    completedCourses: ['course-brac-101'],
+    earnedCertificates: ['cert-brac-101'],
+    points: 2150,
+    badges: ['Play Labs Champion', 'Rapid Certified'],
+    lastActive: '25 mins ago',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
+  {
+    id: 'usr-brac-4',
+    tenantId: 'tenant-brac',
+    name: 'Arifur Rahman',
+    email: 'arifur.r@brac.net',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+    role: 'learner',
+    department: 'Ultra-Poor Graduation',
+    enrolledCourses: ['course-brac-101', 'course-brac-102'],
+    completedCourses: [],
+    earnedCertificates: [],
+    points: 820,
+    badges: ['UPG Field Associate'],
+    lastActive: '1 hour ago',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
   // Acme Corp Users
   {
     id: 'usr-acme-1',
@@ -840,6 +1154,30 @@ const INITIAL_USERS: User[] = [
 
 const INITIAL_ENROLLMENTS: CourseEnrollment[] = [
   {
+    id: 'enr-brac-1',
+    tenantId: 'tenant-brac',
+    userId: 'usr-brac-3', // Nusrat Jahan
+    courseId: 'course-brac-101',
+    progressPercent: 100,
+    completedLessonIds: ['brac-les-1-1', 'brac-les-1-2', 'brac-les-2-1'],
+    quizScores: { 'brac-les-2-1': 100 },
+    status: 'completed',
+    startedAt: '2025-02-05T09:00:00Z',
+    completedAt: '2025-02-05T11:30:00Z'
+  },
+  {
+    id: 'enr-brac-2',
+    tenantId: 'tenant-brac',
+    userId: 'usr-brac-4', // Arifur Rahman
+    courseId: 'course-brac-101',
+    progressPercent: 50,
+    completedLessonIds: ['brac-les-1-1'],
+    quizScores: {},
+    status: 'in_progress',
+    startedAt: '2025-02-14T10:00:00Z',
+    lastAccessedLessonId: 'brac-les-1-2'
+  },
+  {
     id: 'enr-1',
     tenantId: 'tenant-acme',
     userId: 'usr-acme-2', // David Kim
@@ -878,6 +1216,40 @@ const INITIAL_ENROLLMENTS: CourseEnrollment[] = [
 ];
 
 const INITIAL_CERTIFICATES: Certificate[] = [
+  {
+    id: 'cert-brac-101',
+    tenantId: 'tenant-brac',
+    tenantName: 'BRAC',
+    tenantLogo: 'https://freelogopng.com/images/all_img/1679820004brac-icon.png',
+    userId: 'usr-brac-1',
+    userName: 'Farhana Ahmed',
+    userEmail: 'farhana.ahmed@brac.net',
+    courseId: 'course-brac-101',
+    courseTitle: 'BRAC Microfinance Operations & Client Protection Principles (2026)',
+    category: 'Microfinance & Compliance',
+    issuedDate: '2025-02-05',
+    verificationCode: 'BRAC-MF-2026-89410',
+    gradeScore: 100,
+    instructorName: 'Tanvir Hossain',
+    expiryDate: '2027-02-05'
+  },
+  {
+    id: 'cert-brac-102',
+    tenantId: 'tenant-brac',
+    tenantName: 'BRAC',
+    tenantLogo: 'https://freelogopng.com/images/all_img/1679820004brac-icon.png',
+    userId: 'usr-brac-3',
+    userName: 'Nusrat Jahan',
+    userEmail: 'nusrat.jahan@brac.net',
+    courseId: 'course-brac-101',
+    courseTitle: 'BRAC Microfinance Operations & Client Protection Principles (2026)',
+    category: 'Microfinance & Compliance',
+    issuedDate: '2025-02-05',
+    verificationCode: 'BRAC-MF-2026-89411',
+    gradeScore: 98,
+    instructorName: 'Tanvir Hossain',
+    expiryDate: '2027-02-05'
+  },
   {
     id: 'cert-101',
     tenantId: 'tenant-acme',
@@ -932,6 +1304,36 @@ const INITIAL_CERTIFICATES: Certificate[] = [
 ];
 
 const INITIAL_WEBINARS: LiveWebinar[] = [
+  {
+    id: 'web-brac-1',
+    tenantId: 'tenant-brac',
+    title: 'Sir Fazle Hasan Abed Memorial Lecture: Scaling Frugal Innovation & Human Dignity',
+    description: 'Annual global leadership symposium exploring community empowerment at scale and systemic social change across 11 countries.',
+    instructor: 'Asif Saleh (Executive Director, BRAC)',
+    instructorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    scheduledAt: '2025-03-10T15:00:00Z',
+    durationMinutes: 90,
+    attendeeCount: 1840,
+    maxAttendees: 5000,
+    platform: 'BRAC Digital Stage (WebRTC)',
+    status: 'Upcoming',
+    joinUrl: '#'
+  },
+  {
+    id: 'web-brac-2',
+    tenantId: 'tenant-brac',
+    title: '2026 Microfinance Digital Transformation & Climate Risk Shielding',
+    description: 'Interactive session exploring digital wallets, agricultural insurance, and cyclone-resilient loan restructuring.',
+    instructor: 'Tanvir Hossain',
+    instructorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80',
+    scheduledAt: '2025-03-18T11:00:00Z',
+    durationMinutes: 60,
+    attendeeCount: 780,
+    maxAttendees: 2000,
+    platform: 'BRAC Digital Stage (WebRTC)',
+    status: 'Upcoming',
+    joinUrl: '#'
+  },
   {
     id: 'web-1',
     tenantId: 'tenant-acme',
@@ -1036,6 +1438,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     type: 'announcement_banner',
     title: 'Tenant Skill & Compliance Directive',
     colSpan: 4,
+    rowSpan: 1,
     visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner'],
     config: {
       bannerText: 'Annual Mandatory Cybersecurity & Regulatory Certification cycle is in effect. All personnel must complete assignments before the due date.',
@@ -1048,6 +1451,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'High-Level Operational Key Performance Indicators',
     subtitle: 'Real-time telemetry aggregated for active tenant and role',
     colSpan: 4,
+    rowSpan: 1,
     visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner']
   },
   {
@@ -1056,6 +1460,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Continue Active Learning',
     subtitle: 'Enrolled interactive curricula & mandatory certification modules',
     colSpan: 3,
+    rowSpan: 2,
     visibleForRoles: ['learner']
   },
   {
@@ -1064,6 +1469,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Skill Mastery & XP Leaderboard',
     subtitle: 'Top achievers and credential badge showcase',
     colSpan: 1,
+    rowSpan: 2,
     visibleForRoles: ['learner', 'instructor']
   },
   {
@@ -1072,6 +1478,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Department Progress & Compliance Matrix',
     subtitle: 'Aggregated progress across operational units',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin', 'instructor']
   },
   {
@@ -1080,6 +1487,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Enrollment & Completion Velocity',
     subtitle: 'Monthly progression trends across active cohorts',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin']
   },
   {
@@ -1088,6 +1496,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Compliance Risk & Escalation Queue',
     subtitle: 'Personnel requiring immediate remediation',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin', 'instructor']
   },
   {
@@ -1096,6 +1505,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Real-Time Security & Audit Stream',
     subtitle: 'Live tamper-proof event logs and compliance traces',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin']
   },
   {
@@ -1104,6 +1514,7 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Upcoming Live Virtual Classrooms',
     subtitle: 'Interactive instructor-led sessions and workshops',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin', 'instructor', 'learner']
   },
   {
@@ -1112,16 +1523,18 @@ export const DEFAULT_DASHBOARD_WIDGETS: DashboardWidget[] = [
     title: 'Executive LMS Dispatcher',
     subtitle: 'Quick operational actions and escalation alerts',
     colSpan: 2,
+    rowSpan: 2,
     visibleForRoles: ['super_admin', 'tenant_admin']
   }
 ];
 
-export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string; description: string; defaultColSpan: 1 | 2 | 3 | 4; icon: string; category: string }[] = [
+export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string; description: string; defaultColSpan: 1 | 2 | 3 | 4; defaultRowSpan: 1 | 2 | 3 | 4; icon: string; category: string }[] = [
   {
     type: 'kpi_grid',
     name: 'Dynamic KPI Metrics Grid',
     description: '4-card responsive KPI matrix adapting to active role (Learners, Compliance, Completed, Certificates).',
     defaultColSpan: 4,
+    defaultRowSpan: 1,
     icon: 'speed',
     category: 'KPIs & Summary'
   },
@@ -1130,6 +1543,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Compliance Health Focus Gauge',
     description: 'High-impact circular radial progress metric displaying tenant target compliance score.',
     defaultColSpan: 1,
+    defaultRowSpan: 1,
     icon: 'donut_large',
     category: 'KPIs & Summary'
   },
@@ -1138,6 +1552,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Broadcast Announcement Banner',
     description: 'Customizable alert banner for tenant-wide announcements, deadlines, or welcome notices.',
     defaultColSpan: 4,
+    defaultRowSpan: 1,
     icon: 'campaign',
     category: 'Operational'
   },
@@ -1146,6 +1561,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Department Completion & Compliance Matrix',
     description: 'Detailed horizontal progress bar matrix showing completion rates and overdue counts by department.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'bar_chart',
     category: 'Analytics & Charts'
   },
@@ -1154,6 +1570,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Enrollment & Completion Velocity Trend',
     description: 'Smooth SVG area chart visualizing monthly cohort enrollment growth and completions.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'show_chart',
     category: 'Analytics & Charts'
   },
@@ -1162,6 +1579,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Regulatory Compliance vs Risk Breakdown',
     description: 'Visual breakdown of Compliant vs At-Risk vs Overdue learners with percentage indicators.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'pie_chart',
     category: 'Analytics & Charts'
   },
@@ -1170,6 +1588,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: '7-Day Learning Activity Heatmap',
     description: 'Daily activity heatmap visualizing peak learning hours across the organization.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'calendar_view_week',
     category: 'Analytics & Charts'
   },
@@ -1178,6 +1597,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'In-Progress Learning Path Carousel',
     description: 'Resume active lessons, view progress percentage, and launch interactive course players.',
     defaultColSpan: 3,
+    defaultRowSpan: 2,
     icon: 'play_circle',
     category: 'Courseware'
   },
@@ -1186,6 +1606,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Overdue Compliance Escalation Queue',
     description: 'Personnel roster at risk of missing compliance deadlines with 1-click reminder triggers.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'priority_high',
     category: 'Operational'
   },
@@ -1194,6 +1615,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Live Tamper-Proof Audit Feed',
     description: 'Real-time security log stream of all tenant actions, certificate issuances, and enrollments.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'history_toggle_off',
     category: 'Security & Audit'
   },
@@ -1202,6 +1624,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Upcoming Live Virtual Classrooms',
     description: 'Scheduled instructor webinars, attendee counters, platform badges, and direct Join links.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'videocam',
     category: 'Live Sessions'
   },
@@ -1210,6 +1633,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Skill Mastery Leaderboard & Badges',
     description: 'Top organizational learners ranked by XP points, earned badges, and milestone awards.',
     defaultColSpan: 1,
+    defaultRowSpan: 2,
     icon: 'military_tech',
     category: 'Gamification'
   },
@@ -1218,6 +1642,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Executive LMS Dispatcher',
     description: 'Quick-access action hub for sending reminders, adding learners, creating courses, and downloading audit reports.',
     defaultColSpan: 2,
+    defaultRowSpan: 1,
     icon: 'bolt',
     category: 'Operational'
   },
@@ -1226,6 +1651,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
     name: 'Verified Certificates Issuance Ticker',
     description: 'Live ticker of recently earned tamper-proof credentials with verification codes.',
     defaultColSpan: 2,
+    defaultRowSpan: 2,
     icon: 'verified',
     category: 'Credentials'
   }
@@ -1237,7 +1663,7 @@ export const CATALOG_WIDGET_TEMPLATES: { type: DashboardWidgetType; name: string
 export class LmsDataService {
   // Core reactive signals
   tenants = signal<Tenant[]>(INITIAL_TENANTS);
-  activeTenantId = signal<string>('tenant-acme');
+  activeTenantId = signal<string>('tenant-brac');
   activeRole = signal<UserRole>('tenant_admin');
   courses = signal<Course[]>(INITIAL_COURSES);
   users = signal<User[]>(INITIAL_USERS);
@@ -1429,8 +1855,8 @@ export class LmsDataService {
         customBatches: draft.resources.customBatches
       },
       branding: {
-        primaryColor: '#4f46e5',
-        accentColor: '#06b6d4',
+        primaryColor: '#861F41', // Pantone Maroon (BRAC's original brand color)
+        accentColor: '#d97706',  // Warm Amber
         tagline: draft.basicInfo.tagline || 'Excellence in Enterprise Skill Mastery',
         bannerUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
         logoUrl: draft.basicInfo.logo?.url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80',
@@ -1520,6 +1946,14 @@ export class LmsDataService {
 
   // Multi-Tenant Customizable Dashboards Store
   tenantDashboards = signal<Record<string, CustomTenantDashboard>>({
+    'tenant-brac': {
+      tenantId: 'tenant-brac',
+      isPublished: true,
+      publishedAt: '2025-02-20 09:00 AM',
+      publishedBy: 'Farhana Ahmed (Chief Learning Officer)',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    },
     'tenant-acme': {
       tenantId: 'tenant-acme',
       isPublished: true,
@@ -1714,7 +2148,7 @@ export class LmsDataService {
   }
 
   // Apply tenant branding CSS custom properties and dynamic favicon
-  private applyTenantTheme(primary: string, accent: string, customFavicon?: string, tenantName?: string) {
+  applyTenantTheme(primary: string, accent: string, customFavicon?: string, tenantName?: string) {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
     root.style.setProperty('--tenant-primary', primary);
@@ -1848,8 +2282,8 @@ export class LmsDataService {
       createdAt: new Date().toISOString().split('T')[0],
       renewalDate: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
       branding: {
-        primaryColor: newTenant.branding?.primaryColor || '#4f46e5',
-        accentColor: newTenant.branding?.accentColor || '#06b6d4',
+        primaryColor: newTenant.branding?.primaryColor || '#861F41', // Pantone Maroon (BRAC's original brand color)
+        accentColor: newTenant.branding?.accentColor || '#d97706',
         tagline: newTenant.branding?.tagline || 'Custom Enterprise Learning Experience',
         bannerUrl: newTenant.branding?.bannerUrl || 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
         logoUrl: newTenant.branding?.logoUrl || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80',
@@ -2161,7 +2595,7 @@ export class LmsDataService {
   }
 
   // Log system actions
-  private logAction(action: string, target: string, severity: 'info' | 'warning' | 'success' | 'danger') {
+  logAction(action: string, target: string, severity: 'info' | 'warning' | 'success' | 'danger') {
     const tenant = this.activeTenant();
     const user = this.activeUser();
     const newLog: AuditLog = {

@@ -39,8 +39,8 @@ export class HeaderComponent {
     name: '',
     slug: '',
     plan: 'Enterprise' as const,
-    primaryColor: '#4f46e5',
-    accentColor: '#06b6d4',
+    primaryColor: '#EC008C', // BRAC Standard Pantone Magenta
+    accentColor: '#C40072',  // BRAC Deep Magenta Accent
     adminEmail: '',
     tagline: ''
   };

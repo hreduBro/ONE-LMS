@@ -24,7 +24,7 @@
         <img 
           [src]="lms.activeTenant().branding.logoUrl" 
           [alt]="lms.activeTenant().name"
-          class="w-6 h-6 rounded-lg object-cover ring-1 ring-base-300"
+          class="w-6 h-6 object-contain flex-shrink-0"
           referrerpolicy="no-referrer" />
         <div class="flex flex-col text-left">
           <div class="flex items-center gap-1.5">
@@ -58,7 +58,7 @@
                 class="w-full flex items-center justify-between p-2 rounded-xl text-left transition-colors"
                 [class]="tenant.id === lms.activeTenantId() ? 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-medium' : 'hover:bg-base-200 text-text-primary'">
                 <div class="flex items-center gap-2.5">
-                  <img [src]="tenant.branding.logoUrl" [alt]="tenant.name" class="w-7 h-7 rounded-lg object-cover" referrerpolicy="no-referrer" />
+                  <img [src]="tenant.branding.logoUrl" [alt]="tenant.name" class="w-7 h-7 object-contain flex-shrink-0" referrerpolicy="no-referrer" />
                   <div>
                     <div class="text-xs font-semibold flex items-center gap-1.5">
                       {{ tenant.name }}
@@ -372,30 +372,18 @@
             class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-sm focus:outline-none" />
         </div>
 
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">Primary Brand Color</label>
-            <div class="flex items-center gap-2">
-              <input 
-                type="color" 
-                [(ngModel)]="newOrg.primaryColor" 
-                name="primaryColor"
-                class="w-8 h-8 rounded cursor-pointer border-0 p-0" />
-              <span class="text-xs font-mono text-text-secondary">{{ newOrg.primaryColor }}</span>
+        <!-- Organization Primary Color (Fixed to Pantone Maroon standard) -->
+        <div class="p-3 rounded-2xl bg-base-200 border border-base-300 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <div class="w-6 h-6 rounded-lg bg-[#861F41] border border-white/20 shadow-xs"></div>
+            <div>
+              <div class="text-xs font-bold text-text-primary">Pantone Maroon (BRAC Standard)</div>
+              <div class="text-[11px] font-mono text-text-secondary">#861F41 • Accent #d97706</div>
             </div>
           </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">Accent Color</label>
-            <div class="flex items-center gap-2">
-              <input 
-                type="color" 
-                [(ngModel)]="newOrg.accentColor" 
-                name="accentColor"
-                class="w-8 h-8 rounded cursor-pointer border-0 p-0" />
-              <span class="text-xs font-mono text-text-secondary">{{ newOrg.accentColor }}</span>
-            </div>
-          </div>
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#861F41]/15 text-[#861F41] dark:text-rose-300">
+            Brand Standard
+          </span>
         </div>
 
         <div>

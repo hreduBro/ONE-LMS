@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -20,7 +20,7 @@ export type WizardStep = 1 | 2 | 3 | 4;
   templateUrl: './organization-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OrganizationCreateComponent implements OnInit {
+export class OrganizationCreateComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -90,6 +90,7 @@ export class OrganizationCreateComponent implements OnInit {
   ];
 
   ngOnInit() {
+    this.applyMaroonTheme();
     this.initForms();
     
     // Check if resuming an existing draft via query param ?draftId=...
@@ -104,6 +105,40 @@ export class OrganizationCreateComponent implements OnInit {
         });
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.restoreTenantTheme();
+  }
+
+  /**
+   * Enforces BRAC's original Pantone Magenta (#EC008C) as the primary brand color
+   */
+  private applyMaroonTheme() {
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.style.setProperty('--tenant-primary', '#EC008C');
+      root.style.setProperty('--tenant-primary-hover', '#D8007E');
+      root.style.setProperty('--tenant-primary-dark', '#B8006C');
+      root.style.setProperty('--tenant-accent', '#C40072');
+      root.style.setProperty('--tenant-50', '#FDF2F8');
+      root.style.setProperty('--tenant-100', '#FCE7F3');
+      root.style.setProperty('--tenant-200', '#FBCFE8');
+      root.style.setProperty('--tenant-300', '#F9A8D4');
+      root.style.setProperty('--tenant-400', '#F472B6');
+    }
+  }
+
+  private restoreTenantTheme() {
+    const active = this.lms.activeTenant();
+    if (active && active.branding) {
+      this.lms.applyTenantTheme(
+        active.branding.primaryColor,
+        active.branding.accentColor,
+        active.branding.faviconUrl,
+        active.name
+      );
+    }
   }
 
   private initForms() {
@@ -160,118 +195,6 @@ export class OrganizationCreateComponent implements OnInit {
       district: ''
     });
     this.basicInfoForm.get('district')?.markAsUntouched();
-  }
-
-  selectDemoDivisionDistrict(division: string, district: string) {
-    this.selectedDivision.set(division);
-    this.basicInfoForm.patchValue({
-      division: division,
-      district: district
-    });
-    this.basicInfoForm.get('division')?.markAsTouched();
-    this.basicInfoForm.get('district')?.markAsTouched();
-    this.lms.showToast(`Selected Location: ${division} > ${district}`, 'info');
-  }
-
-  fillDemoData(preset: 'dhaka' | 'chattogram' | 'sylhet' | 'rajshahi' = 'dhaka') {
-    const currentId = this.basicInfoForm.get('organizationId')?.value || this.lms.generateUniqueOrgId();
-    
-    let orgName = 'Apex Global Health Academy';
-    let line1 = 'Plot 24, Road 11, Commercial Zone, Banani';
-    let line2 = 'Floor 8, Suite 802, Academy Tower';
-    let division = 'Dhaka';
-    let district = 'Dhaka';
-    let postal = '1213';
-    let adminName = 'Dr. Tariq Rahman';
-    let adminPhone = '01712345678';
-    let adminEmail = 'admin@apexhealth.org';
-    let orgEmail = 'contact@apexhealth.org';
-    let website = 'https://academy.apexhealth.org';
-    let tagline = 'Pioneering Clinical Excellence & Healthcare Compliance';
-    let description = 'Multi-tenant accredited medical and healthcare training partition for specialized residency, CPD certifications, and regulatory audits.';
-
-    if (preset === 'chattogram') {
-      orgName = 'Port City Maritime & Logistics Institute';
-      line1 = 'Agrabad Commercial Area, Strand Road';
-      line2 = 'Tower B, Level 6';
-      division = 'Chattogram';
-      district = 'Chattogram';
-      postal = '4000';
-      adminName = 'Engr. Mahfuzul Alam';
-      adminPhone = '01812345678';
-      adminEmail = 'admin@pcmli.edu.bd';
-      orgEmail = 'info@pcmli.edu.bd';
-      website = 'https://institute.pcmli.edu.bd';
-      tagline = 'Global Maritime Standards, Seafarer Training & Supply Chain Mastery';
-      description = 'Regional technical training academy specializing in marine engineering, port logistics, and ISO compliance.';
-    } else if (preset === 'sylhet') {
-      orgName = 'Surma Tea & Agritech Research Academy';
-      line1 = 'Subid Bazar, Osmani Medical Road';
-      line2 = 'Research Complex, Block C';
-      division = 'Sylhet';
-      district = 'Sylhet';
-      postal = '3100';
-      adminName = 'Prof. Nazmul Hasan';
-      adminPhone = '01912345678';
-      adminEmail = 'admin@stara-agri.org';
-      orgEmail = 'contact@stara-agri.org';
-      website = 'https://academy.stara-agri.org';
-      tagline = 'Sustainable Agriculture, Precision Farming & Bio-Safety';
-      description = 'Dedicated environmental research and agrarian capacity building hub.';
-    } else if (preset === 'rajshahi') {
-      orgName = 'Varendra Silk & Nanotech Institute';
-      line1 = 'Kazihata Silk Enclave, Greater Road';
-      line2 = 'Innovation Hub, Floor 3';
-      division = 'Rajshahi';
-      district = 'Rajshahi';
-      postal = '6000';
-      adminName = 'Dr. Shamima Akhter';
-      adminPhone = '01512345678';
-      adminEmail = 'admin@varendra-nano.ac.bd';
-      orgEmail = 'contact@varendra-nano.ac.bd';
-      website = 'https://varendra-nano.ac.bd';
-      tagline = 'Advancing Micro-Fabrication, Advanced Materials & Biotech';
-      description = 'Northern research center delivering advanced STEM diploma courses.';
-    }
-
-    this.selectedDivision.set(division);
-    
-    this.basicInfoForm.patchValue({
-      organizationName: orgName,
-      organizationId: currentId,
-      websiteUrl: website,
-      tagline: tagline,
-      description: description,
-      organizationEmail: orgEmail,
-      timezone: 'Asia/Dhaka',
-      line1: line1,
-      line2: line2,
-      division: division,
-      district: district,
-      postalCode: postal,
-      adminName: adminName,
-      contactNumber: adminPhone,
-      contactEmail: adminEmail
-    });
-
-    // Provide demo logo
-    this.logoPreview.set('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=200&q=80');
-    this.logoFileName.set('demo-logo.png');
-    this.logoSizeKb.set(84);
-
-    this.formErrorAlert.set(null);
-    this.lms.showToast(`✨ Demo Organization (${orgName} - ${division} > ${district}) populated! Click "Next" to proceed.`, 'success');
-  }
-
-  fillDemoResources() {
-    this.resourcesForm.patchValue({
-      databaseSizeGb: 250,
-      fileStorageGb: 500,
-      usageAlertThresholdPct: 80,
-      dataSharingMode: 'Yes – Shared'
-    });
-    this.formErrorAlert.set(null);
-    this.lms.showToast('✨ Demo resource allocation populated (250GB DB, 500GB Storage, 80% Alert).', 'success');
   }
 
   loadDraft(draftId: string) {

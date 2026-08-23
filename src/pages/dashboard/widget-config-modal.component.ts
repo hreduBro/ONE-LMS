@@ -47,19 +47,42 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
               class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none" />
           </div>
 
-          <!-- ColSpan Selector -->
-          <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1.5">Canvas Width Grid Span</label>
-            <div class="grid grid-cols-4 gap-2">
-              @for (span of [1, 2, 3, 4]; track span) {
-                <button
-                  type="button"
-                  (click)="formColSpan = span"
-                  class="py-2 px-3 rounded-xl border text-center text-xs font-bold transition-all"
-                  [class]="formColSpan === span ? 'border-tenant-500 bg-tenant-500 text-white shadow-xs' : 'border-base-300 bg-base-200 text-text-secondary hover:text-text-primary'">
-                  {{ span * 25 }}% ({{ span }}/4)
-                </button>
-              }
+          <!-- ColSpan & RowSpan Grid Dimensions -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-text-primary mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-tenant-600">view_column</span>
+                <span>Canvas Width (Columns)</span>
+              </label>
+              <div class="grid grid-cols-4 gap-1.5">
+                @for (span of [1, 2, 3, 4]; track span) {
+                  <button
+                    type="button"
+                    (click)="formColSpan = span"
+                    class="py-1.5 px-1 rounded-xl border text-center text-xs font-bold transition-all"
+                    [class]="formColSpan === span ? 'border-tenant-500 bg-tenant-500 text-white shadow-xs' : 'border-base-300 bg-base-200 text-text-secondary hover:text-text-primary'">
+                    {{ span * 25 }}%
+                  </button>
+                }
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-text-primary mb-1.5 flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm text-tenant-600">height</span>
+                <span>Canvas Height (Rows)</span>
+              </label>
+              <div class="grid grid-cols-4 gap-1.5">
+                @for (row of [1, 2, 3, 4]; track row) {
+                  <button
+                    type="button"
+                    (click)="formRowSpan = row"
+                    class="py-1.5 px-1 rounded-xl border text-center text-xs font-bold transition-all"
+                    [class]="formRowSpan === row ? 'border-tenant-500 bg-tenant-500 text-white shadow-xs' : 'border-base-300 bg-base-200 text-text-secondary hover:text-text-primary'">
+                    {{ row }}x
+                  </button>
+                }
+              </div>
             </div>
           </div>
 
@@ -126,6 +149,7 @@ export class WidgetConfigModalComponent implements OnInit {
   formTitle = '';
   formSubtitle = '';
   formColSpan: any = 2;
+  formRowSpan: any = 2;
   formRoles: UserRole[] = [];
   formBannerText = '';
 
@@ -140,7 +164,8 @@ export class WidgetConfigModalComponent implements OnInit {
     const w = this.widget();
     this.formTitle = w.title;
     this.formSubtitle = w.subtitle || '';
-    this.formColSpan = w.colSpan;
+    this.formColSpan = w.colSpan || 2;
+    this.formRowSpan = w.rowSpan || 2;
     this.formRoles = [...w.visibleForRoles];
     this.formBannerText = w.config?.bannerText || '';
   }
@@ -159,6 +184,7 @@ export class WidgetConfigModalComponent implements OnInit {
       title: this.formTitle,
       subtitle: this.formSubtitle,
       colSpan: this.formColSpan,
+      rowSpan: this.formRowSpan,
       visibleForRoles: this.formRoles.length > 0 ? this.formRoles : ['tenant_admin'],
       config: {
         ...this.widget().config,

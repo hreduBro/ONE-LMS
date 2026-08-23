@@ -206,7 +206,7 @@
       <!-- High-Resolution Printable Certificate Frame -->
       <div class="p-8 rounded-3xl border-4 border-double border-amber-500/40 bg-gradient-to-b from-amber-50/20 via-base-100 to-amber-50/20 dark:from-amber-950/10 dark:to-base-100 text-center space-y-6 shadow-md relative overflow-hidden">
         <div class="flex items-center justify-between">
-          <img [src]="cert.tenantLogo" [alt]="cert.tenantName" class="w-12 h-12 rounded-xl object-cover" referrerpolicy="no-referrer" />
+          <img [src]="cert.tenantLogo" [alt]="cert.tenantName" class="h-12 w-auto max-w-[120px] object-contain" referrerpolicy="no-referrer" />
           <span class="text-xs font-serif uppercase tracking-widest text-amber-600 font-bold">ID: {{ cert.verificationCode }}</span>
         </div>
 

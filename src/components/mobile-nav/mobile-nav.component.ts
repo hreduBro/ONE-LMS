@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
 import { ThemeService } from '../../services/theme.service';
-import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-switcher-modal.component';
 
 @Component({
   selector: 'app-mobile-nav',
-  imports: [CommonModule, RouterModule, LayoutSwitcherModalComponent],
+  imports: [CommonModule, RouterModule],
   template: `
     <!-- Bottom Navigation Bar (Visible only on mobile & tablet < md) -->
     <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-base-100/95 backdrop-blur-lg border-t border-base-300 px-2 py-1.5 shadow-lg safe-area-bottom">
