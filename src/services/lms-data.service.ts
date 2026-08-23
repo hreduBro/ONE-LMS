@@ -15,15 +15,43 @@ import {
   DashboardWidgetType,
   CustomTenantDashboard
 } from '../models/lms.model';
+import {
+  OrganizationDraft,
+  OrganizationBasicInfo,
+  OrganizationResourceAllocation,
+  PlatformCapacity
+} from '../models/organization.model';
 
 const INITIAL_TENANTS: Tenant[] = [
   {
     id: 'tenant-acme',
+    numericId: '4821',
     name: 'Acme Global Enterprise',
     slug: 'acme-corp',
     domain: 'academy.acme.com',
+    websiteUrl: 'https://academy.acme.com',
     plan: 'Enterprise',
     status: 'Active',
+    timezone: 'Asia/Dhaka',
+    description: 'Global enterprise learning workspace covering engineering, cloud compliance, and leadership training.',
+    address: {
+      line1: 'Plot 14, Road 7, Block C, Banani Commercial Area',
+      line2: 'Suite 1204, Tower Alpha',
+      division: 'Dhaka',
+      district: 'Dhaka',
+      postalCode: '1213'
+    },
+    adminInfo: {
+      adminName: 'Clara Oswald',
+      contactNumber: '01712345678',
+      contactEmail: 'clara.admin@acme.com'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 250,
+      fileStorageGb: 500,
+      usageAlertThresholdPct: 80,
+      dataSharingMode: 'Yes – Shared'
+    },
     adminEmail: 'clara.admin@acme.com',
     createdAt: '2024-01-15',
     renewalDate: '2027-01-15',
@@ -58,11 +86,33 @@ const INITIAL_TENANTS: Tenant[] = [
   },
   {
     id: 'tenant-stanford',
+    numericId: '7304',
     name: 'Stanford Tech Institute',
     slug: 'stanford-tech',
     domain: 'learn.stanfordtech.edu',
+    websiteUrl: 'https://learn.stanfordtech.edu',
     plan: 'Enterprise',
     status: 'Active',
+    timezone: 'America/Los_Angeles',
+    description: 'Pioneering research institute offering cutting-edge robotics and computer science curriculum.',
+    address: {
+      line1: '450 Serra Mall, Computing Quad',
+      line2: 'Gates Building Room 302',
+      division: 'Chattogram',
+      district: 'Chattogram',
+      postalCode: '4000'
+    },
+    adminInfo: {
+      adminName: 'Marcus Vance',
+      contactNumber: '01812345678',
+      contactEmail: 'provost@stanfordtech.edu'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 400,
+      fileStorageGb: 1000,
+      usageAlertThresholdPct: 85,
+      dataSharingMode: 'No – Segregated'
+    },
     adminEmail: 'provost@stanfordtech.edu',
     createdAt: '2023-08-01',
     renewalDate: '2027-08-01',
@@ -97,11 +147,36 @@ const INITIAL_TENANTS: Tenant[] = [
   },
   {
     id: 'tenant-apexhealth',
+    numericId: '8512',
     name: 'Apex Health System',
     slug: 'apex-health',
     domain: 'training.apexhealth.org',
+    websiteUrl: 'https://training.apexhealth.org',
     plan: 'Enterprise',
     status: 'Active',
+    timezone: 'Asia/Dhaka',
+    description: 'Hospital network training portal managing clinical mandatory certifications and patient privacy.',
+    address: {
+      line1: 'Medical College Road, Sector 4',
+      line2: 'Clinical Education Center',
+      division: 'Rajshahi',
+      district: 'Rajshahi',
+      postalCode: '6000'
+    },
+    adminInfo: {
+      adminName: 'Dr. Sarah Jenkins',
+      contactNumber: '01912345678',
+      contactEmail: 'chief.medical.officer@apexhealth.org'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 300,
+      fileStorageGb: 750,
+      usageAlertThresholdPct: 90,
+      dataSharingMode: 'Custom',
+      customBatches: [
+        { id: 'b1', name: 'Clinical & ICU Batch', lmsInstanceIds: ['LMS-ICU-1', 'LMS-CLINIC-2'] }
+      ]
+    },
     adminEmail: 'chief.medical.officer@apexhealth.org',
     createdAt: '2024-03-10',
     renewalDate: '2027-03-10',
@@ -136,11 +211,33 @@ const INITIAL_TENANTS: Tenant[] = [
   },
   {
     id: 'tenant-finedge',
+    numericId: '6241',
     name: 'FinEdge Compliance Academy',
     slug: 'finedge-bank',
     domain: 'learn.finedgecapital.com',
+    websiteUrl: 'https://learn.finedgecapital.com',
     plan: 'Pro',
     status: 'Active',
+    timezone: 'Europe/London',
+    description: 'Financial compliance and AML governance certification platform.',
+    address: {
+      line1: 'Commercial Area, Agrabad',
+      line2: 'Finance Tower Level 8',
+      division: 'Chattogram',
+      district: 'Chattogram',
+      postalCode: '4100'
+    },
+    adminInfo: {
+      adminName: 'Victoria Sterling',
+      contactNumber: '01612345678',
+      contactEmail: 'compliance.head@finedgecapital.com'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 150,
+      fileStorageGb: 250,
+      usageAlertThresholdPct: 75,
+      dataSharingMode: 'No – Segregated'
+    },
     adminEmail: 'compliance.head@finedgecapital.com',
     createdAt: '2024-06-01',
     renewalDate: '2026-06-01',
@@ -175,11 +272,33 @@ const INITIAL_TENANTS: Tenant[] = [
   },
   {
     id: 'tenant-innovate',
+    numericId: '9035',
     name: 'Innovate AI Labs',
     slug: 'innovate-ai',
     domain: 'academy.innovate-ai.io',
+    websiteUrl: 'https://academy.innovate-ai.io',
     plan: 'Pro',
-    status: 'Active',
+    status: 'In-Progress',
+    timezone: 'Asia/Dhaka',
+    description: 'Next-gen generative AI research, prompting frameworks, and automated agents.',
+    address: {
+      line1: 'KDA Avenue, Sonadanga',
+      line2: 'Tech Innovation Hub',
+      division: 'Khulna',
+      district: 'Khulna',
+      postalCode: '9100'
+    },
+    adminInfo: {
+      adminName: 'Rahim Chowdhury',
+      contactNumber: '01512345678',
+      contactEmail: 'founder@innovate-ai.io'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 100,
+      fileStorageGb: 200,
+      usageAlertThresholdPct: 80,
+      dataSharingMode: 'Yes – Shared'
+    },
     adminEmail: 'founder@innovate-ai.io',
     createdAt: '2024-11-20',
     renewalDate: '2026-11-20',
@@ -1126,6 +1245,268 @@ export class LmsDataService {
   certificates = signal<Certificate[]>(INITIAL_CERTIFICATES);
   webinars = signal<LiveWebinar[]>(INITIAL_WEBINARS);
   auditLogs = signal<AuditLog[]>(INITIAL_AUDIT_LOGS);
+
+  // Platform Capacity Infra Hardcoded Limits (YYYY values based on infra setup)
+  readonly dbTotalInfraGb = 5000;
+  readonly fileTotalInfraGb = 20000;
+
+  // Platform Capacity dynamically computed across active organizations
+  platformCapacity = computed<PlatformCapacity>(() => {
+    const activeOrgs = this.tenants().filter(t => t.status === 'Active');
+    
+    const dbUsedGb = activeOrgs.reduce((sum, t) => {
+      if (t.resourceAllocation?.databaseSizeGb) {
+        return sum + t.resourceAllocation.databaseSizeGb;
+      }
+      return sum + (t.stats?.storageLimitGb ? Math.round(t.stats.storageLimitGb * 0.4) : 200);
+    }, 0);
+
+    const fileUsedGb = activeOrgs.reduce((sum, t) => {
+      if (t.resourceAllocation?.fileStorageGb) {
+        return sum + t.resourceAllocation.fileStorageGb;
+      }
+      return sum + (t.stats?.storageLimitGb ? t.stats.storageLimitGb : 500);
+    }, 0);
+
+    const dbAvailableGb = Math.max(0, this.dbTotalInfraGb - dbUsedGb);
+    const fileAvailableGb = Math.max(0, this.fileTotalInfraGb - fileUsedGb);
+
+    return {
+      dbTotalGb: this.dbTotalInfraGb,
+      dbUsedGb,
+      dbAvailableGb,
+      fileTotalGb: this.fileTotalInfraGb,
+      fileUsedGb,
+      fileAvailableGb
+    };
+  });
+
+  // Organization Drafts Signal for Resuming Creation Flow
+  organizationDrafts = signal<OrganizationDraft[]>([
+    {
+      id: '5194',
+      status: 'In-Progress',
+      isDraft: true,
+      lastCompletedStep: 'basic-info',
+      createdAt: '2025-02-18',
+      updatedAt: '2025-02-18',
+      basicInfo: {
+        organizationName: 'Global Cloud Academy',
+        organizationId: '5194',
+        websiteUrl: 'https://academy.globalcloud.io',
+        tagline: 'Multi-Cloud Certification & DevOps Infrastructure Lab',
+        description: 'Dedicated enterprise tenant for Azure, AWS, and GCP architect onboarding.',
+        organizationEmail: 'operations@globalcloud.io',
+        timezone: 'Asia/Dhaka',
+        logo: {
+          url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=200&q=80',
+          fileName: 'global-cloud-logo.png'
+        },
+        address: {
+          line1: 'Gulshan Center Point, Road 90',
+          line2: 'Floor 14, Suite B',
+          division: 'Dhaka',
+          district: 'Dhaka',
+          postalCode: '1212'
+        },
+        admin: {
+          adminName: 'Kamal Hossain',
+          contactNumber: '01711223344',
+          contactEmail: 'kamal.admin@globalcloud.io'
+        }
+      },
+      resources: {
+        databaseSizeGb: 200,
+        fileStorageGb: 500,
+        usageAlertThresholdPct: 80,
+        dataSharingMode: 'Yes – Shared'
+      }
+    }
+  ]);
+
+  // Flash Alert / Toast state
+  currentToast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+
+  showToast(message: string, type: 'success' | 'error' | 'info' = 'success', durationMs: number = 4000) {
+    this.currentToast.set({ message, type });
+    if (durationMs > 0) {
+      setTimeout(() => {
+        if (this.currentToast()?.message === message) {
+          this.currentToast.set(null);
+        }
+      }, durationMs);
+    }
+  }
+
+  clearToast() {
+    this.currentToast.set(null);
+  }
+
+  // Generate random unique 4-digit numeric Organization ID
+  generateUniqueOrgId(): string {
+    const existingIds = new Set<string>();
+    this.tenants().forEach(t => {
+      if (t.numericId) existingIds.add(t.numericId);
+    });
+    this.organizationDrafts().forEach(d => {
+      if (d.id) existingIds.add(d.id);
+      if (d.basicInfo?.organizationId) existingIds.add(d.basicInfo.organizationId);
+    });
+
+    let generated = '';
+    let attempts = 0;
+    do {
+      generated = Math.floor(1000 + Math.random() * 9000).toString();
+      attempts++;
+    } while (existingIds.has(generated) && attempts < 1000);
+
+    return generated;
+  }
+
+  // Save or update organization draft
+  saveOrganizationDraft(draft: OrganizationDraft): OrganizationDraft {
+    const existingIndex = this.organizationDrafts().findIndex(d => d.id === draft.id);
+    const updatedDraft: OrganizationDraft = {
+      ...draft,
+      isDraft: true,
+      updatedAt: new Date().toISOString().split('T')[0]
+    };
+
+    if (existingIndex >= 0) {
+      this.organizationDrafts.update(list => {
+        const copy = [...list];
+        copy[existingIndex] = updatedDraft;
+        return copy;
+      });
+    } else {
+      this.organizationDrafts.update(list => [updatedDraft, ...list]);
+    }
+
+    this.logAction('Organization Draft Saved', `Saved draft for organization "${draft.basicInfo.organizationName || draft.id}" at step ${draft.lastCompletedStep}`, 'info');
+    return updatedDraft;
+  }
+
+  // Get draft by ID
+  getOrganizationDraft(id?: string): OrganizationDraft | undefined {
+    if (!id) {
+      return this.organizationDrafts()[0];
+    }
+    return this.organizationDrafts().find(d => d.id === id);
+  }
+
+  // Delete draft
+  deleteOrganizationDraft(id: string) {
+    this.organizationDrafts.update(list => list.filter(d => d.id !== id));
+    this.logAction('Organization Draft Removed', `Deleted draft ID ${id}`, 'info');
+  }
+
+  // Finalize Creation: Create Organization in In-Progress status
+  createOrganizationFromWizard(draft: OrganizationDraft): Tenant {
+    const slug = draft.basicInfo.organizationName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') || `org-${draft.id}`;
+    const domain = draft.basicInfo.websiteUrl 
+      ? draft.basicInfo.websiteUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, '') 
+      : `${slug}.lmscloud.io`;
+
+    const newTenant: Tenant = {
+      id: `tenant-${slug}`,
+      numericId: draft.id || draft.basicInfo.organizationId || this.generateUniqueOrgId(),
+      name: draft.basicInfo.organizationName,
+      slug,
+      domain,
+      websiteUrl: draft.basicInfo.websiteUrl || `https://${domain}`,
+      plan: 'Enterprise',
+      status: 'In-Progress', // As specified: created with In-Progress status
+      isDraft: false,
+      timezone: draft.basicInfo.timezone || 'Asia/Dhaka',
+      description: draft.basicInfo.description || draft.basicInfo.tagline || '',
+      address: draft.basicInfo.address,
+      adminInfo: draft.basicInfo.admin,
+      resourceAllocation: {
+        databaseSizeGb: draft.resources.databaseSizeGb || 100,
+        fileStorageGb: draft.resources.fileStorageGb || 250,
+        usageAlertThresholdPct: draft.resources.usageAlertThresholdPct || 80,
+        dataSharingMode: draft.resources.dataSharingMode || 'Yes – Shared',
+        customBatches: draft.resources.customBatches
+      },
+      branding: {
+        primaryColor: '#4f46e5',
+        accentColor: '#06b6d4',
+        tagline: draft.basicInfo.tagline || 'Excellence in Enterprise Skill Mastery',
+        bannerUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
+        logoUrl: draft.basicInfo.logo?.url || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80',
+        customCssEnabled: true,
+        ssoProvider: 'Okta'
+      },
+      departments: ['Leadership', 'Operations', 'Compliance', 'General Staff'],
+      stats: {
+        seatLimit: 1000,
+        seatsUsed: 1,
+        totalCourses: 2,
+        totalLearners: 1,
+        completionRate: 0,
+        complianceRate: 100,
+        storageUsedGb: 0.5,
+        storageLimitGb: draft.resources.fileStorageGb || 250
+      },
+      createdAt: new Date().toISOString().split('T')[0],
+      renewalDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      adminEmail: draft.basicInfo.admin.contactEmail || `admin@${domain}`,
+      features: {
+        scormSupport: true,
+        aiTutor: true,
+        liveWebinars: true,
+        customCertificates: true,
+        whiteLabel: true,
+        customDomain: true
+      }
+    };
+
+    // Add new tenant
+    this.tenants.update(list => [newTenant, ...list]);
+
+    // Create Organization Admin user (Side effect cross-story hook)
+    const adminUser: User = {
+      id: `usr-org-admin-${newTenant.numericId}`,
+      tenantId: newTenant.id,
+      name: draft.basicInfo.admin.adminName || 'Organization Admin',
+      email: draft.basicInfo.admin.contactEmail,
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80',
+      role: 'tenant_admin',
+      department: 'Executive Administration',
+      enrolledCourses: [],
+      completedCourses: [],
+      earnedCertificates: [],
+      points: 1000,
+      badges: ['Organization Admin', 'Founding Member'],
+      lastActive: 'Just now',
+      status: 'Active',
+      complianceStatus: 'Compliant'
+    };
+    this.users.update(list => [adminUser, ...list]);
+
+    // Clean up draft if this was created from a draft
+    if (draft.id) {
+      this.deleteOrganizationDraft(draft.id);
+    }
+
+    this.logAction(
+      'Organization Created',
+      `Organization "${newTenant.name}" (ID: ${newTenant.numericId}) created under In-Progress status`,
+      'success'
+    );
+
+    return newTenant;
+  }
+
+  // Trigger notice email to organization admin
+  sendAdminSetupNoticeEmail(contactEmail: string, adminName: string, orgName: string): boolean {
+    this.logAction(
+      'Admin Setup Notice Email Dispatched',
+      `Sent "organization creation is in progress" update email to ${adminName} (${contactEmail}) for ${orgName}`,
+      'info'
+    );
+    return true;
+  }
 
   // Admin Layout Preferences Signal
   adminLayoutPreferences = signal<AdminLayoutPreferences>({

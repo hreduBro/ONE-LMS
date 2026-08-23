@@ -1,17 +1,20 @@
 import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
 import { Tenant } from '../../models/lms.model';
+import { OrganizationDraft } from '../../models/organization.model';
 
 @Component({
   selector: 'app-tenants',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './tenants.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TenantsComponent {
   lms = inject(LmsDataService);
+  private router = inject(Router);
 
   searchQuery = signal<string>('');
   planFilter = signal<string>('All');
@@ -21,30 +24,24 @@ export class TenantsComponent {
 
   // Pagination
   currentPage = signal<number>(1);
-  pageSize = signal<number>(4);
+  pageSize = signal<number>(6);
 
-  // New tenant form model
-  newTenantForm = {
-    name: '',
-    slug: '',
-    domain: '',
-    plan: 'Enterprise' as const,
-    adminEmail: '',
-    primaryColor: '#4f46e5',
-    accentColor: '#06b6d4',
-    tagline: '',
-    seatLimit: 1000,
-    ssoProvider: 'Okta' as const
-  };
-
-  // Filtered tenants list
+  // Filtered tenants list with multi-field search
   filteredTenants = computed(() => {
-    const q = this.searchQuery().toLowerCase();
+    const q = this.searchQuery().toLowerCase().trim();
     const plan = this.planFilter();
     const status = this.statusFilter();
 
     return this.lms.tenants().filter(t => {
-      const matchSearch = t.name.toLowerCase().includes(q) || t.domain.toLowerCase().includes(q) || t.slug.toLowerCase().includes(q);
+      const matchSearch = !q || 
+        t.name.toLowerCase().includes(q) || 
+        t.domain.toLowerCase().includes(q) || 
+        t.slug.toLowerCase().includes(q) ||
+        (t.numericId && t.numericId.includes(q)) ||
+        (t.adminInfo?.adminName && t.adminInfo.adminName.toLowerCase().includes(q)) ||
+        (t.address?.division && t.address.division.toLowerCase().includes(q)) ||
+        (t.address?.district && t.address.district.toLowerCase().includes(q));
+
       const matchPlan = plan === 'All' || t.plan === plan;
       const matchStatus = status === 'All' || t.status === status;
       return matchSearch && matchPlan && matchStatus;
@@ -65,9 +62,12 @@ export class TenantsComponent {
   });
 
   // Global telemetry
-  totalLearners = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.totalLearners, 0));
-  totalSeats = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.seatLimit, 0));
-  totalStorage = computed(() => this.lms.tenants().reduce((sum, t) => sum + t.stats.storageUsedGb, 0));
+  totalLearners = computed(() => this.lms.tenants().reduce((sum, t) => sum + (t.stats?.totalLearners || 0), 0));
+  totalSeats = computed(() => this.lms.tenants().reduce((sum, t) => sum + (t.stats?.seatLimit || 0), 0));
+  totalStorage = computed(() => this.lms.tenants().reduce((sum, t) => sum + (t.resourceAllocation?.fileStorageGb || t.stats?.storageLimitGb || 0), 0));
+
+  // Active Drafts
+  activeDrafts = computed(() => this.lms.organizationDrafts());
 
   onSearchChange(val: string) {
     this.searchQuery.set(val);
@@ -110,6 +110,21 @@ export class TenantsComponent {
     this.lms.toggleTenantStatus(id);
   }
 
+  openCreateWizard() {
+    this.router.navigate(['/tenants/create']);
+  }
+
+  resumeDraft(draftId: string, event?: Event) {
+    if (event) event.stopPropagation();
+    this.router.navigate(['/tenants/create'], { queryParams: { draftId } });
+  }
+
+  deleteDraft(draftId: string, event: Event) {
+    event.stopPropagation();
+    this.lms.deleteOrganizationDraft(draftId);
+    this.lms.showToast(`Draft ID ${draftId} removed`, 'info');
+  }
+
   openEditModal(tenant: Tenant, event: Event) {
     event.stopPropagation();
     this.editingTenant.set(JSON.parse(JSON.stringify(tenant)));
@@ -120,57 +135,21 @@ export class TenantsComponent {
     if (tenant) {
       this.lms.updateTenant(tenant);
       this.editingTenant.set(null);
+      this.lms.showToast(`Updated organization "${tenant.name}"`, 'success');
     }
   }
 
-  openAddModal() {
-    this.newTenantForm = {
-      name: '',
-      slug: '',
-      domain: '',
-      plan: 'Enterprise',
-      adminEmail: '',
-      primaryColor: '#4f46e5',
-      accentColor: '#06b6d4',
-      tagline: 'Enterprise Skill & Certification Academy',
-      seatLimit: 1000,
-      ssoProvider: 'Okta'
-    };
-    this.showAddModal.set(true);
-  }
-
-  createTenant() {
-    if (!this.newTenantForm.name.trim()) return;
-    const slug = this.newTenantForm.slug.trim() || this.newTenantForm.name.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const domain = this.newTenantForm.domain.trim() || `${slug}.lmscloud.io`;
-
-    this.lms.addTenant({
-      name: this.newTenantForm.name,
-      slug,
-      domain,
-      plan: this.newTenantForm.plan,
-      adminEmail: this.newTenantForm.adminEmail || `admin@${slug}.io`,
-      branding: {
-        primaryColor: this.newTenantForm.primaryColor,
-        accentColor: this.newTenantForm.accentColor,
-        tagline: this.newTenantForm.tagline,
-        bannerUrl: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80',
-        logoUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=200&q=80',
-        customCssEnabled: true,
-        ssoProvider: this.newTenantForm.ssoProvider
-      },
-      stats: {
-        seatLimit: Number(this.newTenantForm.seatLimit) || 500,
-        seatsUsed: 1,
-        totalCourses: 2,
-        totalLearners: 1,
-        completionRate: 0,
-        complianceRate: 100,
-        storageUsedGb: 2.5,
-        storageLimitGb: 250
-      }
-    });
-
-    this.showAddModal.set(false);
+  getStatusBadgeClass(status: string): string {
+    switch (status) {
+      case 'Active':
+        return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+      case 'In-Progress':
+        return 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+      case 'Suspended':
+        return 'bg-rose-100 text-rose-800 dark:bg-rose-950/80 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+      case 'Inactive':
+      default:
+        return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700';
+    }
   }
 }

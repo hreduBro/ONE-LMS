@@ -1,6 +1,6 @@
 export type UserRole = 'super_admin' | 'tenant_admin' | 'instructor' | 'learner';
 export type TenantPlan = 'Starter' | 'Pro' | 'Enterprise';
-export type TenantStatus = 'Active' | 'Trial' | 'Suspended';
+export type TenantStatus = 'Active' | 'Trial' | 'Suspended' | 'In-Progress';
 export type LessonType = 'video' | 'article' | 'quiz' | 'interactive_lab';
 export type CourseCategory = 'Engineering' | 'Compliance & Security' | 'Leadership' | 'Healthcare' | 'Finance' | 'AI & Data';
 export type CourseLevel = 'Beginner' | 'Intermediate' | 'Advanced';
@@ -29,11 +29,35 @@ export interface TenantStats {
 
 export interface Tenant {
   id: string;
+  numericId?: string; // 4-digit unique system-generated numeric ID (e.g. "4821")
   name: string;
   slug: string;
   domain: string;
+  websiteUrl?: string;
   plan: TenantPlan;
   status: TenantStatus;
+  isDraft?: boolean;
+  timezone?: string;
+  description?: string;
+  address?: {
+    line1: string;
+    line2?: string;
+    division: string;
+    district: string;
+    postalCode: string;
+  };
+  adminInfo?: {
+    adminName: string;
+    contactNumber: string;
+    contactEmail: string;
+  };
+  resourceAllocation?: {
+    databaseSizeGb: number;
+    fileStorageGb: number;
+    usageAlertThresholdPct: number;
+    dataSharingMode: 'Yes – Shared' | 'No – Segregated' | 'Custom';
+    customBatches?: { id: string; name: string; lmsInstanceIds: string[] }[];
+  };
   branding: TenantBranding;
   departments: string[];
   stats: TenantStats;
