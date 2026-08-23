@@ -1,7 +1,8 @@
-import { Component, ChangeDetectionStrategy, inject, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, output, signal, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { LmsDataService } from '../../services/lms-data.service';
 import { LmsApiService } from '../../services/lms-api.service';
 import { ThemeService } from '../../services/theme.service';
@@ -19,6 +20,8 @@ export class HeaderComponent {
   lms = inject(LmsDataService);
   api = inject(LmsApiService);
   themeService = inject(ThemeService);
+  router = inject(Router);
+  elementRef = inject(ElementRef);
   toggleSidebar = output<void>();
 
   showTenantDropdown = signal(false);
@@ -28,6 +31,80 @@ export class HeaderComponent {
   showLayoutModal = signal(false);
   showThemeMenu = signal(false);
   showBackendConsole = signal(false);
+  showSignOutModal = signal(false);
+
+  tenantSearch = signal('');
+
+  filteredTenants = computed(() => {
+    const q = this.tenantSearch().trim().toLowerCase();
+    const tenants = this.lms.tenants();
+    if (!q) return tenants;
+    return tenants.filter(t => 
+      t.name.toLowerCase().includes(q) || 
+      t.domain.toLowerCase().includes(q) ||
+      t.plan.toLowerCase().includes(q)
+    );
+  });
+
+  constructor() {
+    // Auto-close any open header dropdowns whenever the route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.closeAllDropdowns();
+    });
+  }
+
+  closeAllDropdowns() {
+    this.showTenantDropdown.set(false);
+    this.showUserDropdown.set(false);
+    this.showNotificationMenu.set(false);
+    this.showThemeMenu.set(false);
+    this.tenantSearch.set('');
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    // If click is outside the header component, close all dropdown menus
+    if (!this.elementRef.nativeElement.contains(target)) {
+      this.closeAllDropdowns();
+    }
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapePress() {
+    this.closeAllDropdowns();
+    this.showSignOutModal.set(false);
+  }
+
+  toggleTenantDropdown(event?: Event) {
+    event?.stopPropagation();
+    const current = this.showTenantDropdown();
+    this.closeAllDropdowns();
+    this.showTenantDropdown.set(!current);
+  }
+
+  toggleUserDropdown(event?: Event) {
+    event?.stopPropagation();
+    const current = this.showUserDropdown();
+    this.closeAllDropdowns();
+    this.showUserDropdown.set(!current);
+  }
+
+  toggleNotificationMenu(event?: Event) {
+    event?.stopPropagation();
+    const current = this.showNotificationMenu();
+    this.closeAllDropdowns();
+    this.showNotificationMenu.set(!current);
+  }
+
+  toggleThemeMenu(event?: Event) {
+    event?.stopPropagation();
+    const current = this.showThemeMenu();
+    this.closeAllDropdowns();
+    this.showThemeMenu.set(!current);
+  }
 
   setTheme(mode: 'system' | 'light' | 'dark') {
     this.themeService.setThemeMode(mode);
@@ -54,11 +131,12 @@ export class HeaderComponent {
 
   selectTenant(id: string) {
     this.lms.switchTenant(id);
-    this.showTenantDropdown.set(false);
+    this.closeAllDropdowns();
   }
 
   selectRole(role: UserRole) {
     this.lms.switchRole(role);
+    this.closeAllDropdowns();
   }
 
   openNewTenantModal() {
@@ -71,8 +149,19 @@ export class HeaderComponent {
       adminEmail: '',
       tagline: ''
     };
+    this.closeAllDropdowns();
     this.showNewTenantModal.set(true);
-    this.showTenantDropdown.set(false);
+  }
+
+  handleSignOut() {
+    this.closeAllDropdowns();
+    this.showSignOutModal.set(true);
+  }
+
+  confirmSignOut() {
+    this.lms.logout();
+    this.showSignOutModal.set(false);
+    this.router.navigate(['/dashboard']);
   }
 
   createTenant() {
@@ -96,3 +185,4 @@ export class HeaderComponent {
     this.showNewTenantModal.set(false);
   }
 }
+

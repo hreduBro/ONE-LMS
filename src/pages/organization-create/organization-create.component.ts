@@ -90,7 +90,7 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit() {
-    this.applyMaroonTheme();
+    this.ensureActiveTenantTheme();
     this.initForms();
     
     // Check if resuming an existing draft via query param ?draftId=...
@@ -108,35 +108,21 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.restoreTenantTheme();
+    // Keep active tenant theme persistent
   }
 
   /**
-   * Enforces BRAC's original Pantone Magenta (#EC008C) as the primary brand color
+   * Applies the current active LMS organization's theme preset & colors
    */
-  private applyMaroonTheme() {
-    if (typeof document !== 'undefined') {
-      const root = document.documentElement;
-      root.style.setProperty('--tenant-primary', '#EC008C');
-      root.style.setProperty('--tenant-primary-hover', '#D8007E');
-      root.style.setProperty('--tenant-primary-dark', '#B8006C');
-      root.style.setProperty('--tenant-accent', '#C40072');
-      root.style.setProperty('--tenant-50', '#FDF2F8');
-      root.style.setProperty('--tenant-100', '#FCE7F3');
-      root.style.setProperty('--tenant-200', '#FBCFE8');
-      root.style.setProperty('--tenant-300', '#F9A8D4');
-      root.style.setProperty('--tenant-400', '#F472B6');
-    }
-  }
-
-  private restoreTenantTheme() {
+  private ensureActiveTenantTheme() {
     const active = this.lms.activeTenant();
     if (active && active.branding) {
       this.lms.applyTenantTheme(
         active.branding.primaryColor,
         active.branding.accentColor,
         active.branding.faviconUrl,
-        active.name
+        active.name,
+        active.branding.themePreset
       );
     }
   }

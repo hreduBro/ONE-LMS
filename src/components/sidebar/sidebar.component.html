@@ -25,10 +25,10 @@
        [class.lg:justify-center]="isCompact()">
     
     <div class="flex items-center gap-3 min-w-0" [class.lg:justify-center]="isCompact()">
-      <div class="h-10 flex items-center justify-center flex-shrink-0"
+      <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 p-1 shadow-2xs border border-base-300/80 flex items-center justify-center overflow-hidden flex-shrink-0"
            [title]="lms.activeTenant().name">
         @if (lms.activeTenant().branding.logoUrl) {
-          <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="h-10 w-10 object-contain" referrerpolicy="no-referrer" />
+          <img [src]="lms.activeTenant().branding.logoUrl" [alt]="lms.activeTenant().name" class="w-full h-full object-contain" referrerpolicy="no-referrer" />
         } @else {
           <span class="material-symbols-outlined text-2xl text-tenant-500">school</span>
         }
@@ -75,15 +75,23 @@
           <a 
             [routerLink]="item.route || (item.children ? item.children[0].route : '/dashboard')"
             (click)="onNavItemClick()"
-            [routerLinkActive]="item.children ? '' : 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-semibold'"
+            [routerLinkActive]="item.children ? '' : 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold'"
             [class.bg-tenant-50]="item.children && isRouteActive(item.route, item.children)"
             [class.text-tenant-700]="item.children && isRouteActive(item.route, item.children)"
             [class.dark:bg-tenant-500/20]="item.children && isRouteActive(item.route, item.children)"
             [class.dark:text-tenant-200]="item.children && isRouteActive(item.route, item.children)"
+            [class.ring-1]="item.children && isRouteActive(item.route, item.children)"
+            [class.ring-tenant-500/40]="item.children && isRouteActive(item.route, item.children)"
+            [class.font-bold]="item.children && isRouteActive(item.route, item.children)"
             [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
             [title]="item.label"
-            class="flex flex-col items-center justify-center p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all relative group">
+            class="flex flex-col items-center justify-center p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200/80 transition-all relative group">
             
+            <!-- Active Indicator Pill on left -->
+            @if ((!item.children && isRouteActive(item.route)) || (item.children && isRouteActive(item.route, item.children))) {
+              <span class="absolute left-0.5 top-3 bottom-3 w-1 rounded-r-full bg-tenant-500"></span>
+            }
+
             <span class="material-symbols-outlined text-xl transition-transform group-hover:scale-110">
               {{ item.icon }}
             </span>
@@ -102,25 +110,29 @@
             <div class="space-y-1">
               <div 
                 (click)="toggleMenu(item.label)"
-                class="flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer transition-all group select-none"
+                class="flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer transition-all group select-none relative"
                 [class]="isRouteActive(item.route, item.children) 
-                  ? 'bg-tenant-500/10 text-tenant-700 dark:text-tenant-200 font-semibold border border-tenant-500/20' 
-                  : 'text-text-secondary hover:text-text-primary hover:bg-base-200'">
+                  ? 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 font-bold ring-1 ring-tenant-500/30' 
+                  : 'text-text-secondary hover:text-text-primary hover:bg-base-200/80 font-medium'">
                 
                 <div class="flex items-center gap-2.5 min-w-0">
+                  @if (isRouteActive(item.route, item.children)) {
+                    <span class="w-1.5 h-1.5 rounded-full bg-tenant-500 shadow-xs flex-shrink-0 animate-pulse"></span>
+                  }
                   <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
                     {{ item.icon }}
                   </span>
-                  <span class="truncate font-medium">{{ item.label }}</span>
+                  <span class="truncate">{{ item.label }}</span>
                 </div>
 
                 <div class="flex items-center gap-1.5 flex-shrink-0">
                   @if (item.badge) {
-                    <span class="text-[9px] px-1.5 py-0.2 rounded-md bg-tenant-100 text-tenant-700 dark:bg-tenant-950/80 dark:text-tenant-200 font-semibold">
+                    <span class="text-[9px] px-1.5 py-0.2 rounded-md font-semibold"
+                          [class]="isRouteActive(item.route, item.children) ? 'bg-tenant-500 text-white' : 'bg-tenant-100 text-tenant-700 dark:bg-tenant-950/80 dark:text-tenant-200'">
                       {{ item.badge }}
                     </span>
                   }
-                  <span class="material-symbols-outlined text-sm transition-transform duration-200"
+                  <span class="material-symbols-outlined text-sm transition-transform duration-200 text-text-secondary"
                         [class.rotate-180]="isMenuExpanded(item.label)">
                     expand_more
                   </span>
@@ -136,19 +148,26 @@
                       (click)="onNavItemClick()"
                       routerLinkActive="bg-tenant-500 text-white font-semibold shadow-xs"
                       [routerLinkActiveOptions]="{ exact: true }"
-                      class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group">
+                      #childRla="routerLinkActive"
+                      class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] transition-all group"
+                      [class]="childRla.isActive ? 'bg-tenant-500 text-white font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/80 font-medium'">
                       <div class="flex items-center gap-2 truncate">
                         <span class="material-symbols-outlined text-sm flex-shrink-0 group-hover:scale-110 transition-transform">
                           {{ child.icon }}
                         </span>
                         <span class="truncate">{{ child.label }}</span>
                       </div>
-                      @if (child.badge) {
-                        <span class="text-[8px] uppercase tracking-wider px-1 py-0.2 rounded font-bold"
-                              [ngClass]="child.badge === 'Wizard' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'bg-base-300 text-text-secondary'">
-                          {{ child.badge }}
-                        </span>
-                      }
+                      <div class="flex items-center gap-1">
+                        @if (child.badge) {
+                          <span class="text-[8px] uppercase tracking-wider px-1 py-0.2 rounded font-bold"
+                                [class]="childRla.isActive ? 'bg-white/20 text-white' : (child.badge === 'Wizard' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'bg-base-300 text-text-secondary')">
+                            {{ child.badge }}
+                          </span>
+                        }
+                        @if (childRla.isActive) {
+                          <span class="material-symbols-outlined text-xs text-white">check</span>
+                        }
+                      </div>
                     </a>
                   }
                 </div>
@@ -159,25 +178,32 @@
             <a 
               [routerLink]="item.route"
               (click)="onNavItemClick()"
-              routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
+              routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold shadow-xs"
               [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+              #itemRla="routerLinkActive"
               [title]="item.label"
-              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative active:scale-[0.98]">
+              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs transition-all group relative active:scale-[0.98]"
+              [class]="itemRla.isActive ? '' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/80 font-medium'">
               
+              <!-- Active Indicator Dot -->
+              @if (itemRla.isActive) {
+                <span class="w-1.5 h-1.5 rounded-full bg-tenant-500 shadow-xs flex-shrink-0 animate-pulse"></span>
+              }
+
               <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
                 {{ item.icon }}
               </span>
 
-              <span class="truncate flex-1 font-medium">{{ item.label }}</span>
+              <span class="truncate flex-1">{{ item.label }}</span>
               @if (item.badge) {
-                <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
+                <span class="text-[9px] px-1.5 py-0.5 rounded-md font-semibold"
+                      [class]="itemRla.isActive ? 'bg-tenant-500 text-white' : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60'">
                   {{ item.badge }}
                 </span>
               }
             </a>
           }
         }
-
       }
     }
   </nav>

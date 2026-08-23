@@ -62,6 +62,7 @@ const INITIAL_TENANTS: Tenant[] = [
       bannerUrl: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80',
       logoUrl: 'https://freelogopng.com/images/all_img/1679820004brac-icon.png',
       customCssEnabled: true,
+      themePreset: 'solid',
       ssoProvider: 'Google Workspace'
     },
     departments: ['Microfinance & Financial Inclusion', 'Education & Youth Skills (BEP)', 'Health, Nutrition & Population', 'Climate Change & Disaster Management', 'Ultra-Poor Graduation', 'Gender, Justice & Diversity', 'Human Resources & Leadership'],
@@ -74,6 +75,68 @@ const INITIAL_TENANTS: Tenant[] = [
       complianceRate: 98.7,
       storageUsedGb: 680.5,
       storageLimitGb: 2000
+    },
+    features: {
+      scormSupport: true,
+      aiTutor: true,
+      liveWebinars: true,
+      customCertificates: true,
+      whiteLabel: true,
+      customDomain: true
+    }
+  },
+  {
+    id: 'tenant-lumina',
+    numericId: '5520',
+    name: 'Lumina Spatial Labs',
+    slug: 'lumina-glass',
+    domain: 'academy.lumina-glass.io',
+    websiteUrl: 'https://lumina-glass.io',
+    plan: 'Enterprise',
+    status: 'Active',
+    timezone: 'Asia/Dhaka',
+    description: 'Spatial computing, neural intelligence, and next-gen glassmorphic human-computer interaction laboratory.',
+    address: {
+      line1: 'Quantum Tower, Level 24, Silicon Enclave',
+      line2: 'Spatial UI & Neural Dynamics Division',
+      division: 'Dhaka',
+      district: 'Dhaka',
+      postalCode: '1229'
+    },
+    adminInfo: {
+      adminName: 'Aria Vance',
+      contactNumber: '01799887766',
+      contactEmail: 'aria.admin@lumina-glass.io'
+    },
+    resourceAllocation: {
+      databaseSizeGb: 500,
+      fileStorageGb: 1500,
+      usageAlertThresholdPct: 80,
+      dataSharingMode: 'Yes – Shared'
+    },
+    adminEmail: 'aria.admin@lumina-glass.io',
+    createdAt: '2024-02-01',
+    renewalDate: '2028-02-01',
+    branding: {
+      primaryColor: '#06b6d4', // Vibrant Cyan Neon
+      accentColor: '#8b5cf6',  // Electric Violet
+      tagline: 'Next-Gen Glassmorphic Spatial Learning & AI Simulation Canvas',
+      bannerUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+      logoUrl: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=200&q=80',
+      customCssEnabled: true,
+      themePreset: 'glassmorphism',
+      ssoProvider: 'Okta'
+    },
+    departments: ['Spatial UI & Generative Vision', 'Neural LLM Architecture', 'Quantum AI Systems', 'Robotics Simulation', 'Cybernetic Security'],
+    stats: {
+      seatLimit: 10000,
+      seatsUsed: 7850,
+      totalCourses: 34,
+      totalLearners: 7850,
+      completionRate: 92.4,
+      complianceRate: 97.6,
+      storageUsedGb: 340.2,
+      storageLimitGb: 1500
     },
     features: {
       scormSupport: true,
@@ -580,6 +643,79 @@ const INITIAL_COURSES: Course[] = [
     modules: []
   },
   {
+    id: 'course-lumina-101',
+    tenantId: 'tenant-lumina',
+    title: 'Spatial UI & Glassmorphism Design Engineering (2026)',
+    subtitle: 'Building luminescent spatial canvases, frosted acrylic shaders & backdrop-filter architectures',
+    description: 'Master the principles of next-generation glassmorphic human-computer interfaces: optical refraction physics, specular reflections, multi-layer ambient blur composition, WCAG AA accessibility contrast in translucent containers, and dynamic CSS variable shaders.',
+    coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+    category: 'Engineering',
+    level: 'Advanced',
+    durationMinutes: 135,
+    isMandatory: true,
+    complianceDeadlineDays: 14,
+    instructorName: 'Aria Vance',
+    instructorTitle: 'Principal Spatial Systems Architect, Lumina Labs',
+    instructorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    rating: 4.99,
+    reviewCount: 420,
+    enrolledCount: 3150,
+    certificateEnabled: true,
+    status: 'Published',
+    tags: ['Glassmorphism', 'Spatial UI', 'CSS Shaders', 'Neural Design'],
+    createdAt: '2025-01-25',
+    targetDepartments: ['Spatial UI & Generative Vision', 'Neural LLM Architecture', 'Quantum AI Systems'],
+    modules: [
+      {
+        id: 'lum-mod-1',
+        title: 'Glassmorphism Optical Principles & Shader Architecture',
+        durationMinutes: 45,
+        lessons: [
+          {
+            id: 'lum-les-1-1',
+            title: '1.1 Optical Refraction, Depth Stacking & Frosted Acrylic Shaders',
+            type: 'video',
+            durationMinutes: 20,
+            summary: 'Explore multi-layer backdrop-filter saturation and ambient gradient lighting.',
+            videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4'
+          },
+          {
+            id: 'lum-les-1-2',
+            title: '1.2 Accessible Contrast & Text Luminance on Glass Surfaces',
+            type: 'article',
+            durationMinutes: 25,
+            summary: 'Ensuring WCAG AA 4.5:1 contrast compliance with dynamic specular highlights.',
+            contentHtml: '<h3 class="text-xl font-bold mb-3 text-cyan-600 dark:text-cyan-300">Glassmorphism Standards</h3><p class="text-text-secondary">True glassmorphism balances translucent elegance with flawless legibility...</p>'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'course-lumina-102',
+    tenantId: 'tenant-lumina',
+    title: 'Autonomous Multi-Agent AI & Neural Systems Architecture',
+    subtitle: 'Orchestrating agent swarms, memory vectors, tool calling & real-time telemetry',
+    description: 'Design robust autonomous agent workflows leveraging Gemini 2.5 Pro, function calling, persistent vector embeddings, and real-time streaming interfaces.',
+    coverImage: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80',
+    category: 'AI & Data',
+    level: 'Advanced',
+    durationMinutes: 180,
+    isMandatory: false,
+    instructorName: 'Dr. Orion Sterling',
+    instructorTitle: 'Chief AI Scientist, Lumina Spatial Labs',
+    instructorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    rating: 4.96,
+    reviewCount: 380,
+    enrolledCount: 2840,
+    certificateEnabled: true,
+    status: 'Published',
+    tags: ['Multi-Agent AI', 'Gemini', 'LLMOps', 'Vector Memory'],
+    createdAt: '2025-02-01',
+    targetDepartments: ['Neural LLM Architecture', 'Quantum AI Systems', 'Robotics Simulation'],
+    modules: []
+  },
+  {
     id: 'course-sec-101',
     tenantId: 'tenant-acme',
     title: 'Cybersecurity & Zero Trust Architecture (2026)',
@@ -1011,6 +1147,58 @@ const INITIAL_USERS: User[] = [
     status: 'Active',
     complianceStatus: 'Compliant'
   },
+  // Lumina Spatial Labs (Glassmorphism LMS Users)
+  {
+    id: 'usr-lum-1',
+    tenantId: 'tenant-lumina',
+    name: 'Aria Vance',
+    email: 'aria.admin@lumina-glass.io',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+    role: 'tenant_admin',
+    department: 'Spatial UI & Generative Vision',
+    enrolledCourses: ['course-lumina-101', 'course-lumina-102'],
+    completedCourses: ['course-lumina-101'],
+    earnedCertificates: ['cert-lum-101'],
+    points: 5400,
+    badges: ['Spatial Glass Pioneer', 'Neural UI Architect', 'Chief Vision Officer'],
+    lastActive: 'Just now',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
+  {
+    id: 'usr-lum-2',
+    tenantId: 'tenant-lumina',
+    name: 'Dr. Orion Sterling',
+    email: 'orion.s@lumina-glass.io',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+    role: 'instructor',
+    department: 'Neural LLM Architecture',
+    enrolledCourses: ['course-lumina-102'],
+    completedCourses: ['course-lumina-102'],
+    earnedCertificates: ['cert-lum-102'],
+    points: 4320,
+    badges: ['Multi-Agent Maestro', 'Quantum Systems Fellow'],
+    lastActive: '8 mins ago',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
+  {
+    id: 'usr-lum-3',
+    tenantId: 'tenant-lumina',
+    name: 'Kaelen Thorne',
+    email: 'kaelen.t@lumina-glass.io',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
+    role: 'learner',
+    department: 'Quantum AI Systems',
+    enrolledCourses: ['course-lumina-101'],
+    completedCourses: ['course-lumina-101'],
+    earnedCertificates: ['cert-lum-101'],
+    points: 2950,
+    badges: ['Glass Shader Master', 'Fast Learner'],
+    lastActive: '14 mins ago',
+    status: 'Active',
+    complianceStatus: 'Compliant'
+  },
   // Acme Corp Users
   {
     id: 'usr-acme-1',
@@ -1249,6 +1437,23 @@ const INITIAL_CERTIFICATES: Certificate[] = [
     gradeScore: 98,
     instructorName: 'Tanvir Hossain',
     expiryDate: '2027-02-05'
+  },
+  {
+    id: 'cert-lum-101',
+    tenantId: 'tenant-lumina',
+    tenantName: 'Lumina Spatial Labs',
+    tenantLogo: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=200&q=80',
+    userId: 'usr-lum-1',
+    userName: 'Aria Vance',
+    userEmail: 'aria.admin@lumina-glass.io',
+    courseId: 'course-lumina-101',
+    courseTitle: 'Spatial UI & Glassmorphism Design Engineering (2026)',
+    category: 'Engineering',
+    issuedDate: '2025-02-08',
+    verificationCode: 'LUM-GLASS-2026-77341',
+    gradeScore: 100,
+    instructorName: 'Aria Vance',
+    expiryDate: '2028-02-08'
   },
   {
     id: 'cert-101',
@@ -1954,6 +2159,14 @@ export class LmsDataService {
       version: 1,
       widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
     },
+    'tenant-lumina': {
+      tenantId: 'tenant-lumina',
+      isPublished: true,
+      publishedAt: '2025-02-22 11:00 AM',
+      publishedBy: 'Aria Vance (Chief Spatial Architect)',
+      version: 1,
+      widgets: JSON.parse(JSON.stringify(DEFAULT_DASHBOARD_WIDGETS))
+    },
     'tenant-acme': {
       tenantId: 'tenant-acme',
       isPublished: true,
@@ -2131,7 +2344,13 @@ export class LmsDataService {
     effect(() => {
       const tenant = this.activeTenant();
       if (tenant && tenant.branding) {
-        this.applyTenantTheme(tenant.branding.primaryColor, tenant.branding.accentColor, tenant.branding.faviconUrl, tenant.name);
+        this.applyTenantTheme(
+          tenant.branding.primaryColor,
+          tenant.branding.accentColor,
+          tenant.branding.faviconUrl,
+          tenant.name,
+          tenant.branding.themePreset
+        );
       }
     });
   }
@@ -2147,21 +2366,57 @@ export class LmsDataService {
     this.activeRole.set(role);
   }
 
-  // Apply tenant branding CSS custom properties and dynamic favicon
-  applyTenantTheme(primary: string, accent: string, customFavicon?: string, tenantName?: string) {
+  // Apply tenant branding CSS custom properties, glassmorphism theme classes, and dynamic favicon
+  applyTenantTheme(
+    primary: string,
+    accent?: string,
+    customFavicon?: string,
+    tenantName?: string,
+    themePreset?: 'solid' | 'glassmorphism' | 'neumorphic'
+  ) {
     if (typeof document === 'undefined') return;
     const root = document.documentElement;
-    root.style.setProperty('--tenant-primary', primary);
-    root.style.setProperty('--tenant-primary-hover', this.adjustColor(primary, -20));
-    root.style.setProperty('--tenant-primary-dark', this.adjustColor(primary, -40));
-    root.style.setProperty('--tenant-accent', accent);
-    root.style.setProperty('--tenant-50', this.hexToRgba(primary, 0.1));
-    root.style.setProperty('--tenant-100', this.hexToRgba(primary, 0.2));
-    root.style.setProperty('--tenant-200', this.getHighContrastLightTint(primary, 0.88));
-    root.style.setProperty('--tenant-300', this.getHighContrastLightTint(primary, 0.78));
-    root.style.setProperty('--tenant-400', this.getHighContrastLightTint(primary, 0.68));
 
-    this.updateFavicon(primary, accent, customFavicon, tenantName);
+    const cleanPrimary = (primary && primary.startsWith('#')) ? primary : '#EC008C';
+    const cleanAccent = (accent && accent.startsWith('#')) ? accent : this.adjustColor(cleanPrimary, -25);
+    
+    const hoverColor = this.adjustColor(cleanPrimary, -18);
+    const darkColor = this.adjustColor(cleanPrimary, -38);
+    const lightHoverColor = this.adjustColor(cleanPrimary, 20);
+
+    // Primary & accents
+    root.style.setProperty('--tenant-primary', cleanPrimary);
+    root.style.setProperty('--tenant-primary-hover', hoverColor);
+    root.style.setProperty('--tenant-primary-dark', darkColor);
+    root.style.setProperty('--tenant-accent', cleanAccent);
+    root.style.setProperty('--brand-primary', cleanPrimary);
+    root.style.setProperty('--brand-secondary', cleanAccent);
+
+    // Dynamic Gradients mapped directly to the primary and accent colors
+    root.style.setProperty('--tenant-gradient', `linear-gradient(135deg, ${cleanPrimary} 0%, ${cleanAccent} 100%)`);
+    root.style.setProperty('--tenant-gradient-hover', `linear-gradient(135deg, ${lightHoverColor} 0%, ${hoverColor} 100%)`);
+    root.style.setProperty('--tenant-gradient-subtle', `linear-gradient(135deg, ${this.hexToRgba(cleanPrimary, 0.12)} 0%, ${this.hexToRgba(cleanAccent, 0.05)} 100%)`);
+    root.style.setProperty('--tenant-gradient-radial', `radial-gradient(circle at 10% 20%, ${cleanPrimary} 0%, ${cleanAccent} 90%)`);
+
+    // Dynamic button & card shadows based on current primary color
+    root.style.setProperty('--tenant-shadow', `0 4px 14px 0 ${this.hexToRgba(cleanPrimary, 0.35)}`);
+    root.style.setProperty('--tenant-shadow-hover', `0 6px 20px 0 ${this.hexToRgba(cleanPrimary, 0.48)}`);
+
+    // Tints
+    root.style.setProperty('--tenant-50', this.hexToRgba(cleanPrimary, 0.08));
+    root.style.setProperty('--tenant-100', this.hexToRgba(cleanPrimary, 0.18));
+    root.style.setProperty('--tenant-200', this.getHighContrastLightTint(cleanPrimary, 0.88));
+    root.style.setProperty('--tenant-300', this.getHighContrastLightTint(cleanPrimary, 0.78));
+    root.style.setProperty('--tenant-400', this.getHighContrastLightTint(cleanPrimary, 0.68));
+
+    // Handle Theme Presets: Glassmorphism vs Solid
+    if (themePreset === 'glassmorphism') {
+      root.classList.add('theme-glassmorphism');
+    } else {
+      root.classList.remove('theme-glassmorphism');
+    }
+
+    this.updateFavicon(cleanPrimary, cleanAccent, customFavicon, tenantName);
   }
 
   private updateFavicon(primary: string, accent: string, customFaviconUrl?: string, tenantName?: string) {
@@ -2255,17 +2510,37 @@ export class LmsDataService {
   }
 
   private hexToRgba(hex: string, alpha: number): string {
-    let c = hex.replace('#', '');
-    if (c.length === 3) c = c.split('').map(x => x + x).join('');
-    const num = parseInt(c, 16);
-    const r = (num >> 16) & 255;
-    const g = (num >> 8) & 255;
-    const b = num & 255;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    try {
+      let c = hex.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      const num = parseInt(c, 16);
+      const r = (num >> 16) & 255;
+      const g = (num >> 8) & 255;
+      const b = num & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    } catch {
+      return `rgba(236, 0, 140, ${alpha})`;
+    }
   }
 
   private adjustColor(color: string, amount: number): string {
-    return '#' + color.replace(/^#/, '').replace(/../g, color => ('0' + Math.min(255, Math.max(0, parseInt(color, 16) + amount)).toString(16)).substr(-2));
+    try {
+      let c = color.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      const num = parseInt(c, 16);
+      let r = (num >> 16) + amount;
+      let g = ((num >> 8) & 255) + amount;
+      let b = (num & 255) + amount;
+
+      r = Math.min(255, Math.max(0, r));
+      g = Math.min(255, Math.max(0, g));
+      b = Math.min(255, Math.max(0, b));
+
+      const toHex = (n: number) => n.toString(16).padStart(2, '0');
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    } catch {
+      return color;
+    }
   }
 
   // Add new tenant
@@ -2667,5 +2942,28 @@ export class LmsDataService {
     this.logAction('Dashboard Reset', `Reset dashboard layout to factory template for ${this.activeTenant().name}`, 'warning');
     return defaults;
   }
+
+  // Update a user by ID
+  updateUser(userId: string, changes: Partial<User>) {
+    this.users.update(list => list.map(u => {
+      if (u.id === userId) {
+        return { ...u, ...changes };
+      }
+      return u;
+    }));
+    this.logAction('User Profile Updated', `Updated profile information for user ${userId}`, 'info');
+  }
+
+  // Update current active user's profile
+  updateActiveUserProfile(changes: Partial<User>) {
+    const current = this.activeUser();
+    this.updateUser(current.id, changes);
+  }
+
+  // Log out or reset session simulation
+  logout() {
+    this.logAction('User Sign Out', `User ${this.activeUser().name} signed out of session`, 'info');
+  }
 }
+
 

@@ -60,6 +60,7 @@ export class SidebarComponent {
     { label: 'Compliance & Analytics', route: '/analytics', icon: 'analytics', roles: ['super_admin', 'tenant_admin'] },
     { label: 'Certificates Vault', route: '/certificates', icon: 'verified', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
     { label: 'Live Webinars', route: '/webinars', icon: 'videocam', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
+    { label: 'My Profile', route: '/profile', icon: 'account_circle', roles: ['super_admin', 'tenant_admin', 'instructor', 'learner'] },
     { label: 'Tenant Branding', route: '/settings', icon: 'palette', roles: ['super_admin', 'tenant_admin'] },
   ];
 

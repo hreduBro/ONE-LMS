@@ -13,6 +13,7 @@ export interface TenantBranding {
   logoUrl: string;
   faviconUrl?: string;
   customCssEnabled: boolean;
+  themePreset?: 'solid' | 'glassmorphism' | 'neumorphic';
   ssoProvider: 'SAML 2.0' | 'Okta' | 'Azure AD' | 'Google Workspace' | 'None';
 }
 
@@ -82,6 +83,12 @@ export interface User {
   avatar: string;
   role: UserRole;
   department: string;
+  title?: string;
+  phone?: string;
+  bio?: string;
+  location?: string;
+  timezone?: string;
+  skills?: string[];
   enrolledCourses: string[];
   completedCourses: string[];
   earnedCertificates: string[];

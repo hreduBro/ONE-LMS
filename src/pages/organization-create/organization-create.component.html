@@ -1076,11 +1076,12 @@
             }
 
             <div class="pt-2 border-t border-base-300">
-              <span class="text-[10px] text-text-secondary block">Brand Theme</span>
+              <span class="text-[10px] text-text-secondary block">LMS Brand Theme</span>
               <div class="flex items-center gap-2 mt-1">
-                <div class="w-4 h-4 rounded-full bg-[#861F41] border border-white/20 shadow-xs"></div>
-                <span class="text-text-primary text-[11px] font-semibold">Pantone Maroon (#861F41)</span>
-                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-[#861F41]/10 text-[#861F41]">Default</span>
+                <div class="w-4 h-4 rounded-full border border-white/20 shadow-xs" [style.backgroundColor]="lms.activeTenant().branding.primaryColor"></div>
+                <span class="text-text-primary text-[11px] font-semibold">{{ lms.activeTenant().name }}</span>
+                <span class="text-[10px] font-mono text-text-secondary">({{ lms.activeTenant().branding.primaryColor }})</span>
+                <span class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-tenant-50 dark:bg-tenant-500/20 text-tenant-600 dark:text-tenant-300">Active LMS</span>
               </div>
             </div>
           </div>
@@ -1195,7 +1196,7 @@
             type="button" 
             id="btn-create-organization"
             (click)="onCreateOrganization()" 
-            class="px-6 py-3 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg shadow-tenant-500/20 active:scale-[0.98]">
+            class="px-6 py-3 rounded-xl btn-gradient text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg active:scale-[0.98]">
             <span class="material-symbols-outlined text-base">rocket_launch</span>
             <span>Create Organization</span>
           </button>

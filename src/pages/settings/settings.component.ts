@@ -30,6 +30,7 @@ export class SettingsComponent {
     faviconUrl: '',
     primaryColor: '#4f46e5',
     accentColor: '#06b6d4',
+    themePreset: 'solid' as 'solid' | 'glassmorphism' | 'neumorphic',
     ssoProvider: 'Okta' as 'Okta' | 'SAML 2.0' | 'Azure AD' | 'Google Workspace' | 'None',
     enforceMfa: true,
     scormEnabled: true,
@@ -49,6 +50,7 @@ export class SettingsComponent {
         faviconUrl: t.branding.faviconUrl || '',
         primaryColor: t.branding.primaryColor,
         accentColor: t.branding.accentColor,
+        themePreset: t.branding.themePreset || 'solid',
         ssoProvider: t.branding.ssoProvider,
         enforceMfa: true,
         scormEnabled: true,
@@ -75,6 +77,18 @@ export class SettingsComponent {
     this.themeService.setThemeMode(mode);
   }
 
+  onLiveColorChange() {
+    if (this.settingsForm.primaryColor) {
+      this.lms.applyTenantTheme(
+        this.settingsForm.primaryColor,
+        this.settingsForm.accentColor,
+        this.settingsForm.faviconUrl,
+        this.settingsForm.name,
+        this.settingsForm.themePreset
+      );
+    }
+  }
+
   saveSettings() {
     const current = this.lms.activeTenant();
     const updated: Tenant = {
@@ -88,6 +102,7 @@ export class SettingsComponent {
         faviconUrl: this.settingsForm.faviconUrl,
         primaryColor: this.settingsForm.primaryColor,
         accentColor: this.settingsForm.accentColor,
+        themePreset: this.settingsForm.themePreset,
         ssoProvider: this.settingsForm.ssoProvider
       }
     };

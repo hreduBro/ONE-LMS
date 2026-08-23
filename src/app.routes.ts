@@ -9,10 +9,12 @@ import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { CertificatesComponent } from './pages/certificates/certificates.component';
 import { WebinarsComponent } from './pages/webinars/webinars.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, title: 'Dashboard | Multi-Tenant LMS' },
+  { path: 'profile', component: ProfileComponent, title: 'User Profile | Multi-Tenant LMS' },
   { path: 'tenants', component: TenantsComponent, title: 'Organizations | Multi-Tenant LMS' },
   { path: 'tenants/create', component: OrganizationCreateComponent, title: 'Create Organization | Multi-Tenant LMS' },
   { path: 'organization/create', component: OrganizationCreateComponent, title: 'Create Organization | Multi-Tenant LMS' },
