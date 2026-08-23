@@ -188,8 +188,8 @@
 <!-- Certificate Viewer Modal -->
 @if (selectedCert()) {
   @let cert = selectedCert()!;
-  <div class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto animate-in zoom-in-95">
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto animate-modal-card">
       <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-6">
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-amber-500 text-2xl">military_tech</span>

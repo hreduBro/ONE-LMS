@@ -1,5 +1,5 @@
 <header 
-  class="bg-base-100 border-b border-base-300 px-4 lg:px-6 flex items-center justify-between z-20 relative transition-all"
+  class="bg-base-100 border-b border-base-300 px-4 lg:px-6 flex items-center justify-between z-50 relative transition-all"
   [class]="lms.adminLayoutPreferences().headerDensity === 'compact' ? 'h-12' : 'h-16'">
   <!-- Left Side: Toggle button & Tenant Switcher -->
   <div class="flex items-center gap-3 lg:gap-4">
@@ -51,7 +51,7 @@
 
       <!-- Tenant Dropdown Menu -->
       @if (showTenantDropdown()) {
-        <div class="absolute left-0 mt-2 w-88 sm:w-96 bg-base-100 rounded-2xl shadow-2xl border border-base-300 p-3 z-50 animate-in fade-in zoom-in-95 duration-100 space-y-2.5">
+        <div class="absolute left-0 mt-2 w-88 sm:w-96 bg-base-100 rounded-2xl shadow-2xl border border-base-300 p-3 z-50 animate-dropdown space-y-2.5">
           
           <!-- Header with Tenant Count -->
           <div class="flex items-center justify-between px-1 text-xs">
@@ -238,7 +238,7 @@
 
       <!-- Theme Dropdown Popover -->
       @if (showThemeMenu()) {
-        <div class="absolute right-0 mt-2 w-52 bg-base-100 rounded-2xl shadow-xl border border-base-300 p-2 z-50 animate-in fade-in zoom-in-95 duration-100">
+        <div class="absolute right-0 mt-2 w-52 bg-base-100 rounded-2xl shadow-xl border border-base-300 p-2 z-50 animate-dropdown">
           <div class="px-2 py-1 mb-1 border-b border-base-300 text-[10px] font-bold uppercase tracking-wider text-text-secondary">
             Appearance & Dark Mode
           </div>
@@ -303,7 +303,7 @@
       </button>
 
       @if (showNotificationMenu()) {
-        <div class="absolute right-0 mt-2 w-80 bg-base-100 rounded-2xl shadow-xl border border-base-300 p-3 z-50 animate-in fade-in">
+        <div class="absolute right-0 mt-2 w-80 bg-base-100 rounded-2xl shadow-xl border border-base-300 p-3 z-50 animate-dropdown">
           <div class="flex items-center justify-between pb-2 border-b border-base-300">
             <span class="font-semibold text-xs text-text-primary">Tenant Compliance & Activity</span>
             <span class="text-[10px] text-text-secondary">Recent</span>
@@ -343,7 +343,7 @@
 
       <!-- User Dropdown Menu (Includes Profile, Certs, Role Switch, and Logout) -->
       @if (showUserDropdown()) {
-        <div class="absolute right-0 mt-2 w-76 sm:w-80 bg-base-100 rounded-2xl shadow-2xl border border-base-300 p-2.5 z-50 animate-in fade-in zoom-in-95 duration-100 space-y-2">
+        <div class="absolute right-0 mt-2 w-76 sm:w-80 bg-base-100 rounded-2xl shadow-2xl border border-base-300 p-2.5 z-50 animate-dropdown space-y-2">
           
           <!-- User Summary Header -->
           <div class="p-2.5 rounded-xl bg-base-200/70 dark:bg-base-200/40 border border-base-300/60 flex items-center gap-3">
@@ -450,8 +450,8 @@
 
 <!-- Provision New Tenant Modal -->
 @if (showNewTenantModal()) {
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-in zoom-in-95 duration-150">
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-modal-card">
       <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
         <div class="flex items-center gap-2">
           <div class="w-8 h-8 rounded-xl bg-tenant-50 dark:bg-tenant-500/20 flex items-center justify-center text-tenant-600 dark:text-tenant-300">
@@ -562,8 +562,8 @@
 
 <!-- Sign Out Confirmation Modal -->
 @if (showSignOutModal()) {
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-sm p-6 animate-in zoom-in-95 duration-150 text-center space-y-4">
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-sm p-6 animate-modal-card text-center space-y-4">
       <div class="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto">
         <span class="material-symbols-outlined text-3xl">logout</span>
       </div>

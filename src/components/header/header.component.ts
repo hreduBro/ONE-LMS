@@ -24,12 +24,13 @@ export class HeaderComponent {
   elementRef = inject(ElementRef);
   toggleSidebar = output<void>();
 
-  showTenantDropdown = signal(false);
-  showUserDropdown = signal(false);
+  showTenantDropdown = computed(() => this.lms.isNavDropdownOpen('header-tenant'));
+  showUserDropdown = computed(() => this.lms.isNavDropdownOpen('header-user'));
+  showNotificationMenu = computed(() => this.lms.isNavDropdownOpen('header-notifications'));
+  showThemeMenu = computed(() => this.lms.isNavDropdownOpen('header-theme'));
+
   showNewTenantModal = signal(false);
-  showNotificationMenu = signal(false);
   showLayoutModal = signal(false);
-  showThemeMenu = signal(false);
   showBackendConsole = signal(false);
   showSignOutModal = signal(false);
 
@@ -56,10 +57,7 @@ export class HeaderComponent {
   }
 
   closeAllDropdowns() {
-    this.showTenantDropdown.set(false);
-    this.showUserDropdown.set(false);
-    this.showNotificationMenu.set(false);
-    this.showThemeMenu.set(false);
+    this.lms.closeNavDropdown();
     this.tenantSearch.set('');
   }
 
@@ -68,7 +66,9 @@ export class HeaderComponent {
     const target = event.target as HTMLElement;
     // If click is outside the header component, close all dropdown menus
     if (!this.elementRef.nativeElement.contains(target)) {
-      this.closeAllDropdowns();
+      if (this.lms.activeNavDropdown()?.startsWith('header-')) {
+        this.closeAllDropdowns();
+      }
     }
   }
 
@@ -80,35 +80,27 @@ export class HeaderComponent {
 
   toggleTenantDropdown(event?: Event) {
     event?.stopPropagation();
-    const current = this.showTenantDropdown();
-    this.closeAllDropdowns();
-    this.showTenantDropdown.set(!current);
+    this.lms.toggleNavDropdown('header-tenant');
   }
 
   toggleUserDropdown(event?: Event) {
     event?.stopPropagation();
-    const current = this.showUserDropdown();
-    this.closeAllDropdowns();
-    this.showUserDropdown.set(!current);
+    this.lms.toggleNavDropdown('header-user');
   }
 
   toggleNotificationMenu(event?: Event) {
     event?.stopPropagation();
-    const current = this.showNotificationMenu();
-    this.closeAllDropdowns();
-    this.showNotificationMenu.set(!current);
+    this.lms.toggleNavDropdown('header-notifications');
   }
 
   toggleThemeMenu(event?: Event) {
     event?.stopPropagation();
-    const current = this.showThemeMenu();
-    this.closeAllDropdowns();
-    this.showThemeMenu.set(!current);
+    this.lms.toggleNavDropdown('header-theme');
   }
 
   setTheme(mode: 'system' | 'light' | 'dark') {
     this.themeService.setThemeMode(mode);
-    this.showThemeMenu.set(false);
+    this.lms.closeNavDropdown('header-theme');
   }
 
   // New tenant form model

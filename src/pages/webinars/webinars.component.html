@@ -365,11 +365,11 @@
     <!-- 1. Native Mobile Chat & Q&A Bottom Sheet -->
     @if (activeMobileSheet() === 'chat') {
       <div 
-        class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-in fade-in duration-200"
+        class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-modal-backdrop"
         (click)="activeMobileSheet.set(null)">
         
         <div 
-          class="bg-zinc-900 rounded-t-3xl border-t border-white/15 p-4 flex flex-col h-[75vh] max-h-[600px] text-white shadow-2xl animate-in slide-in-from-bottom duration-250"
+          class="bg-zinc-900 rounded-t-3xl border-t border-white/15 p-4 flex flex-col h-[75vh] max-h-[600px] text-white shadow-2xl animate-slide-up-drawer"
           (click)="$event.stopPropagation()">
           
           <!-- Sheet Drag Header -->
@@ -428,11 +428,11 @@
     <!-- 2. Native Mobile Participants Bottom Sheet -->
     @if (activeMobileSheet() === 'participants') {
       <div 
-        class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-in fade-in duration-200"
+        class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-modal-backdrop"
         (click)="activeMobileSheet.set(null)">
         
         <div 
-          class="bg-zinc-900 rounded-t-3xl border-t border-white/15 p-4 flex flex-col max-h-[70vh] text-white shadow-2xl animate-in slide-in-from-bottom duration-250"
+          class="bg-zinc-900 rounded-t-3xl border-t border-white/15 p-4 flex flex-col max-h-[70vh] text-white shadow-2xl animate-slide-up-drawer"
           (click)="$event.stopPropagation()">
           
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
@@ -536,8 +536,8 @@
 
 <!-- Schedule Webinar Modal -->
 @if (showScheduleModal()) {
-  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-5 sm:p-6 animate-in zoom-in-95">
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-5 sm:p-6 animate-modal-card">
       <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-4">
         <h3 class="font-bold text-base text-text-primary flex items-center gap-2">
           <span class="material-symbols-outlined text-tenant-600">video_call</span>

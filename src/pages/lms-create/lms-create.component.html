@@ -1117,10 +1117,10 @@
   <!-- FINAL CREATION CONFIRMATION MODAL                                         -->
   <!-- ========================================================================= -->
   @if (showConfirmModal()) {
-    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in"
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-modal-backdrop"
          (click)="closeConfirmModal()">
       
-      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-md w-full p-6 space-y-5"
+      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-md w-full p-6 space-y-5 animate-modal-card"
            (click)="$event.stopPropagation()">
         
         <div class="w-12 h-12 rounded-2xl bg-tenant-50 dark:bg-tenant-950/80 border border-tenant-200 dark:border-tenant-800 text-tenant-600 flex items-center justify-center mx-auto">
@@ -1184,10 +1184,10 @@
   <!-- CANCEL CONFIRMATION MODAL                                                 -->
   <!-- ========================================================================= -->
   @if (showCancelModal()) {
-    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in"
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-modal-backdrop"
          (click)="showCancelModal.set(false)">
       
-      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-sm w-full p-6 space-y-4 text-center"
+      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-sm w-full p-6 space-y-4 text-center animate-modal-card"
            (click)="$event.stopPropagation()">
         
         <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center mx-auto">

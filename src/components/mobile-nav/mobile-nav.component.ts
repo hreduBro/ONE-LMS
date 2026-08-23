@@ -118,12 +118,12 @@ import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '..
     <!-- Mobile "More" Bottom Sheet Drawer -->
     @if (showMoreDrawer()) {
       <div 
-        class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col justify-end animate-in fade-in duration-200"
+        class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex flex-col justify-end animate-modal-backdrop"
         (click)="showMoreDrawer.set(false)">
         
         <!-- Sheet Container -->
         <div 
-          class="bg-base-100 rounded-t-3xl border-t border-base-300 p-5 space-y-4 max-h-[88vh] overflow-y-auto animate-in slide-in-from-bottom duration-250 shadow-2xl"
+          class="bg-base-100 rounded-t-3xl border-t border-base-300 p-5 space-y-4 max-h-[88vh] overflow-y-auto animate-slide-up-drawer shadow-2xl"
           (click)="$event.stopPropagation()">
           
           <!-- Drag Handle & Header -->

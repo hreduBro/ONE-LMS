@@ -9,8 +9,8 @@ import { NavigationLayoutMode, HeaderDensity, ContentWidthMode } from '../../mod
   selector: 'app-layout-switcher-modal',
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-xl p-6 animate-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+      <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-xl p-6 animate-modal-card max-h-[90vh] overflow-y-auto">
         
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b border-base-300 mb-5">

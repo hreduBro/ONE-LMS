@@ -44,15 +44,15 @@ import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '..
                   }
                   
                   <span class="material-symbols-outlined text-sm transition-transform duration-200"
-                        [class.rotate-180]="activeDropdown() === item.label">
+                        [class.rotate-180]="isDropdownOpen(item.label)">
                     expand_more
                   </span>
                 </button>
 
                 <!-- Popover Submenu with continuous mouse hover bridge -->
-                @if (activeDropdown() === item.label) {
+                @if (isDropdownOpen(item.label)) {
                   <div 
-                    class="absolute left-0 top-full pt-1 w-72 z-50 animate-in fade-in zoom-in-95 duration-100"
+                    class="absolute left-0 top-full pt-1 w-72 z-50 animate-dropdown"
                     (mouseenter)="keepDropdownOpen()"
                     (mouseleave)="onMouseLeave()"
                     (click)="$event.stopPropagation()">
@@ -108,6 +108,7 @@ import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '..
               <!-- Standard Direct Link Navigation Item -->
               <a 
                 [routerLink]="item.route"
+                (click)="closeDropdown()"
                 class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs transition-all flex-shrink-0 active:scale-[0.98] select-none cursor-pointer focus:outline-none focus:ring-0 outline-none"
                 [class]="isParentActive(item) ? 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 font-bold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/80 font-medium'">
                 
@@ -139,7 +140,6 @@ export class TopMenuComponent {
   router = inject(Router);
   elementRef = inject(ElementRef);
   
-  activeDropdown = signal<string | null>(null);
   private hoverTimeout: any = null;
 
   navItems: NavItem[] = APP_NAV_ITEMS;
@@ -153,19 +153,22 @@ export class TopMenuComponent {
     });
   }
 
+  isDropdownOpen(label: string): boolean {
+    return this.lms.isNavDropdownOpen('topmenu-' + label);
+  }
+
   toggleDropdown(label: string, event: MouseEvent) {
     event.stopPropagation();
     if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
-    if (this.activeDropdown() === label) {
-      this.activeDropdown.set(null);
-    } else {
-      this.activeDropdown.set(label);
-    }
+    this.lms.toggleNavDropdown('topmenu-' + label);
   }
 
   onMouseEnter(label: string) {
     if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
-    this.activeDropdown.set(label);
+    // Only switch on hover if a top menu dropdown is ALREADY open
+    if (this.lms.activeNavDropdown()?.startsWith('topmenu-')) {
+      this.lms.openNavDropdown('topmenu-' + label);
+    }
   }
 
   keepDropdownOpen() {
@@ -175,19 +178,25 @@ export class TopMenuComponent {
   onMouseLeave() {
     if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
     this.hoverTimeout = setTimeout(() => {
-      this.activeDropdown.set(null);
-    }, 200);
+      if (this.lms.activeNavDropdown()?.startsWith('topmenu-')) {
+        this.lms.closeNavDropdown();
+      }
+    }, 300);
   }
 
   closeDropdown() {
     if (this.hoverTimeout) clearTimeout(this.hoverTimeout);
-    this.activeDropdown.set(null);
+    if (this.lms.activeNavDropdown()?.startsWith('topmenu-')) {
+      this.lms.closeNavDropdown();
+    }
   }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.closeDropdown();
+      if (this.lms.activeNavDropdown()?.startsWith('topmenu-')) {
+        this.closeDropdown();
+      }
     }
   }
 

@@ -567,10 +567,10 @@
   <!-- 6. LMS DETAILS & ARCHITECTURE INSPECTION MODAL                            -->
   <!-- ========================================================================= -->
   @if (inspectingLms()) {
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-150"
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-modal-backdrop"
          (click)="closeInspect()">
       
-      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-2xl w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto"
+      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl max-w-2xl w-full p-6 space-y-6 max-h-[90vh] overflow-y-auto animate-modal-card"
            (click)="$event.stopPropagation()">
         
         <!-- Modal Header -->

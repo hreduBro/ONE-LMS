@@ -459,6 +459,106 @@
     html.dark ::-webkit-scrollbar-thumb {
       background: #475569;
     }
+
+    /* ========================================================================= */
+    /* MOTION DESIGN SYSTEM: KEYFRAMES & FLUID EASING                            */
+    /* ========================================================================= */
+    @keyframes modalBackdropFadeIn {
+      0% { opacity: 0; backdrop-filter: blur(0px); }
+      100% { opacity: 1; backdrop-filter: blur(4px); }
+    }
+    .animate-modal-backdrop {
+      animation: modalBackdropFadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes modalPopIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(16px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .animate-modal-card {
+      animation: modalPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes dropdownSlideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .animate-dropdown {
+      animation: dropdownSlideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transform-origin: top right;
+    }
+
+    @keyframes flyoutSlideRight {
+      0% {
+        opacity: 0;
+        transform: translateX(-10px) scale(0.96);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+    .animate-flyout {
+      animation: flyoutSlideRight 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      transform-origin: top left;
+    }
+
+    @keyframes accordionExpand {
+      0% {
+        opacity: 0;
+        max-height: 0;
+        transform: translateY(-6px);
+      }
+      100% {
+        opacity: 1;
+        max-height: 600px;
+        transform: translateY(0);
+      }
+    }
+    .animate-accordion {
+      animation: accordionExpand 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      overflow: hidden;
+    }
+
+    @keyframes toastSlideIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-16px) scale(0.94);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .animate-toast {
+      animation: toastSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUpDrawer {
+      0% {
+        opacity: 0;
+        transform: translateY(100%);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .animate-slide-up-drawer {
+      animation: slideUpDrawer 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 <script type="importmap">
 {

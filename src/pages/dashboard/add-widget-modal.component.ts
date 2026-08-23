@@ -8,8 +8,8 @@ import { DashboardWidget, DashboardWidgetType } from '../../models/lms.model';
   selector: 'app-add-widget-modal',
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl max-h-[85vh] flex flex-col overflow-hidden animate-modal-card">
         
         <!-- Header -->
         <div class="p-6 border-b border-base-300 flex items-center justify-between gap-4">

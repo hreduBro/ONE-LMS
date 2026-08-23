@@ -2185,6 +2185,27 @@ export class LmsDataService {
   // Flash Alert / Toast state
   currentToast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
 
+  // Global Unified Dropdown Coordinator across Header and Top-Menu Navigation
+  activeNavDropdown = signal<string | null>(null);
+
+  openNavDropdown(id: string) {
+    this.activeNavDropdown.set(id);
+  }
+
+  closeNavDropdown(id?: string) {
+    if (!id || this.activeNavDropdown() === id) {
+      this.activeNavDropdown.set(null);
+    }
+  }
+
+  toggleNavDropdown(id: string) {
+    this.activeNavDropdown.set(this.activeNavDropdown() === id ? null : id);
+  }
+
+  isNavDropdownOpen(id: string): boolean {
+    return this.activeNavDropdown() === id;
+  }
+
   showToast(message: string, type: 'success' | 'error' | 'info' = 'success', durationMs: number = 4000) {
     this.currentToast.set({ message, type });
     if (durationMs > 0) {

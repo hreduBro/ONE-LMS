@@ -635,11 +635,11 @@
 <!-- ========================================================================= -->
 @if (showCurriculumDrawer()) {
   <div 
-    class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-in fade-in duration-200"
+    class="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex flex-col justify-end animate-modal-backdrop"
     (click)="showCurriculumDrawer.set(false)">
     
     <div 
-      class="bg-base-100 rounded-t-3xl border-t border-base-300 p-5 space-y-4 max-h-[85vh] overflow-y-auto text-text-primary shadow-2xl animate-in slide-in-from-bottom duration-250"
+      class="bg-base-100 rounded-t-3xl border-t border-base-300 p-5 space-y-4 max-h-[85vh] overflow-y-auto text-text-primary shadow-2xl animate-slide-up-drawer"
       (click)="$event.stopPropagation()">
       
       <div class="flex items-center justify-between pb-3 border-b border-base-300">
@@ -704,8 +704,8 @@
 @if (showCertificateModal() && earnedCertificate()) {
   @let cert = earnedCertificate()!;
   
-  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-2xl p-6 sm:p-8 space-y-6 animate-in zoom-in-95">
+  <div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-2xl p-6 sm:p-8 space-y-6 animate-modal-card">
       <div class="flex items-center justify-between pb-4 border-b border-base-300">
         <h3 class="font-bold text-base text-text-primary flex items-center gap-2">
           <span class="material-symbols-outlined text-amber-500">verified</span>

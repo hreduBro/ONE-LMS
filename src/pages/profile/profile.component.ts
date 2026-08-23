@@ -728,8 +728,8 @@ interface ProfileTab {
 
     <!-- Avatar Picker Modal -->
     @if (showAvatarPicker()) {
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-6 animate-in zoom-in-95 duration-150 space-y-4">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+        <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-6 animate-modal-card space-y-4">
           <div class="flex items-center justify-between border-b border-base-300 pb-3">
             <h3 class="font-bold text-base text-text-primary">Choose Profile Avatar</h3>
             <button (click)="showAvatarPicker.set(false)" class="text-text-secondary hover:text-text-primary p-1 rounded-lg">
@@ -758,7 +758,7 @@ interface ProfileTab {
                 placeholder="https://..." 
                 class="flex-1 px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500" />
               <button 
-                type="button"
+                type="button" 
                 [disabled]="!customAvatarUrl.trim()"
                 (click)="applyCustomAvatar()"
                 class="px-3.5 py-2 rounded-xl bg-tenant-500 disabled:opacity-50 text-white text-xs font-semibold">
@@ -772,8 +772,8 @@ interface ProfileTab {
 
     <!-- Sign Out Confirmation Modal -->
     @if (showSignOutConfirm()) {
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-sm p-6 animate-in zoom-in-95 duration-150 text-center space-y-4">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+        <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-sm p-6 animate-modal-card text-center space-y-4">
           <div class="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto">
             <span class="material-symbols-outlined text-3xl">logout</span>
           </div>
