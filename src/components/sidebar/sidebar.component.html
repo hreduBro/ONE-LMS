@@ -7,7 +7,7 @@
 }
 
 <aside 
-  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full overflow-hidden flex-shrink-0
+  class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full flex-shrink-0
          fixed lg:static inset-y-0 left-0 z-50 lg:z-30 shadow-2xl lg:shadow-none"
   [class.max-lg:translate-x-0]="isOpen()"
   [class.max-lg:-translate-x-full]="!isOpen()"
@@ -16,15 +16,18 @@
   [class.lg:w-20]="isCompact() && !isTopMenu()"
   [class.lg:w-64]="!isCompact() && !isTopMenu() && isOpen()"
   [class.lg:w-0]="!isCompact() && !isTopMenu() && !isOpen()"
-  [class.lg:border-r-0]="!isCompact() && !isTopMenu() && !isOpen()">
+  [class.lg:border-r-0]="!isCompact() && !isTopMenu() && !isOpen()"
+  [class.lg:overflow-visible]="isCompact()"
+  [class.overflow-hidden]="!isCompact() && !isOpen()">
   
   <!-- ========================================================================= -->
   <!-- 1. SIDEBAR HEADER: LOGO & BRANDING -->
   <!-- ========================================================================= -->
-  <div class="h-16 border-b border-base-300 flex items-center justify-between px-3.5 gap-2 overflow-hidden flex-shrink-0"
+  <div class="h-16 border-b border-base-300 flex items-center justify-between px-3.5 gap-2 flex-shrink-0 relative"
        [class.lg:justify-center]="isCompact()">
     
-    <div class="flex items-center gap-3 min-w-0" [class.lg:justify-center]="isCompact()">
+    <div class="flex items-center gap-2.5 min-w-0" [class.lg:justify-center]="isCompact()">
+      <!-- Brand Logo Box -->
       <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 p-1 shadow-2xs border border-base-300/80 flex items-center justify-center overflow-hidden flex-shrink-0"
            [title]="lms.activeTenant().name">
         @if (lms.activeTenant().branding.logoUrl) {
@@ -59,8 +62,12 @@
   <!-- ========================================================================= -->
   <!-- 2. NAVIGATION MENU -->
   <!-- ========================================================================= -->
-  <nav class="flex-1 overflow-y-auto px-2.5 py-3 space-y-1 overflow-x-hidden">
-    <!-- Category label -->
+  <nav class="flex-1 px-2.5 py-3 space-y-1.5"
+       [class.lg:overflow-visible]="isCompact()"
+       [class.overflow-y-auto]="!isCompact()"
+       [class.overflow-x-hidden]="!isCompact()">
+    
+    <!-- Category label (Standard sidebar only) -->
     @if (!isCompact()) {
       <div class="px-2.5 pb-1 text-[10px] font-semibold text-text-secondary uppercase tracking-wider">
         <span>Navigation</span>
@@ -71,40 +78,96 @@
       @if (isAllowed(item.roles)) {
         
         @if (isCompact()) {
-          <!-- Compact Rail Item (Icon-Centric) -->
-          <a 
-            [routerLink]="item.route || (item.children ? item.children[0].route : '/dashboard')"
-            (click)="onNavItemClick()"
-            [routerLinkActive]="item.children ? '' : 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-bold'"
-            [class.bg-tenant-50]="item.children && isRouteActive(item.route, item.children)"
-            [class.text-tenant-700]="item.children && isRouteActive(item.route, item.children)"
-            [class.dark:bg-tenant-500/20]="item.children && isRouteActive(item.route, item.children)"
-            [class.dark:text-tenant-200]="item.children && isRouteActive(item.route, item.children)"
-            [class.ring-1]="item.children && isRouteActive(item.route, item.children)"
-            [class.ring-tenant-500/40]="item.children && isRouteActive(item.route, item.children)"
-            [class.font-bold]="item.children && isRouteActive(item.route, item.children)"
-            [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-            [title]="item.label"
-            class="flex flex-col items-center justify-center p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200/80 transition-all relative group">
-            
-            <!-- Active Indicator Pill on left -->
-            @if ((!item.children && isRouteActive(item.route)) || (item.children && isRouteActive(item.route, item.children))) {
-              <span class="absolute left-0.5 top-3 bottom-3 w-1 rounded-r-full bg-tenant-500"></span>
-            }
+          <!-- ============================================================= -->
+          <!-- COMPACT RAIL ITEM WITH FLOATING CHILD MENU (FLYOUT)           -->
+          <!-- ============================================================= -->
+          <div class="relative group/rail-item flex justify-center">
+            <!-- Compact Rail Icon Button (Matches Reference Image) -->
+            <a 
+              [routerLink]="item.route || (item.children ? item.children[0].route : '/dashboard')"
+              (click)="onNavItemClick()"
+              [title]="item.label"
+              class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all relative select-none cursor-pointer"
+              [class]="isRouteActive(item.route, item.children) 
+                ? 'border-2 border-tenant-500 bg-white dark:bg-slate-900 text-tenant-600 dark:text-tenant-300 shadow-sm ring-2 ring-tenant-500/20' 
+                : 'border border-transparent text-text-secondary hover:text-text-primary hover:bg-base-200/80 hover:border-base-300/60'">
+              
+              <span class="material-symbols-outlined text-2xl transition-transform group-hover/rail-item:scale-110">
+                {{ item.icon }}
+              </span>
+            </a>
 
-            <span class="material-symbols-outlined text-xl transition-transform group-hover:scale-110">
-              {{ item.icon }}
-            </span>
-            <span class="text-[9px] font-medium text-center truncate max-w-full mt-0.5 leading-tight text-text-secondary group-hover:text-text-primary">
-              {{ item.label.split(' ')[0] }}
-            </span>
+            <!-- Popover Flyout Menu (Shown on Hover / Focus beside the Rail Item) -->
+            @if (item.children && item.children.length > 0) {
+              <div 
+                class="absolute left-full top-0 ml-3.5 w-64 z-50 invisible opacity-0 translate-x-1 group-hover/rail-item:visible group-hover/rail-item:opacity-100 group-hover/rail-item:translate-x-0 transition-all duration-150 pointer-events-none group-hover/rail-item:pointer-events-auto">
+                
+                <!-- Seamless invisible hover bridge to ensure effortless mouse transition from rail to popover -->
+                <div class="absolute -left-4 top-0 bottom-0 w-4"></div>
 
-            @if (item.badge) {
-              <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-tenant-500 ring-1 ring-base-100"></span>
+                <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl overflow-hidden py-1">
+                  <!-- Flyout Header: Uppercase category name like in user reference image -->
+                  <div class="px-4 py-2.5 text-[11px] font-bold tracking-wider text-text-secondary uppercase border-b border-base-300/80 flex items-center justify-between">
+                    <span>{{ item.label.toUpperCase() }}</span>
+                    @if (item.badge) {
+                      <span class="text-[9px] px-1.5 py-0.2 rounded-md font-semibold bg-tenant-100 dark:bg-tenant-950/80 text-tenant-700 dark:text-tenant-300">
+                        {{ item.badge }}
+                      </span>
+                    }
+                  </div>
+
+                  <!-- Flyout Child Menu Items -->
+                  <div class="p-1.5 space-y-0.5">
+                    @for (child of item.children; track child.route) {
+                      <a 
+                        [routerLink]="child.route"
+                        (click)="onNavItemClick()"
+                        routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 font-semibold ring-1 ring-tenant-500/30"
+                        [routerLinkActiveOptions]="{ exact: true }"
+                        #flyoutChildRla="routerLinkActive"
+                        class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-colors group/child cursor-pointer"
+                        [class]="flyoutChildRla.isActive ? 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 font-semibold' : 'text-text-secondary hover:text-text-primary hover:bg-base-200/80 font-medium'">
+                        
+                        <div class="flex items-center gap-2.5 min-w-0">
+                          <span class="material-symbols-outlined text-base flex-shrink-0"
+                                [class]="flyoutChildRla.isActive ? 'text-tenant-600 dark:text-tenant-300' : 'text-text-secondary group-hover/child:text-text-primary'">
+                            {{ child.icon }}
+                          </span>
+                          <span class="truncate">{{ child.label }}</span>
+                        </div>
+
+                        <div class="flex items-center gap-1.5 flex-shrink-0 ml-2">
+                          @if (child.badge) {
+                            <span class="text-[8px] px-1.5 py-0.2 rounded font-bold uppercase"
+                                  [class]="child.badge === 'Wizard' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'bg-base-300 text-text-secondary'">
+                              {{ child.badge }}
+                            </span>
+                          }
+                          @if (flyoutChildRla.isActive) {
+                            <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-300">check</span>
+                          }
+                        </div>
+                      </a>
+                    }
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <!-- Single Item Tooltip Popover -->
+              <div 
+                class="absolute left-full top-1/2 -translate-y-1/2 ml-3.5 px-3 py-1.5 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-xl text-xs font-semibold shadow-xl whitespace-nowrap invisible opacity-0 translate-x-1 group-hover/rail-item:visible group-hover/rail-item:opacity-100 group-hover/rail-item:translate-x-0 transition-all duration-150 pointer-events-none z-50 flex items-center gap-1.5">
+                <span>{{ item.label }}</span>
+                @if (item.badge) {
+                  <span class="text-[9px] px-1 py-0.2 rounded bg-tenant-500 text-white font-bold">{{ item.badge }}</span>
+                }
+              </div>
             }
-          </a>
+          </div>
+
         } @else {
-          <!-- Standard Row (Full Width with Icon + Label + Badge) -->
+          <!-- ============================================================= -->
+          <!-- STANDARD EXPANDED SIDEBAR ROW (FULL WIDTH)                    -->
+          <!-- ============================================================= -->
           @if (item.children) {
             <!-- Expandable Group with Sub-menu Items -->
             <div class="space-y-1">

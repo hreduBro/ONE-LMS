@@ -37,7 +37,7 @@ export class SidebarComponent {
   isCompact = computed(() => this.lms.adminLayoutPreferences().navigationMode === 'compact_rail');
   isTopMenu = computed(() => this.lms.adminLayoutPreferences().navigationMode === 'top_menu');
 
-  // Expanded state for nested menu items
+  // Expanded state for nested menu items in full sidebar mode
   expandedMenus = signal<Record<string, boolean>>({
     'Organizations': true
   });
@@ -48,8 +48,7 @@ export class SidebarComponent {
       label: 'Organizations', 
       route: '/tenants',
       icon: 'corporate_fare', 
-      roles: ['super_admin', 'tenant_admin'], 
-      badge: 'Multi-Tenant',
+      roles: ['super_admin', 'tenant_admin'],
       children: [
         { label: 'Organization List', route: '/tenants', icon: 'domain' },
         { label: 'Create Organization', route: '/tenants/create', icon: 'domain_add', badge: 'Wizard' }
@@ -81,11 +80,11 @@ export class SidebarComponent {
 
   isRouteActive(route?: string, children?: NavChildItem[]): boolean {
     const currentUrl = this.router.url;
-    if (route && currentUrl.startsWith(route)) {
+    if (route && (currentUrl === route || (route !== '/dashboard' && currentUrl.startsWith(route)))) {
       return true;
     }
     if (children) {
-      return children.some(c => currentUrl.startsWith(c.route));
+      return children.some(c => c.route === currentUrl || (c.route !== '/dashboard' && currentUrl.startsWith(c.route)));
     }
     return false;
   }

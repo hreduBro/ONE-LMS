@@ -3,12 +3,12 @@
   [class]="lms.adminLayoutPreferences().headerDensity === 'compact' ? 'h-12' : 'h-16'">
   <!-- Left Side: Toggle button & Tenant Switcher -->
   <div class="flex items-center gap-3 lg:gap-4">
-    <!-- Sidebar Toggle Button (always visible on mobile/tablet; visible on desktop when not in top_menu mode) -->
+    <!-- Sidebar Toggle Button (visible on mobile/tablet; visible on desktop only for standard sidebar mode) -->
     <button 
       id="btn-toggle-sidebar"
       (click)="toggleSidebar.emit()"
       class="p-2 rounded-lg text-text-secondary hover:bg-base-200 transition-colors focus:outline-none flex items-center justify-center cursor-pointer"
-      [class.lg:hidden]="lms.adminLayoutPreferences().navigationMode === 'top_menu'"
+      [class.lg:hidden]="lms.adminLayoutPreferences().navigationMode === 'top_menu' || lms.adminLayoutPreferences().navigationMode === 'compact_rail'"
       title="Toggle Navigation Menu"
       aria-label="Toggle Navigation Menu">
       <span class="material-symbols-outlined text-xl">menu</span>
