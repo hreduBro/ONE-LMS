@@ -113,8 +113,22 @@ import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-sw
               class="p-3 rounded-2xl bg-base-200 hover:bg-base-300 border border-base-300/60 flex items-center gap-3 transition-colors">
               <span class="material-symbols-outlined text-tenant-600 text-xl">corporate_fare</span>
               <div class="text-left">
-                <span class="font-bold text-xs text-text-primary block">Tenants Hub</span>
-                <span class="text-[10px] text-text-secondary block">Multi-tenant switch</span>
+                <span class="font-bold text-xs text-text-primary block">Organizations</span>
+                <span class="text-[10px] text-text-secondary block">Directory & switch</span>
+              </div>
+            </a>
+
+            <a 
+              routerLink="/tenants/create" 
+              (click)="showMoreDrawer.set(false)"
+              class="p-3 rounded-2xl bg-tenant-500/10 hover:bg-tenant-500/20 border border-tenant-500/30 flex items-center gap-3 transition-colors">
+              <span class="material-symbols-outlined text-tenant-600 text-xl">domain_add</span>
+              <div class="text-left">
+                <span class="font-bold text-xs text-text-primary block flex items-center gap-1">
+                  Create Org
+                  <span class="text-[8px] bg-tenant-500 text-white px-1 py-0.2 rounded font-bold">New</span>
+                </span>
+                <span class="text-[10px] text-text-secondary block">4-Step Wizard</span>
               </div>
             </a>
 
@@ -122,7 +136,7 @@ import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-sw
               routerLink="/users" 
               (click)="showMoreDrawer.set(false)"
               class="p-3 rounded-2xl bg-base-200 hover:bg-base-300 border border-base-300/60 flex items-center gap-3 transition-colors">
-              <span class="material-symbols-outlined text-tenant-600 text-xl">groups</span>
+              <span class="material-symbols-outlined text-indigo-500 text-xl">groups</span>
               <div class="text-left">
                 <span class="font-bold text-xs text-text-primary block">Users & Teams</span>
                 <span class="text-[10px] text-text-secondary block">Directory & roles</span>
@@ -137,17 +151,6 @@ import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-sw
               <div class="text-left">
                 <span class="font-bold text-xs text-text-primary block">Certificates</span>
                 <span class="text-[10px] text-text-secondary block">Credentials vault</span>
-              </div>
-            </a>
-
-            <a 
-              routerLink="/settings" 
-              (click)="showMoreDrawer.set(false)"
-              class="p-3 rounded-2xl bg-base-200 hover:bg-base-300 border border-base-300/60 flex items-center gap-3 transition-colors">
-              <span class="material-symbols-outlined text-tenant-600 text-xl">palette</span>
-              <div class="text-left">
-                <span class="font-bold text-xs text-text-primary block">Settings</span>
-                <span class="text-[10px] text-text-secondary block">Branding & theme</span>
               </div>
             </a>
           </div>

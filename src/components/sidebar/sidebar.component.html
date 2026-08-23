@@ -67,15 +67,19 @@
       </div>
     }
 
-    @for (item of navItems; track item.route) {
+    @for (item of navItems; track item.label) {
       @if (isAllowed(item.roles)) {
         
         @if (isCompact()) {
           <!-- Compact Rail Item (Icon-Centric) -->
           <a 
-            [routerLink]="item.route"
+            [routerLink]="item.route || (item.children ? item.children[0].route : '/dashboard')"
             (click)="onNavItemClick()"
-            routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-semibold"
+            [routerLinkActive]="item.children ? '' : 'bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 ring-1 ring-tenant-500/40 font-semibold'"
+            [class.bg-tenant-50]="item.children && isRouteActive(item.route, item.children)"
+            [class.text-tenant-700]="item.children && isRouteActive(item.route, item.children)"
+            [class.dark:bg-tenant-500/20]="item.children && isRouteActive(item.route, item.children)"
+            [class.dark:text-tenant-200]="item.children && isRouteActive(item.route, item.children)"
             [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
             [title]="item.label"
             class="flex flex-col items-center justify-center p-2 rounded-xl text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all relative group">
@@ -88,30 +92,90 @@
             </span>
 
             @if (item.badge) {
-              <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-500 ring-1 ring-base-100"></span>
+              <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-tenant-500 ring-1 ring-base-100"></span>
             }
           </a>
         } @else {
           <!-- Standard Row (Full Width with Icon + Label + Badge) -->
-          <a 
-            [routerLink]="item.route"
-            (click)="onNavItemClick()"
-            routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
-            [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
-            [title]="item.label"
-            class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative active:scale-[0.98]">
-            
-            <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
-              {{ item.icon }}
-            </span>
+          @if (item.children) {
+            <!-- Expandable Group with Sub-menu Items -->
+            <div class="space-y-1">
+              <div 
+                (click)="toggleMenu(item.label)"
+                class="flex items-center justify-between px-3 py-2 rounded-xl text-xs cursor-pointer transition-all group select-none"
+                [class]="isRouteActive(item.route, item.children) 
+                  ? 'bg-tenant-500/10 text-tenant-700 dark:text-tenant-200 font-semibold border border-tenant-500/20' 
+                  : 'text-text-secondary hover:text-text-primary hover:bg-base-200'">
+                
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
+                    {{ item.icon }}
+                  </span>
+                  <span class="truncate font-medium">{{ item.label }}</span>
+                </div>
 
-            <span class="truncate flex-1 font-medium">{{ item.label }}</span>
-            @if (item.badge) {
-              <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
-                {{ item.badge }}
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                  @if (item.badge) {
+                    <span class="text-[9px] px-1.5 py-0.2 rounded-md bg-tenant-100 text-tenant-700 dark:bg-tenant-950/80 dark:text-tenant-200 font-semibold">
+                      {{ item.badge }}
+                    </span>
+                  }
+                  <span class="material-symbols-outlined text-sm transition-transform duration-200"
+                        [class.rotate-180]="isMenuExpanded(item.label)">
+                    expand_more
+                  </span>
+                </div>
+              </div>
+
+              <!-- Collapsible Sub-menu Items -->
+              @if (isMenuExpanded(item.label)) {
+                <div class="pl-3 pr-1 py-1 space-y-0.5 border-l-2 border-tenant-500/30 ml-4 animate-in fade-in slide-in-from-top-1 duration-150">
+                  @for (child of item.children; track child.route) {
+                    <a 
+                      [routerLink]="child.route"
+                      (click)="onNavItemClick()"
+                      routerLinkActive="bg-tenant-500 text-white font-semibold shadow-xs"
+                      [routerLinkActiveOptions]="{ exact: true }"
+                      class="flex items-center justify-between px-2.5 py-1.5 rounded-lg text-[11px] text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group">
+                      <div class="flex items-center gap-2 truncate">
+                        <span class="material-symbols-outlined text-sm flex-shrink-0 group-hover:scale-110 transition-transform">
+                          {{ child.icon }}
+                        </span>
+                        <span class="truncate">{{ child.label }}</span>
+                      </div>
+                      @if (child.badge) {
+                        <span class="text-[8px] uppercase tracking-wider px-1 py-0.2 rounded font-bold"
+                              [ngClass]="child.badge === 'Wizard' ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200' : 'bg-base-300 text-text-secondary'">
+                          {{ child.badge }}
+                        </span>
+                      }
+                    </a>
+                  }
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Regular Nav Item -->
+            <a 
+              [routerLink]="item.route"
+              (click)="onNavItemClick()"
+              routerLinkActive="bg-tenant-50 dark:bg-tenant-500/20 text-tenant-700 dark:text-tenant-200 border border-tenant-500/30 font-semibold shadow-xs"
+              [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+              [title]="item.label"
+              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs text-text-secondary hover:text-text-primary hover:bg-base-200 transition-all group relative active:scale-[0.98]">
+              
+              <span class="material-symbols-outlined text-lg transition-transform group-hover:scale-110 flex-shrink-0">
+                {{ item.icon }}
               </span>
-            }
-          </a>
+
+              <span class="truncate flex-1 font-medium">{{ item.label }}</span>
+              @if (item.badge) {
+                <span class="text-[9px] px-1.5 py-0.5 rounded-md bg-indigo-100 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border dark:border-indigo-800/60 font-semibold">
+                  {{ item.badge }}
+                </span>
+              }
+            </a>
+          }
         }
 
       }
