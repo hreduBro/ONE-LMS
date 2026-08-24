@@ -34,7 +34,8 @@ export const APP_NAV_ITEMS: NavItem[] = [
     badge: 'Multi',
     description: 'Manage workspace tenants & subsidiaries',
     children: [
-      { label: 'Organization List', route: '/tenants', icon: 'domain', description: 'Browse and switch workspaces' },
+      { label: 'All Organizations', route: '/tenants', icon: 'domain', description: 'Browse and switch workspaces' },
+      { label: 'Organization Dashboard', route: '/organization/dashboard', icon: 'space_dashboard', badge: 'Overview', description: 'Platform-wide status, health & capacity metrics' },
       { label: 'Create Organization', route: '/tenants/create', icon: 'domain_add', badge: 'Wizard', description: 'Step-by-step enterprise onboarding' }
     ]
   },

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { OrganizationDashboardComponent } from './pages/organization-dashboard/organization-dashboard.component';
 import { TenantsComponent } from './pages/tenants/tenants.component';
 import { OrganizationCreateComponent } from './pages/organization-create/organization-create.component';
 import { LmsListComponent } from './pages/lms-list/lms-list.component';
@@ -16,6 +17,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
 export const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent, title: 'Dashboard | Multi-Tenant LMS' },
+  { path: 'organization/dashboard', component: OrganizationDashboardComponent, title: 'Organization Dashboard | Multi-Tenant LMS' },
+  { path: 'tenants/dashboard', redirectTo: 'organization/dashboard', pathMatch: 'full' },
   { path: 'profile', component: ProfileComponent, title: 'User Profile | Multi-Tenant LMS' },
   { path: 'tenants', component: TenantsComponent, title: 'Organizations | Multi-Tenant LMS' },
   { path: 'tenants/create', component: OrganizationCreateComponent, title: 'Create Organization | Multi-Tenant LMS' },

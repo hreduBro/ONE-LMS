@@ -31,6 +31,15 @@ import {
   LmsAdminInfo,
   OrganizationCapacitySnapshot
 } from '../models/lms-instance.model';
+import {
+  OrgDashboardWidget,
+  OrgDashboardWidgetType,
+  OrgDashboardLayout,
+  DEFAULT_ORG_DASHBOARD_LAYOUT,
+  DEFAULT_ORG_DASHBOARD_WIDGETS,
+  ORG_DASHBOARD_PRESETS,
+  ORG_WIDGET_CATALOG
+} from '../models/organization-dashboard.model';
 
 const INITIAL_TENANTS: Tenant[] = [
   {
@@ -2181,6 +2190,235 @@ export class LmsDataService {
       }
     }
   ]);
+
+  // Organization Dashboard Studio Layout State
+  orgDashboardLayout = signal<OrgDashboardLayout>(JSON.parse(JSON.stringify(DEFAULT_ORG_DASHBOARD_LAYOUT)));
+
+  // Organization Status Summary Breakdown
+  orgStatusSummary = computed(() => {
+    const tenants = this.tenants();
+    const drafts = this.organizationDrafts();
+    const active = tenants.filter(t => t.status === 'Active').length;
+    const inProgress = tenants.filter(t => t.status === 'In-Progress').length;
+    const suspended = tenants.filter(t => t.status === 'Suspended' || (t.status as any) === 'Trial' || (t.status as any) === 'Inactive').length;
+    const draftCount = drafts.length;
+    const total = tenants.length + draftCount;
+
+    return {
+      total,
+      active,
+      inProgress,
+      suspended,
+      draft: draftCount,
+      activePct: total > 0 ? Math.round((active / total) * 100) : 0,
+      inProgressPct: total > 0 ? Math.round((inProgress / total) * 100) : 0,
+      suspendedPct: total > 0 ? Math.round((suspended / total) * 100) : 0,
+      draftPct: total > 0 ? Math.round((draftCount / total) * 100) : 0
+    };
+  });
+
+  // Top Organizations by LMS Instance Count
+  topOrganizationsByLms = computed(() => {
+    const tenants = this.tenants();
+    const lmsList = this.lmsInstances();
+    return tenants.map(t => {
+      const orgLms = lmsList.filter(l => l.organizationId === t.id);
+      return {
+        tenant: t,
+        lmsCount: orgLms.length,
+        activeLmsCount: orgLms.filter(l => l.status === 'Active').length,
+        totalStorageGb: t.resourceAllocation?.fileStorageGb || t.stats?.storageLimitGb || 500,
+        totalDbGb: t.resourceAllocation?.databaseSizeGb || 200
+      };
+    }).sort((a, b) => b.lmsCount - a.lmsCount);
+  });
+
+  // Organization Admin Directory List
+  orgAdminDirectoryList = computed(() => {
+    return this.tenants().map(t => ({
+      tenantId: t.id,
+      tenantNumericId: t.numericId,
+      tenantName: t.name,
+      tenantLogo: t.branding?.logoUrl,
+      adminName: t.adminInfo?.adminName || 'System Admin',
+      adminEmail: t.adminInfo?.contactEmail || t.adminEmail,
+      contactNumber: t.adminInfo?.contactNumber || 'N/A',
+      status: t.status,
+      division: t.address?.division || 'N/A',
+      district: t.address?.district || '',
+      isVerified: true
+    }));
+  });
+
+  // Timezone Distribution breakdown
+  orgTimezoneDistribution = computed(() => {
+    const map: Record<string, { timezone: string; count: number; orgNames: string[] }> = {};
+    this.tenants().forEach(t => {
+      const tz = t.timezone || 'Asia/Dhaka';
+      if (!map[tz]) {
+        map[tz] = { timezone: tz, count: 0, orgNames: [] };
+      }
+      map[tz].count++;
+      map[tz].orgNames.push(t.name);
+    });
+    return Object.values(map).sort((a, b) => b.count - a.count);
+  });
+
+  // Resource Allocation Leaderboard
+  orgResourceLeaderboard = computed(() => {
+    const totalInfraDb = this.dbTotalInfraGb;
+    const totalInfraFile = this.fileTotalInfraGb;
+    return this.tenants().map(t => {
+      const dbGb = t.resourceAllocation?.databaseSizeGb || 200;
+      const fileGb = t.resourceAllocation?.fileStorageGb || 500;
+      const threshold = t.resourceAllocation?.usageAlertThresholdPct || 80;
+      return {
+        tenant: t,
+        dbGb,
+        fileGb,
+        totalGb: dbGb + fileGb,
+        dbPctOfInfra: Math.round((dbGb / totalInfraDb) * 100 * 10) / 10,
+        filePctOfInfra: Math.round((fileGb / totalInfraFile) * 100 * 10) / 10,
+        threshold,
+        sharingMode: t.resourceAllocation?.dataSharingMode || 'Yes – Shared'
+      };
+    }).sort((a, b) => b.totalGb - a.totalGb);
+  });
+
+  // Recent Organization Activity Feed
+  recentOrgActivityFeed = computed(() => {
+    const auditLogs = this.auditLogs();
+    const orgEvents: {
+      id: string;
+      title: string;
+      description: string;
+      orgName: string;
+      timestamp: string;
+      type: 'created' | 'activated' | 'deactivated' | 'updated' | 'draft';
+      severity: 'info' | 'success' | 'danger' | 'warning';
+      actor: string;
+    }[] = [];
+
+    // Derive from audit logs that touch organizations / tenants
+    auditLogs.forEach(log => {
+      const isOrgRelated = log.action.toLowerCase().includes('tenant') || 
+                           log.action.toLowerCase().includes('organization') || 
+                           log.target.toLowerCase().includes('tenant') ||
+                           log.target.toLowerCase().includes('organization');
+      if (isOrgRelated) {
+        let type: 'created' | 'activated' | 'deactivated' | 'updated' | 'draft' = 'updated';
+        if (log.action.toLowerCase().includes('created') || log.action.toLowerCase().includes('provisioned')) {
+          type = 'created';
+        } else if (log.action.toLowerCase().includes('activated') || (log.action.toLowerCase().includes('status') && log.target.includes('Active'))) {
+          type = 'activated';
+        } else if (log.action.toLowerCase().includes('suspended') || log.action.toLowerCase().includes('deactivated')) {
+          type = 'deactivated';
+        } else if (log.action.toLowerCase().includes('draft')) {
+          type = 'draft';
+        }
+
+        orgEvents.push({
+          id: log.id,
+          title: log.action,
+          description: log.target,
+          orgName: log.tenantName || 'Organization',
+          timestamp: log.timestamp,
+          type,
+          severity: log.severity,
+          actor: log.actor
+        });
+      }
+    });
+
+    // Add standard historical seed events if audit log has few org entries
+    if (orgEvents.length < 5) {
+      orgEvents.unshift(
+        {
+          id: 'org-act-1',
+          title: 'Organization created',
+          description: 'Global Cloud Academy entered In-Progress status',
+          orgName: 'Global Cloud Academy',
+          timestamp: '24:08:2026 11:30:15',
+          type: 'created',
+          severity: 'info',
+          actor: 'System Admin'
+        },
+        {
+          id: 'org-act-2',
+          title: 'Organization activated',
+          description: 'BRAC is activated',
+          orgName: 'BRAC',
+          timestamp: '24:08:2026 09:14:22',
+          type: 'activated',
+          severity: 'success',
+          actor: 'System Admin'
+        },
+        {
+          id: 'org-act-3',
+          title: 'Organization details updated',
+          description: 'Lumina Spatial Labs details updated (Branding & SSO)',
+          orgName: 'Lumina Spatial Labs',
+          timestamp: '23:08:2026 16:45:00',
+          type: 'updated',
+          severity: 'info',
+          actor: 'Aria Vance'
+        },
+        {
+          id: 'org-act-4',
+          title: 'Organization activated',
+          description: 'Acme Global Enterprise is activated',
+          orgName: 'Acme Global Enterprise',
+          timestamp: '22:08:2026 14:10:05',
+          type: 'activated',
+          severity: 'success',
+          actor: 'System Admin'
+        },
+        {
+          id: 'org-act-5',
+          title: 'Organization deactivated',
+          description: 'Innovate AI Labs is deactivated',
+          orgName: 'Innovate AI Labs',
+          timestamp: '21:08:2026 18:22:40',
+          type: 'deactivated',
+          severity: 'danger',
+          actor: 'System Admin'
+        }
+      );
+    }
+
+    return orgEvents.slice(0, 15);
+  });
+
+  // Publish Organization Dashboard
+  publishOrgDashboard(widgets: OrgDashboardWidget[], publisherName: string = 'System Admin'): OrgDashboardLayout {
+    const current = this.orgDashboardLayout();
+    const newVersion = current.version + 1;
+    const updated: OrgDashboardLayout = {
+      version: newVersion,
+      publishedAt: new Date().toISOString(),
+      publishedBy: publisherName,
+      lastEditedAt: new Date().toISOString(),
+      widgets: JSON.parse(JSON.stringify(widgets))
+    };
+    this.orgDashboardLayout.set(updated);
+    this.logAction('Org Dashboard Published', `Dashboard layout published successfully (v${newVersion})`, 'success');
+    this.showToast('Dashboard layout published successfully.', 'success');
+    return updated;
+  }
+
+  // Reset Organization Dashboard
+  resetOrgDashboard(): OrgDashboardLayout {
+    const defaults: OrgDashboardLayout = {
+      version: 1,
+      publishedAt: new Date().toISOString(),
+      publishedBy: 'System Administrator',
+      widgets: JSON.parse(JSON.stringify(DEFAULT_ORG_DASHBOARD_WIDGETS))
+    };
+    this.orgDashboardLayout.set(defaults);
+    this.logAction('Org Dashboard Reset', 'Reset Organization Dashboard layout to factory defaults', 'warning');
+    this.showToast('Reset dashboard to default layout', 'info');
+    return defaults;
+  }
 
   // Flash Alert / Toast state
   currentToast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);

@@ -12,12 +12,18 @@
       <p class="text-xs text-text-secondary">Provision, configure resources, and govern isolated enterprise LMS client organizations</p>
     </div>
 
-    <!-- Create Organization Wizard Launcher -->
-    <div class="flex items-center gap-3 self-start md:self-auto">
+    <!-- Organization Header Actions -->
+    <div class="flex items-center gap-2.5 self-start md:self-auto flex-wrap">
+      <a 
+        routerLink="/organization/dashboard"
+        class="px-4 py-2.5 rounded-xl bg-base-200 hover:bg-base-300 text-text-primary text-xs font-bold flex items-center gap-2 transition-all border border-base-300">
+        <span class="material-symbols-outlined text-sm text-tenant-600 dark:text-tenant-400">space_dashboard</span>
+        <span>Organization Dashboard</span>
+      </a>
       <button 
         id="btn-create-organization"
         (click)="openCreateWizard()"
-        class="px-5 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-tenant-500/20 active:scale-[0.98]">
+        class="px-5 py-2.5 rounded-xl bg-tenant-500 hover:bg-tenant-600 text-white text-xs font-bold flex items-center gap-2 transition-all shadow-md shadow-tenant-500/20 active:scale-[0.98] cursor-pointer">
         <span class="material-symbols-outlined text-sm">domain_add</span>
         <span>Create Organization</span>
       </button>
