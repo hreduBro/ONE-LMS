@@ -728,7 +728,7 @@ interface ProfileTab {
 
     <!-- Avatar Picker Modal -->
     @if (showAvatarPicker()) {
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-modal-backdrop">
         <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-md p-6 animate-modal-card space-y-4">
           <div class="flex items-center justify-between border-b border-base-300 pb-3">
             <h3 class="font-bold text-base text-text-primary">Choose Profile Avatar</h3>
@@ -772,7 +772,7 @@ interface ProfileTab {
 
     <!-- Sign Out Confirmation Modal -->
     @if (showSignOutConfirm()) {
-      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+      <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-modal-backdrop">
         <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-sm p-6 animate-modal-card text-center space-y-4">
           <div class="w-14 h-14 rounded-2xl bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto">
             <span class="material-symbols-outlined text-3xl">logout</span>

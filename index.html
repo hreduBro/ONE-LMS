@@ -185,116 +185,171 @@
 
     /* Header & Navigation Glass */
     html.theme-glassmorphism header {
-      background: rgba(255, 255, 255, 0.85) !important;
-      backdrop-filter: blur(28px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+      background: rgba(255, 255, 255, 0.90) !important;
+      backdrop-filter: blur(32px) saturate(210%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
       border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
       box-shadow: 0 4px 30px 0 rgba(0, 0, 0, 0.04), inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
     }
     html.theme-glassmorphism.dark header {
-      background: rgba(15, 23, 42, 0.85) !important;
-      backdrop-filter: blur(28px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+      background: rgba(15, 23, 42, 0.90) !important;
+      backdrop-filter: blur(32px) saturate(210%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
       box-shadow: 0 4px 30px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
     }
 
     html.theme-glassmorphism aside {
-      background: rgba(255, 255, 255, 0.80) !important;
-      backdrop-filter: blur(28px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+      background: rgba(255, 255, 255, 0.88) !important;
+      backdrop-filter: blur(32px) saturate(210%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
       border-right: 1px solid rgba(255, 255, 255, 0.8) !important;
       box-shadow: 4px 0 30px 0 rgba(0, 0, 0, 0.03), inset 0 1px 0 0 rgba(255, 255, 255, 0.9) !important;
     }
     html.theme-glassmorphism.dark aside {
-      background: rgba(15, 23, 42, 0.80) !important;
-      backdrop-filter: blur(28px) saturate(210%) !important;
-      -webkit-backdrop-filter: blur(28px) saturate(210%) !important;
+      background: rgba(15, 23, 42, 0.88) !important;
+      backdrop-filter: blur(32px) saturate(210%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) !important;
       border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
       box-shadow: 4px 0 30px 0 rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.15) !important;
     }
 
-    /* Standard Cards & Surfaces */
-    html.theme-glassmorphism .bg-base-100 {
-      background-color: rgba(255, 255, 255, 0.82) !important;
-      backdrop-filter: blur(24px) saturate(200%);
-      -webkit-backdrop-filter: blur(24px) saturate(200%);
-    }
-    html.theme-glassmorphism.dark .bg-base-100 {
-      background-color: rgba(15, 23, 42, 0.82) !important;
-      backdrop-filter: blur(24px) saturate(200%);
-      -webkit-backdrop-filter: blur(24px) saturate(200%);
-    }
-
-    html.theme-glassmorphism .bg-base-100.border,
+    /* Standard Cards & Surfaces (Scoped to card elements to avoid trapping position:fixed overlays in main) */
+    html.theme-glassmorphism .card,
     html.theme-glassmorphism .rounded-3xl.bg-base-100,
-    html.theme-glassmorphism .rounded-2xl.bg-base-100 {
-      border: 1px solid rgba(255, 255, 255, 0.80) !important;
-      box-shadow: 0 12px 34px 0 rgba(31, 38, 135, 0.08), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
+    html.theme-glassmorphism .rounded-2xl.bg-base-100,
+    html.theme-glassmorphism .rounded-xl.bg-base-100,
+    html.theme-glassmorphism .border.bg-base-100:not(main):not(body):not(app-root) {
+      background-color: rgba(255, 255, 255, 0.90) !important;
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.85) !important;
+      box-shadow: 0 12px 34px 0 rgba(31, 38, 135, 0.07), inset 0 1px 1px 0 rgba(255, 255, 255, 0.95) !important;
     }
-    html.theme-glassmorphism.dark .bg-base-100.border,
+    html.theme-glassmorphism.dark .card,
     html.theme-glassmorphism.dark .rounded-3xl.bg-base-100,
-    html.theme-glassmorphism.dark .rounded-2xl.bg-base-100 {
-      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    html.theme-glassmorphism.dark .rounded-2xl.bg-base-100,
+    html.theme-glassmorphism.dark .rounded-xl.bg-base-100,
+    html.theme-glassmorphism.dark .border.bg-base-100:not(main):not(body):not(app-root) {
+      background-color: rgba(15, 23, 42, 0.90) !important;
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.14) !important;
       box-shadow: 0 12px 38px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18) !important;
     }
 
+    /* Layout Reset: Main canvas and layout shells MUST NEVER establish a containing block for fixed overlays */
+    main,
+    app-root,
+    body,
+    html,
+    .flex-1.flex.flex-col {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      filter: none !important;
+      transform: none !important;
+      perspective: none !important;
+    }
+
     /* ========================================================================= */
-    /* IOS LIQUID GLASS MORPH: FLOATING DROPDOWNS, MENUS, POPOVERS & MODALS     */
-    /* High-density optical refraction ensures crystal clear WCAG legibility     */
+    /* FULL SCREEN MODAL OVERLAY ARCHITECTURE (COVERS HEADER, TOP MENU & ALERTS) */
     /* ========================================================================= */
-    html.theme-glassmorphism .absolute.bg-base-100,
-    html.theme-glassmorphism [class*="absolute"][class*="z-50"],
-    html.theme-glassmorphism [class*="absolute"][class*="z-40"],
+    .animate-modal-backdrop,
+    .animate-fade-in[class*="fixed"],
+    .animate-in[class*="fixed"],
+    [class*="fixed"][class*="z-\[100\]"],
+    [class*="fixed"][class*="z-\[110\]"],
+    [class*="fixed"][class*="z-50"].flex.items-center,
+    [class*="fixed"][class*="inset-0"].bg-black\/60,
+    [class*="fixed"][class*="inset-0"].bg-black\/70 {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      z-index: 99999 !important;
+    }
+
+    /* ========================================================================= */
+    /* IOS LIQUID GLASS: FLOATING DROPDOWNS, FLYOUT MENUS, POPOVERS & MODALS     */
+    /* Ultra-dense frosted material (97% opacity) prevents any background bleed  */
+    /* while preserving authentic Apple-grade optical refraction & edge highlight*/
+    /* ========================================================================= */
     html.theme-glassmorphism .dropdown-content,
     html.theme-glassmorphism .liquid-glass-menu,
+    html.theme-glassmorphism .animate-dropdown,
+    html.theme-glassmorphism header .absolute.z-50,
+    html.theme-glassmorphism app-header .absolute.z-50,
+    html.theme-glassmorphism app-top-menu .absolute.z-50,
+    html.theme-glassmorphism .absolute.z-50.bg-base-100,
+    html.theme-glassmorphism .absolute.z-40.bg-base-100,
+    html.theme-glassmorphism .group-hover\/rail-item\:visible .bg-base-100,
     html.theme-glassmorphism .modal-box,
     html.theme-glassmorphism [class*="fixed"][class*="z-50"] > div {
-      background: rgba(255, 255, 255, 0.94) !important;
-      backdrop-filter: blur(48px) saturate(220%) contrast(102%) !important;
-      -webkit-backdrop-filter: blur(48px) saturate(220%) contrast(102%) !important;
+      background: rgba(255, 255, 255, 0.975) !important;
+      backdrop-filter: blur(48px) saturate(220%) contrast(101%) !important;
+      -webkit-backdrop-filter: blur(48px) saturate(220%) contrast(101%) !important;
       border: 1px solid rgba(255, 255, 255, 0.90) !important;
       box-shadow: 
-        0 24px 64px -12px rgba(15, 23, 42, 0.22),
+        0 24px 64px -12px rgba(15, 23, 42, 0.20),
         0 8px 24px -4px rgba(15, 23, 42, 0.10),
-        0 0 0 1px rgba(255, 255, 255, 0.6) inset,
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset,
         0 1.5px 2px 0 rgba(255, 255, 255, 0.95) inset !important;
     }
 
-    html.theme-glassmorphism.dark .absolute.bg-base-100,
-    html.theme-glassmorphism.dark [class*="absolute"][class*="z-50"],
-    html.theme-glassmorphism.dark [class*="absolute"][class*="z-40"],
     html.theme-glassmorphism.dark .dropdown-content,
     html.theme-glassmorphism.dark .liquid-glass-menu,
+    html.theme-glassmorphism.dark .animate-dropdown,
+    html.theme-glassmorphism.dark header .absolute.z-50,
+    html.theme-glassmorphism.dark app-header .absolute.z-50,
+    html.theme-glassmorphism.dark app-top-menu .absolute.z-50,
+    html.theme-glassmorphism.dark .absolute.z-50.bg-base-100,
+    html.theme-glassmorphism.dark .absolute.z-40.bg-base-100,
+    html.theme-glassmorphism.dark .group-hover\/rail-item\:visible .bg-base-100,
     html.theme-glassmorphism.dark .modal-box,
     html.theme-glassmorphism.dark [class*="fixed"][class*="z-50"] > div {
-      background: rgba(18, 24, 38, 0.94) !important;
-      backdrop-filter: blur(48px) saturate(220%) contrast(102%) !important;
-      -webkit-backdrop-filter: blur(48px) saturate(220%) contrast(102%) !important;
-      border: 1px solid rgba(255, 255, 255, 0.18) !important;
+      background: rgba(15, 23, 42, 0.97) !important;
+      backdrop-filter: blur(48px) saturate(220%) contrast(101%) !important;
+      -webkit-backdrop-filter: blur(48px) saturate(220%) contrast(101%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
       box-shadow: 
-        0 24px 64px -12px rgba(0, 0, 0, 0.65),
-        0 8px 24px -4px rgba(0, 0, 0, 0.40),
-        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
-        0 1.5px 2px 0 rgba(255, 255, 255, 0.22) inset !important;
+        0 24px 64px -12px rgba(0, 0, 0, 0.70),
+        0 8px 24px -4px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.10) inset,
+        0 1.5px 2px 0 rgba(255, 255, 255, 0.20) inset !important;
     }
 
-    /* Silky liquid menu item hover and active states inside floating dropdowns */
-    html.theme-glassmorphism .absolute.bg-base-100 button:hover,
-    html.theme-glassmorphism .dropdown-content button:hover,
-    html.theme-glassmorphism [class*="absolute"][class*="z-50"] button:hover:not([class*="btn-gradient"]):not([class*="btn-primary"]) {
-      background: rgba(255, 255, 255, 0.92) !important;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+    /* Inset lists & containers inside floating menus */
+    html.theme-glassmorphism .animate-dropdown .bg-base-200\/30,
+    html.theme-glassmorphism .animate-dropdown .bg-base-200\/50,
+    html.theme-glassmorphism header .absolute .bg-base-200\/30 {
+      background: rgba(241, 245, 249, 0.75) !important;
+      border-color: rgba(226, 232, 240, 0.8) !important;
     }
-    html.theme-glassmorphism.dark .absolute.bg-base-100 button:hover,
+    html.theme-glassmorphism.dark .animate-dropdown .bg-base-200\/30,
+    html.theme-glassmorphism.dark .animate-dropdown .bg-base-200\/50,
+    html.theme-glassmorphism.dark header .absolute .bg-base-200\/30 {
+      background: rgba(30, 41, 59, 0.65) !important;
+      border-color: rgba(51, 65, 85, 0.6) !important;
+    }
+
+    /* Silky iOS liquid menu item hover and active states */
+    html.theme-glassmorphism .animate-dropdown button:hover:not([class*="btn-"]),
+    html.theme-glassmorphism header .absolute button:hover:not([class*="btn-"]),
+    html.theme-glassmorphism app-top-menu .absolute a:hover,
+    html.theme-glassmorphism .dropdown-content button:hover,
+    html.theme-glassmorphism .dropdown-content a:hover {
+      background: rgba(241, 245, 249, 0.90) !important;
+    }
+    html.theme-glassmorphism.dark .animate-dropdown button:hover:not([class*="btn-"]),
+    html.theme-glassmorphism.dark header .absolute button:hover:not([class*="btn-"]),
+    html.theme-glassmorphism.dark app-top-menu .absolute a:hover,
     html.theme-glassmorphism.dark .dropdown-content button:hover,
-    html.theme-glassmorphism.dark [class*="absolute"][class*="z-50"] button:hover:not([class*="btn-gradient"]):not([class*="btn-primary"]) {
-      background: rgba(255, 255, 255, 0.12) !important;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
+    html.theme-glassmorphism.dark .dropdown-content a:hover {
+      background: rgba(30, 41, 59, 0.85) !important;
     }
 
     /* Form Inputs, Selects & Textareas Liquid Glass */

@@ -8,7 +8,7 @@
 
 <aside 
   class="bg-base-100 border-r border-base-300 transition-all duration-300 flex flex-col h-full flex-shrink-0
-         fixed lg:static inset-y-0 left-0 z-50 lg:z-30 shadow-2xl lg:shadow-none"
+         fixed lg:relative inset-y-0 left-0 z-50 lg:z-40 shadow-2xl lg:shadow-none"
   [class.max-lg:translate-x-0]="isOpen()"
   [class.max-lg:-translate-x-full]="!isOpen()"
   [class.max-lg:w-72]="true"
@@ -82,11 +82,11 @@
           <!-- COMPACT RAIL ITEM WITH FLOATING CHILD MENU (FLYOUT)           -->
           <!-- ============================================================= -->
           <div class="relative group/rail-item flex justify-center">
-            <!-- Compact Rail Icon Button -->
+            <!-- Compact Rail Icon Button (Removed [title] to eliminate browser native tooltip collision with custom flyouts and tooltips) -->
             <a 
               [routerLink]="item.route || (item.children ? item.children[0].route : '/dashboard')"
               (click)="onNavItemClick()"
-              [title]="item.label"
+              [attr.aria-label]="item.label"
               class="w-12 h-12 rounded-2xl flex items-center justify-center transition-all relative select-none cursor-pointer focus:outline-none focus:ring-0"
               [class]="isRouteActive(item) 
                 ? 'border-2 border-tenant-500 bg-white dark:bg-slate-900 text-tenant-600 dark:text-tenant-300 shadow-sm' 
@@ -105,9 +105,9 @@
                 <!-- Seamless invisible hover bridge to ensure effortless mouse transition from rail to popover -->
                 <div class="absolute -left-4 top-0 bottom-0 w-4"></div>
 
-                <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl overflow-hidden py-1">
+                <div class="bg-base-100 rounded-2xl border border-base-300 dark:border-white/10 shadow-2xl overflow-hidden py-1">
                   <!-- Flyout Header: Uppercase category name with badge -->
-                  <div class="px-4 py-2.5 text-[11px] font-bold tracking-wider text-text-secondary uppercase border-b border-base-300/80 flex items-center justify-between">
+                  <div class="px-4 py-2.5 text-[11px] font-bold tracking-wider text-text-secondary uppercase border-b border-base-300/80 dark:border-white/10 flex items-center justify-between">
                     <span>{{ item.label.toUpperCase() }}</span>
                     @if (item.badge) {
                       <span class="text-[9px] px-1.5 py-0.2 rounded-md font-semibold bg-tenant-100 dark:bg-tenant-950/80 text-tenant-700 dark:text-tenant-300">
@@ -155,12 +155,12 @@
                 </div>
               </div>
             } @else {
-              <!-- Single Item Tooltip Popover -->
+              <!-- Single Item Tooltip Popover (High-contrast, crisp typography in both light and dark themes) -->
               <div 
-                class="absolute left-full top-1/2 -translate-y-1/2 ml-3.5 px-3 py-1.5 bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 rounded-xl text-xs font-semibold shadow-xl whitespace-nowrap invisible opacity-0 translate-x-1 group-hover/rail-item:visible group-hover/rail-item:opacity-100 group-hover/rail-item:translate-x-0 transition-all duration-150 pointer-events-none z-50 flex items-center gap-1.5">
+                class="absolute left-full top-1/2 -translate-y-1/2 ml-3.5 px-3 py-1.5 bg-slate-900 text-white dark:bg-slate-950 dark:text-slate-100 border border-slate-700/60 dark:border-slate-700 rounded-xl text-xs font-semibold shadow-2xl whitespace-nowrap invisible opacity-0 translate-x-1 group-hover/rail-item:visible group-hover/rail-item:opacity-100 group-hover/rail-item:translate-x-0 transition-all duration-150 pointer-events-none z-50 flex items-center gap-1.5">
                 <span>{{ item.label }}</span>
                 @if (item.badge) {
-                  <span class="text-[9px] px-1 py-0.2 rounded bg-tenant-500 text-white font-bold">{{ item.badge }}</span>
+                  <span class="text-[9px] px-1.5 py-0.2 rounded bg-tenant-500 text-white font-bold">{{ item.badge }}</span>
                 }
               </div>
             }
