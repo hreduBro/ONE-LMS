@@ -42,6 +42,15 @@ import {
   ORG_DASHBOARD_PRESETS,
   ORG_WIDGET_CATALOG
 } from '../models/organization-dashboard.model';
+import {
+  LmsDashboardWidget,
+  LmsDashboardWidgetType,
+  LmsDashboardLayout,
+  DEFAULT_LMS_DASHBOARD_LAYOUT,
+  DEFAULT_LMS_DASHBOARD_WIDGETS,
+  LMS_DASHBOARD_PRESETS,
+  LMS_WIDGET_CATALOG
+} from '../models/lms-dashboard.model';
 
 const INITIAL_TENANTS: Tenant[] = [
   {
@@ -2877,6 +2886,216 @@ export class LmsDataService {
       fileAvailableGb
     };
   });
+
+  // LMS Dashboard Studio Layout State
+  lmsDashboardLayout = signal<LmsDashboardLayout>(JSON.parse(JSON.stringify(DEFAULT_LMS_DASHBOARD_LAYOUT)));
+
+  // LMS Status Breakdown scoped to active Organization (Active, Under Processing, Drafted, Deactivated)
+  lmsStatusSummary = computed(() => {
+    const instances = this.activeOrgLmsInstances();
+    const drafts = this.activeOrgLmsDrafts();
+    const active = instances.filter(l => l.status === 'Active').length;
+    const underProcessing = instances.filter(l => l.status === 'Under Processing').length;
+    const drafted = instances.filter(l => l.status === 'Drafted').length + drafts.length;
+    const deactivated = instances.filter(l => l.status === 'Deactivated').length;
+    const total = instances.length + drafts.length;
+
+    return {
+      total,
+      active,
+      underProcessing,
+      drafted,
+      deactivated,
+      activePct: total > 0 ? Math.round((active / total) * 100) : 0,
+      underProcessingPct: total > 0 ? Math.round((underProcessing / total) * 100) : 0,
+      draftedPct: total > 0 ? Math.round((drafted / total) * 100) : 0,
+      deactivatedPct: total > 0 ? Math.round((deactivated / total) * 100) : 0
+    };
+  });
+
+  // Recent LMS Activity Feed for the active Organization
+  recentLmsActivityFeed = computed(() => {
+    const currentOrgId = this.activeTenantId();
+    const currentOrgName = this.activeTenant().name;
+    const auditLogs = this.auditLogs();
+    const instances = this.activeOrgLmsInstances();
+    
+    const events: {
+      id: string;
+      title: string;
+      description: string;
+      lmsName: string;
+      lmsId?: string;
+      timestamp: string;
+      type: 'created' | 'activated' | 'deactivated' | 'updated' | 'draft';
+      severity: 'info' | 'success' | 'danger' | 'warning';
+      actor: string;
+    }[] = [];
+
+    // Derive from audit logs matching LMS
+    auditLogs.forEach(log => {
+      const isLmsRelated = log.action.toLowerCase().includes('lms') || log.target.toLowerCase().includes('lms');
+      if (isLmsRelated && (log.tenantId === currentOrgId || !log.tenantId)) {
+        let type: 'created' | 'activated' | 'deactivated' | 'updated' | 'draft' = 'updated';
+        if (log.action.toLowerCase().includes('created') || log.action.toLowerCase().includes('provisioned')) {
+          type = 'created';
+        } else if (log.action.toLowerCase().includes('activated')) {
+          type = 'activated';
+        } else if (log.action.toLowerCase().includes('deactivated')) {
+          type = 'deactivated';
+        } else if (log.action.toLowerCase().includes('draft')) {
+          type = 'draft';
+        }
+
+        events.push({
+          id: log.id,
+          title: log.action,
+          description: log.target,
+          lmsName: log.target.split(' ')[0] || 'LMS Portal',
+          timestamp: log.timestamp,
+          type,
+          severity: log.severity,
+          actor: log.actor
+        });
+      }
+    });
+
+    // Provide contextual live-seeded events using exact strings from specs
+    if (events.length < 4 && instances.length > 0) {
+      instances.slice(0, 4).forEach((lms, idx) => {
+        if (lms.status === 'Active') {
+          events.push({
+            id: `lms-evt-act-${lms.id}`,
+            title: `${lms.basicInfo.lmsName} is activated`,
+            description: `Activated on ${lms.updatedAt || lms.createdAt} for ${lms.basicInfo.programmeDepartment}`,
+            lmsName: lms.basicInfo.lmsName,
+            lmsId: lms.id,
+            timestamp: lms.updatedAt || lms.createdAt,
+            type: 'activated',
+            severity: 'success',
+            actor: 'System / Org Admin'
+          });
+        } else if (lms.status === 'Under Processing') {
+          events.push({
+            id: `lms-evt-proc-${lms.id}`,
+            title: `${lms.basicInfo.lmsName} created — Under Processing`,
+            description: `Provisioning pipeline initiated (${lms.provisioningProgress || 25}% complete)`,
+            lmsName: lms.basicInfo.lmsName,
+            lmsId: lms.id,
+            timestamp: lms.createdAt,
+            type: 'created',
+            severity: 'warning',
+            actor: 'LMS Provisioner'
+          });
+        }
+      });
+    }
+
+    return events.slice(0, 10);
+  });
+
+  // Top LMS Instances Snapshot for active organization
+  topLmsInstancesSnapshot = computed(() => {
+    const list = this.activeOrgLmsInstances();
+    return [...list].sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime() || 0;
+      const dateB = new Date(b.createdAt).getTime() || 0;
+      return dateB - dateA;
+    }).slice(0, 4);
+  });
+
+  // Programme / Department Distribution
+  lmsProgrammeDistribution = computed(() => {
+    const instances = this.activeOrgLmsInstances();
+    const map: Record<string, { programme: string; count: number; activeCount: number }> = {};
+    
+    instances.forEach(lms => {
+      const dept = lms.basicInfo.programmeDepartment || 'General Administration';
+      if (!map[dept]) {
+        map[dept] = { programme: dept, count: 0, activeCount: 0 };
+      }
+      map[dept].count++;
+      if (lms.status === 'Active') {
+        map[dept].activeCount++;
+      }
+    });
+
+    return Object.values(map).sort((a, b) => b.count - a.count);
+  });
+
+  // LMS Administrator Roster for the active organization
+  lmsAdminRoster = computed(() => {
+    const instances = this.activeOrgLmsInstances();
+    const roster: {
+      adminName: string;
+      email: string;
+      contactNumber?: string;
+      lmsCount: number;
+      lmsNames: string[];
+      invitationStatus: string;
+    }[] = [];
+
+    const map = new Map<string, { adminName: string; email: string; contactNumber?: string; lmsCount: number; lmsNames: string[]; invitationStatus: string }>();
+
+    instances.forEach(lms => {
+      lms.admins.forEach(admin => {
+        const key = admin.email.toLowerCase();
+        if (!map.has(key)) {
+          map.set(key, {
+            adminName: admin.name,
+            email: admin.email,
+            contactNumber: admin.contactNumber,
+            lmsCount: 1,
+            lmsNames: [lms.basicInfo.lmsName],
+            invitationStatus: admin.invitationStatus || 'accepted'
+          });
+        } else {
+          const item = map.get(key)!;
+          item.lmsCount++;
+          item.lmsNames.push(lms.basicInfo.lmsName);
+        }
+      });
+    });
+
+    return Array.from(map.values());
+  });
+
+  // Publish LMS Dashboard
+  publishLmsDashboard(widgets: LmsDashboardWidget[], publisherName: string = 'Organization Administrator'): LmsDashboardLayout {
+    const current = this.lmsDashboardLayout();
+    const newVersion = current.version + 1;
+    const updated: LmsDashboardLayout = {
+      version: newVersion,
+      publishedAt: new Date().toISOString(),
+      publishedBy: publisherName,
+      lastEditedAt: new Date().toISOString(),
+      widgets: JSON.parse(JSON.stringify(widgets))
+    };
+    this.lmsDashboardLayout.set(updated);
+    this.logAction('LMS Dashboard Published', `LMS dashboard layout published successfully (v${newVersion})`, 'success');
+    this.showToast(
+      `LMS dashboard layout (v${newVersion}) is now live.`,
+      'success',
+      4500,
+      'Layout Published',
+      'Live Published'
+    );
+    return updated;
+  }
+
+  // Reset LMS Dashboard
+  resetLmsDashboard(): LmsDashboardLayout {
+    const defaults: LmsDashboardLayout = {
+      version: 1,
+      publishedAt: new Date().toISOString(),
+      publishedBy: 'Organization Administrator',
+      widgets: JSON.parse(JSON.stringify(DEFAULT_LMS_DASHBOARD_WIDGETS))
+    };
+    this.lmsDashboardLayout.set(defaults);
+    this.logAction('LMS Dashboard Reset', 'Reset LMS Dashboard layout to factory defaults', 'warning');
+    this.showToast('LMS dashboard layout restored to system factory defaults.', 'info', 4000, 'Reset Complete');
+    return defaults;
+  }
 
   // Generate unique LMS ID within platform/organization (§6.3)
   generateUniqueLmsId(orgNumericId?: string): string {

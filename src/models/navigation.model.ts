@@ -46,6 +46,7 @@ export const APP_NAV_ITEMS: NavItem[] = [
     roles: ['super_admin', 'tenant_admin'],
     description: 'Multi-portal LMS instance allocation',
     children: [
+      { label: 'LMS Dashboard', route: '/lms/dashboard', icon: 'space_dashboard', badge: 'Overview', description: 'Organization LMS status, active drafts & capacity metrics' },
       { label: 'LMS Instances Grid', route: '/lms', icon: 'grid_view', description: 'View organization LMS instances' },
       { label: 'Create LMS', route: '/lms/create', icon: 'add_circle', badge: 'Wizard', description: '4-step LMS creation wizard' }
     ]
