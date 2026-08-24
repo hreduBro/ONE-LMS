@@ -43,7 +43,6 @@ export class DashboardWidgetRendererComponent {
   
   // Interactive UI State for widgets
   reminderSentMessage = signal<string | null>(null);
-  widgetToast = signal<string | null>(null);
   kpiPeriod = signal<'30d' | 'quarter' | 'ytd'>('30d');
   deptSearchQuery = signal<string>('');
   deptSortMode = signal<'compliance' | 'learners'>('compliance');
@@ -54,10 +53,9 @@ export class DashboardWidgetRendererComponent {
   auditFilter = signal<'all' | 'security' | 'compliance' | 'cert'>('all');
   courseFilter = signal<'all' | 'in_progress' | 'completed'>('all');
 
-  // Trigger brief widget toast
-  showWidgetToast(msg: string) {
-    this.widgetToast.set(msg);
-    setTimeout(() => this.widgetToast.set(null), 3000);
+  // Trigger brief widget toast via unified LMS alert service
+  showWidgetToast(msg: string, type: 'success' | 'warning' | 'error' | 'info' = 'info') {
+    this.lms.showToast(msg, type);
   }
 
   // Interactive Bottom-Right Corner Resize Handler (Gridstack-like)

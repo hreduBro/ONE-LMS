@@ -42,11 +42,9 @@ export class OrgWidgetRendererComponent {
   activityFilter = signal<string>('all');
   directorySearch = signal<string>('');
   dismissedBanner = signal<boolean>(false);
-  widgetToast = signal<string | null>(null);
 
   showToast(msg: string) {
-    this.widgetToast.set(msg);
-    setTimeout(() => this.widgetToast.set(null), 3000);
+    this.lms.showToast(msg, 'info');
   }
 
   // Corner Resize Handler (Smooth interactive drag resizing)

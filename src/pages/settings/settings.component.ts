@@ -108,6 +108,7 @@ export class SettingsComponent {
     };
 
     this.lms.updateTenant(updated);
+    this.lms.showToast('Settings and live CSS brand theme have been successfully updated!', 'success', 3500, 'Settings Saved');
     this.savedNotification.set(true);
     setTimeout(() => this.savedNotification.set(false), 3500);
   }

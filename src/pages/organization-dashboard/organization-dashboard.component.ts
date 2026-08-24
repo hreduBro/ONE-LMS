@@ -34,8 +34,6 @@ export class OrganizationDashboardComponent {
   isStudioMode = signal<boolean>(false);
   editingWidget = signal<OrgDashboardWidget | null>(null);
   showAddWidgetModal = signal<boolean>(false);
-  publishSuccessMessage = signal<string | null>(null);
-  toastMessage = signal<string | null>(null);
 
   // Working copy of widgets when inside Studio mode
   draftWidgets = signal<OrgDashboardWidget[]>([]);
@@ -58,23 +56,23 @@ export class OrganizationDashboardComponent {
     return this.publishedLayout().widgets;
   });
 
-  // Show Toast
-  showToast(msg: string) {
-    this.toastMessage.set(msg);
-    setTimeout(() => this.toastMessage.set(null), 3500);
+  // Show Toast via unified LMS service
+  showToast(msg: string, type: 'success' | 'warning' | 'error' | 'info' = 'info') {
+    this.lms.showToast(msg, type);
   }
 
   // Enter Studio Mode
   enterStudioMode() {
     this.draftWidgets.set(JSON.parse(JSON.stringify(this.publishedLayout().widgets)));
     this.isStudioMode.set(true);
+    this.lms.showToast('Entered Organization Dashboard Studio mode', 'info');
   }
 
   // Discard changes & exit Studio Mode
   discardStudioChanges() {
     this.isStudioMode.set(false);
     this.draftWidgets.set([]);
-    this.showToast('Reverted unsaved studio changes');
+    this.lms.showToast('Reverted unsaved studio changes', 'info');
   }
 
   // Apply a Layout Preset
@@ -104,7 +102,7 @@ export class OrganizationDashboardComponent {
     });
 
     this.draftWidgets.set(newWidgets);
-    this.showToast(`Applied "${preset.name}" preset`);
+    this.lms.showToast(`Applied "${preset.name}" preset`, 'success');
   }
 
   // Auto-Arrange widgets for symmetry and alignment
@@ -122,7 +120,7 @@ export class OrganizationDashboardComponent {
         return { ...w, colSpan: span, rowSpan: rSpan };
       });
     });
-    this.showToast('✨ Auto-arranged canvas layout cleanly');
+    this.lms.showToast('Auto-arranged canvas layout cleanly', 'success');
   }
 
   // Reset to Factory Default Layout
@@ -130,32 +128,28 @@ export class OrganizationDashboardComponent {
     if (confirm('Reset Organization Dashboard canvas to system factory default layout?')) {
       const defaults = this.lms.resetOrgDashboard();
       this.draftWidgets.set(JSON.parse(JSON.stringify(defaults.widgets)));
-      this.showToast('Reset canvas to default factory layout');
     }
   }
 
   // Publish Studio layout as live View-mode layout
   publishDashboard() {
     const user = this.lms.activeUser();
-    const updated = this.lms.publishOrgDashboard(this.draftWidgets(), user.name || 'System Admin');
-    
+    this.lms.publishOrgDashboard(this.draftWidgets(), user.name || 'System Admin');
     this.isStudioMode.set(false);
-    this.publishSuccessMessage.set(`Dashboard layout published successfully (v${updated.version})`);
-    setTimeout(() => this.publishSuccessMessage.set(null), 5000);
   }
 
   // Add widget from catalog
   onAddWidget(widget: OrgDashboardWidget) {
     this.draftWidgets.update(list => [...list, widget]);
     this.showAddWidgetModal.set(false);
-    this.showToast(`Added "${widget.title}" to canvas`);
+    this.lms.showToast(`Added "${widget.title}" to canvas`, 'success');
   }
 
   // Remove widget
   onRemoveWidget(id: string) {
     const item = this.draftWidgets().find(w => w.id === id);
     this.draftWidgets.update(list => list.filter(w => w.id !== id));
-    this.showToast(`Removed "${item?.title || 'Widget'}"`);
+    this.lms.showToast(`Removed "${item?.title || 'Widget'}"`, 'info');
   }
 
   // Duplicate widget

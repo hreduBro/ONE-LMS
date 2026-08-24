@@ -13,7 +13,9 @@ import {
   NavigationLayoutMode,
   DashboardWidget,
   DashboardWidgetType,
-  CustomTenantDashboard
+  CustomTenantDashboard,
+  ToastAlert,
+  ToastType
 } from '../models/lms.model';
 import {
   OrganizationDraft,
@@ -2402,7 +2404,13 @@ export class LmsDataService {
     };
     this.orgDashboardLayout.set(updated);
     this.logAction('Org Dashboard Published', `Dashboard layout published successfully (v${newVersion})`, 'success');
-    this.showToast('Dashboard layout published successfully.', 'success');
+    this.showToast(
+      `Organization dashboard layout (v${newVersion}) is now live for all platform users.`,
+      'success',
+      4500,
+      'Layout Published',
+      'Live Published'
+    );
     return updated;
   }
 
@@ -2416,12 +2424,23 @@ export class LmsDataService {
     };
     this.orgDashboardLayout.set(defaults);
     this.logAction('Org Dashboard Reset', 'Reset Organization Dashboard layout to factory defaults', 'warning');
-    this.showToast('Reset dashboard to default layout', 'info');
+    this.showToast('Organization dashboard layout restored to system factory defaults.', 'info', 4000, 'Reset Complete');
     return defaults;
   }
 
-  // Flash Alert / Toast state
-  currentToast = signal<{ message: string; type: 'success' | 'error' | 'info' } | null>(null);
+  // Uniform Toast Alert Stack
+  toasts = signal<ToastAlert[]>([]);
+
+  // Backwards compatibility computed signal
+  currentToast = computed<{ message: string; type: 'success' | 'error' | 'info' } | null>(() => {
+    const list = this.toasts();
+    if (list.length === 0) return null;
+    const last = list[list.length - 1];
+    return {
+      message: last.message,
+      type: last.type === 'warning' ? 'info' : last.type
+    };
+  });
 
   // Global Unified Dropdown Coordinator across Header and Top-Menu Navigation
   activeNavDropdown = signal<string | null>(null);
@@ -2444,19 +2463,55 @@ export class LmsDataService {
     return this.activeNavDropdown() === id;
   }
 
-  showToast(message: string, type: 'success' | 'error' | 'info' = 'success', durationMs: number = 4000) {
-    this.currentToast.set({ message, type });
+  showToast(
+    message: string, 
+    type: ToastType = 'success', 
+    durationMs: number = 4500,
+    title?: string,
+    badgeText?: string
+  ): string {
+    const id = `toast-${Date.now()}-${Math.floor(100 + Math.random() * 900)}`;
+    const newToast: ToastAlert = {
+      id,
+      type,
+      message,
+      title,
+      badgeText,
+      durationMs,
+      createdAt: Date.now()
+    };
+
+    // Keep max 4 toasts visible in stack to prevent viewport clutter
+    this.toasts.update(list => [...list.slice(-3), newToast]);
+
     if (durationMs > 0) {
       setTimeout(() => {
-        if (this.currentToast()?.message === message) {
-          this.currentToast.set(null);
-        }
+        this.removeToast(id);
       }, durationMs);
     }
+    return id;
+  }
+
+  showAlert(
+    message: string, 
+    type: ToastType = 'info', 
+    durationMs: number = 4500,
+    title?: string,
+    badgeText?: string
+  ): string {
+    return this.showToast(message, type, durationMs, title, badgeText);
+  }
+
+  removeToast(id: string) {
+    this.toasts.update(list => list.filter(t => t.id !== id));
   }
 
   clearToast() {
-    this.currentToast.set(null);
+    this.clearAllToasts();
+  }
+
+  clearAllToasts() {
+    this.toasts.set([]);
   }
 
   // Generate random unique 4-digit numeric Organization ID
@@ -3655,6 +3710,13 @@ export class LmsDataService {
     }));
 
     this.logAction('Custom Dashboard Published', `Published v${newVersion} dashboard layout with ${widgets.length} modular widgets for tenant ${this.activeTenant().name}`, 'success');
+    this.showToast(
+      `Tenant dashboard layout (v${newVersion}) has been published successfully.`,
+      'success',
+      4500,
+      'Dashboard Published',
+      'Live Published'
+    );
     return published;
   }
 
@@ -3676,6 +3738,12 @@ export class LmsDataService {
     }));
 
     this.logAction('Dashboard Reset', `Reset dashboard layout to factory template for ${this.activeTenant().name}`, 'warning');
+    this.showToast(
+      `Tenant dashboard layout has been reset to system factory defaults.`,
+      'info',
+      4000,
+      'Reset Complete'
+    );
     return defaults;
   }
 

@@ -38,8 +38,6 @@ export class DashboardComponent {
   editingWidget = signal<DashboardWidget | null>(null);
   showAddWidgetModal = signal<boolean>(false);
   previewRole = signal<UserRole | null>(null);
-  publishSuccessMessage = signal<string | null>(null);
-  toastMessage = signal<string | null>(null);
 
   // Layout density mode: 'comfortable' | 'compact' | 'bento'
   canvasDensity = signal<'comfortable' | 'compact' | 'bento'>('comfortable');
@@ -114,10 +112,9 @@ export class DashboardComponent {
     }
   ];
 
-  // Show Toast
-  showToast(msg: string) {
-    this.toastMessage.set(msg);
-    setTimeout(() => this.toastMessage.set(null), 3500);
+  // Show Toast via unified LMS service
+  showToast(msg: string, type: 'success' | 'warning' | 'error' | 'info' = 'info') {
+    this.lms.showToast(msg, type);
   }
 
   // Enter Builder Mode
@@ -125,6 +122,7 @@ export class DashboardComponent {
     this.draftWidgets.set(JSON.parse(JSON.stringify(this.activeDashboard().widgets)));
     this.previewRole.set(null);
     this.isBuilderMode.set(true);
+    this.lms.showToast('Entered Dashboard Builder studio', 'info');
   }
 
   // Cancel / Exit Builder Mode without saving
@@ -132,6 +130,7 @@ export class DashboardComponent {
     this.isBuilderMode.set(false);
     this.previewRole.set(null);
     this.draftWidgets.set([]);
+    this.lms.showToast('Exited Builder mode', 'info');
   }
 
   // Apply Layout Preset
@@ -222,12 +221,10 @@ export class DashboardComponent {
   publishDashboard() {
     const tenant = this.activeTenant();
     const user = this.lms.activeUser();
-    const updated = this.lms.publishTenantDashboard(tenant.id, this.draftWidgets(), user.name);
+    this.lms.publishTenantDashboard(tenant.id, this.draftWidgets(), user.name);
     
     this.isBuilderMode.set(false);
     this.previewRole.set(null);
-    this.publishSuccessMessage.set(`Custom dashboard (v${updated.version}) published successfully for ${tenant.name}!`);
-    setTimeout(() => this.publishSuccessMessage.set(null), 5000);
   }
 
   // Reset to Factory Default LMS Layout
@@ -236,7 +233,6 @@ export class DashboardComponent {
       const tenant = this.activeTenant();
       this.lms.resetTenantDashboard(tenant.id);
       this.draftWidgets.set(JSON.parse(JSON.stringify(this.lms.activeTenantDashboard().widgets)));
-      if (prompt) this.showToast('Reset to factory default layout');
     }
   }
 

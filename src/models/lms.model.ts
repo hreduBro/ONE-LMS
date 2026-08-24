@@ -299,3 +299,16 @@ export interface CustomTenantDashboard {
   widgets: DashboardWidget[];
 }
 
+// Uniform Alert / Toast System Model
+export type ToastType = 'success' | 'warning' | 'error' | 'info';
+
+export interface ToastAlert {
+  id: string;
+  type: ToastType;
+  title?: string;
+  message: string;
+  durationMs?: number;
+  createdAt: number;
+  badgeText?: string;
+}
+
