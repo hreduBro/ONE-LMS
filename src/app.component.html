@@ -13,32 +13,7 @@
       </div>
     }
     
-    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-base-100 pb-20 lg:pb-6 relative z-10">
-      <!-- Global Toast Alert Banner -->
-      @if (lms.currentToast(); as toast) {
-        <div class="fixed top-5 right-5 z-50 max-w-md animate-toast">
-          <div 
-            class="px-4 py-3 rounded-2xl shadow-xl border flex items-center justify-between gap-3 text-xs font-semibold"
-            [ngClass]="{
-              'bg-emerald-500 text-white border-emerald-400': toast.type === 'success',
-              'bg-rose-500 text-white border-rose-400': toast.type === 'error',
-              'bg-indigo-600 text-white border-indigo-500': toast.type === 'info'
-            }">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-base">
-                @if (toast.type === 'success') { check_circle }
-                @else if (toast.type === 'error') { error }
-                @else { info }
-              </span>
-              <span>{{ toast.message }}</span>
-            </div>
-            <button (click)="lms.clearToast()" class="p-1 rounded-lg hover:bg-white/20 transition-colors">
-              <span class="material-symbols-outlined text-sm">close</span>
-            </button>
-          </div>
-        </div>
-      }
-
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-base-100 pb-20 lg:pb-6">
       <div [class]="lms.adminLayoutPreferences().contentWidth === 'fluid' ? 'w-full px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6' : 'max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6'">
         <!-- The main content will be rendered here based on the route. -->
         <router-outlet></router-outlet>
@@ -49,5 +24,30 @@
     <app-mobile-nav></app-mobile-nav>
   </div>
 </div>
+
+<!-- Global Toast Alert Banner — placed outside all stacking contexts for reliable layering -->
+@if (lms.currentToast(); as toast) {
+  <div class="fixed top-20 right-5 z-[9999] max-w-md animate-toast">
+    <div 
+      class="px-4 py-3 rounded-2xl shadow-xl border flex items-center justify-between gap-3 text-xs font-semibold"
+      [ngClass]="{
+        'bg-emerald-500 text-white border-emerald-400': toast.type === 'success',
+        'bg-rose-500 text-white border-rose-400': toast.type === 'error',
+        'bg-indigo-600 text-white border-indigo-500': toast.type === 'info'
+      }">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base">
+          @if (toast.type === 'success') { check_circle }
+          @else if (toast.type === 'error') { error }
+          @else { info }
+        </span>
+        <span>{{ toast.message }}</span>
+      </div>
+      <button (click)="lms.clearToast()" class="p-1 rounded-lg hover:bg-white/20 transition-colors">
+        <span class="material-symbols-outlined text-sm">close</span>
+      </button>
+    </div>
+  </div>
+}
 
 
