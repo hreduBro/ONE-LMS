@@ -6,6 +6,8 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { HeaderComponent } from './components/header/header.component';
 import { TopMenuComponent } from './components/top-menu/top-menu.component';
 import { MobileNavComponent } from './components/mobile-nav/mobile-nav.component';
+import { LayoutSwitcherModalComponent } from './components/layout-switcher-modal/layout-switcher-modal.component';
+import { BackendConsoleModalComponent } from './components/backend-console-modal/backend-console-modal.component';
 import { ThemeService } from './services/theme.service';
 import { LmsDataService } from './services/lms-data.service';
 
@@ -13,7 +15,16 @@ import { LmsDataService } from './services/lms-data.service';
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CommonModule, RouterOutlet, SidebarComponent, HeaderComponent, TopMenuComponent, MobileNavComponent]
+  imports: [
+    CommonModule, 
+    RouterOutlet, 
+    SidebarComponent, 
+    HeaderComponent, 
+    TopMenuComponent, 
+    MobileNavComponent,
+    LayoutSwitcherModalComponent,
+    BackendConsoleModalComponent
+  ]
 })
 export class AppComponent {
   themeService = inject(ThemeService);

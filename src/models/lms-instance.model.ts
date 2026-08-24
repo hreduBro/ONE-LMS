@@ -1,6 +1,6 @@
 import { TimezoneOption } from './organization.model';
 
-export type LmsStatus = 'Under Processing' | 'Active' | 'Suspended' | 'In-Progress';
+export type LmsStatus = 'Active' | 'Under Processing' | 'Drafted' | 'Deactivated' | 'Suspended' | 'In-Progress';
 export type LmsType = 'Public' | 'Private';
 
 export interface LmsLogo {
@@ -47,7 +47,24 @@ export interface LmsInstance {
   admins: LmsAdminInfo[];
   createdAt: string;
   updatedAt: string;
+  createdBy?: string;
   provisioningProgress?: number; // 0-100% for under-processing status display
+}
+
+export interface LmsGridFilters {
+  status: LmsStatus[];
+  programmeDepartment: string[];
+  lmsAdmin: string;
+  createdDateFrom: string | null;
+  createdDateTo: string | null;
+}
+
+export interface LmsDetailsPermissions {
+  canEditLmsName: boolean;
+  canEditProgrammeDepartment: boolean;
+  canEditDomain: boolean;
+  canEditLmsType: boolean;
+  canManageResources: boolean;
 }
 
 export interface LmsDraft {

@@ -4,11 +4,11 @@
   <app-sidebar [isOpen]="isSidebarOpen()" (close)="closeSidebar()"></app-sidebar>
   
   <div class="flex-1 flex flex-col overflow-hidden min-w-0">
-    <app-header class="relative z-50 flex-shrink-0" (toggleSidebar)="toggleSidebar()"></app-header>
+    <app-header class="relative flex-shrink-0" (toggleSidebar)="toggleSidebar()"></app-header>
 
     <!-- Top Menu Bar (Rendered on Desktop when navigationMode is 'top_menu') -->
     @if (lms.adminLayoutPreferences().navigationMode === 'top_menu') {
-      <div class="hidden lg:block flex-shrink-0 relative z-40">
+      <div class="hidden lg:block flex-shrink-0 relative">
         <app-top-menu></app-top-menu>
       </div>
     }
@@ -25,11 +25,10 @@
   </div>
 </div>
 
-<!-- Global Unified Alert Toast Container — Top Right of Screen (Positioned cleanly below header and top menu, z-50 for visibility) -->
+<!-- Global Unified Alert Toast Container — Top Right of Screen (Positioned cleanly below header and top menu, z-40 so modal overlays cover it) -->
 <div 
   id="global-toast-container" 
-  class="fixed right-4 sm:right-6 pointer-events-none flex flex-col gap-2.5 max-w-[430px] w-full px-3 sm:px-0 transition-all duration-200"
-  style="z-index: 9999;"
+  class="fixed right-4 sm:right-6 pointer-events-none flex flex-col gap-2.5 max-w-[430px] w-full px-3 sm:px-0 transition-all duration-200 z-40"
   [style.top.px]="lms.adminLayoutPreferences().navigationMode === 'top_menu' ? 124 : (lms.adminLayoutPreferences().headerDensity === 'compact' ? 60 : 76)"
   aria-live="polite">
   @for (toast of lms.toasts(); track toast.id) {
@@ -209,5 +208,15 @@
     </div>
   }
 </div>
+
+<!-- Admin Layout & Appearance Architecture Modal (Rendered at root level with z-[100] above toast notifications) -->
+@if (lms.showLayoutModal()) {
+  <app-layout-switcher-modal (close)="lms.closeLayoutModal()"></app-layout-switcher-modal>
+}
+
+<!-- Backend REST API & Telemetry Console Modal (Rendered at root level with z-[100] above toast notifications) -->
+@if (lms.showBackendConsole()) {
+  <app-backend-console-modal (close)="lms.closeBackendConsole()"></app-backend-console-modal>
+}
 
 

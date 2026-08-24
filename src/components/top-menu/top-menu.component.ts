@@ -9,7 +9,7 @@ import { NavItem, NavChildItem, APP_NAV_ITEMS, isNavigationItemActive } from '..
   selector: 'app-top-menu',
   imports: [CommonModule, RouterModule],
   template: `
-    <nav class="bg-base-100 border-b border-base-300 px-3 sm:px-6 py-1.5 shadow-xs relative z-40 overflow-visible">
+    <nav class="bg-base-100 border-b border-base-300 px-3 sm:px-6 py-1.5 shadow-xs relative overflow-visible">
       <div class="flex items-center gap-1 sm:gap-1.5 overflow-visible py-0.5">
         @for (item of navItems; track item.label) {
           @if (isAllowed(item.roles)) {

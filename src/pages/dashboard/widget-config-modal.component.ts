@@ -7,7 +7,7 @@ import { DashboardWidget, UserRole } from '../../models/lms.model';
   selector: 'app-widget-config-modal',
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-modal-backdrop">
       <div class="bg-base-100 rounded-2xl border border-base-300 shadow-2xl w-full max-w-lg p-6 animate-modal-card">
         
         <!-- Header -->

@@ -7,12 +7,10 @@ import { LmsDataService } from '../../services/lms-data.service';
 import { LmsApiService } from '../../services/lms-api.service';
 import { ThemeService } from '../../services/theme.service';
 import { UserRole } from '../../models/lms.model';
-import { LayoutSwitcherModalComponent } from '../layout-switcher-modal/layout-switcher-modal.component';
-import { BackendConsoleModalComponent } from '../backend-console-modal/backend-console-modal.component';
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, FormsModule, RouterModule, LayoutSwitcherModalComponent, BackendConsoleModalComponent],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './header.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -30,8 +28,6 @@ export class HeaderComponent {
   showThemeMenu = computed(() => this.lms.isNavDropdownOpen('header-theme'));
 
   showNewTenantModal = signal(false);
-  showLayoutModal = signal(false);
-  showBackendConsole = signal(false);
   showSignOutModal = signal(false);
 
   tenantSearch = signal('');

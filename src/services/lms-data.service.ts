@@ -1668,9 +1668,10 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     isDraft: false,
     createdAt: '2024-03-01',
     updatedAt: '2024-03-01',
+    createdBy: 'System Admin',
     basicInfo: {
       lmsName: 'BRAC Microfinance Learning Portal',
-      programmeDepartment: 'Microfinance & Financial Inclusion',
+      programmeDepartment: 'Microfinance',
       summary: 'Specialized enterprise LMS managing field officer certifications, client protection ethics, and digitized credit recovery workflows across 64 districts.',
       goal: 'Certify 15,000+ branch accountants, program organizers, and area managers on responsible lending compliance.',
       lmsType: 'Private',
@@ -1705,6 +1706,7 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     isDraft: false,
     createdAt: '2024-06-15',
     updatedAt: '2024-06-15',
+    createdBy: 'Tanvir Hossain',
     basicInfo: {
       lmsName: 'BRAC Ultra-Poor Graduation Academy',
       programmeDepartment: 'Ultra-Poor Graduation',
@@ -1743,9 +1745,10 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     provisioningProgress: 65,
     createdAt: '2025-02-21',
     updatedAt: '2025-02-21',
+    createdBy: 'Tanvir Hossain',
     basicInfo: {
       lmsName: 'Play Labs Early Childhood Portal',
-      programmeDepartment: 'Education & Youth Skills (BEP)',
+      programmeDepartment: 'Education & Youth Skills',
       summary: 'Community early-learning facilitator toolkit, child psychology observation modules, and interactive play pedagogy.',
       goal: 'Provide 3,000+ Play Lab teachers with gamified lesson plans and parent engagement frameworks.',
       lmsType: 'Public',
@@ -1772,6 +1775,121 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     ]
   },
   {
+    id: 'LMS-1972-04',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Drafted',
+    isDraft: true,
+    createdAt: '2025-01-10',
+    updatedAt: '2025-01-12',
+    createdBy: 'Nusrat Jahan',
+    basicInfo: {
+      lmsName: 'Climate Resilience & Disaster Management Hub',
+      programmeDepartment: 'Climate Change & Disaster Management',
+      summary: 'Emergency evacuation logistics, cyclone shelter protocols, and community-led climate adaptation micro-insurance certification.',
+      goal: 'Train 10,000 coastal community responders on storm warning dissemination and disaster risk reduction.',
+      lmsType: 'Public',
+      urlDomain: 'climate.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=200&q=80',
+        fileName: 'climate-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 60,
+      fileStorageGb: 150,
+      usageAlertThresholdPct: 75
+    },
+    admins: [
+      {
+        name: 'Shakil Anwar',
+        email: 'shakil.anwar@brac.net',
+        contactNumber: '01714005566',
+        role: 'LMS Admin',
+        invitationStatus: 'pending'
+      }
+    ]
+  },
+  {
+    id: 'LMS-1972-05',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Deactivated',
+    isDraft: false,
+    createdAt: '2023-11-20',
+    updatedAt: '2024-12-01',
+    createdBy: 'System Admin',
+    basicInfo: {
+      lmsName: 'Legacy Procurement & Inventory System LMS',
+      programmeDepartment: 'Procurement',
+      summary: 'Archived procurement training portal for legacy ERP 2023 rollout. Replaced by unified supply chain module.',
+      goal: 'Historical archive of procurement standard operating procedure modules.',
+      lmsType: 'Private',
+      urlDomain: 'procurement-archive.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=200&q=80',
+        fileName: 'procure-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 40,
+      fileStorageGb: 100,
+      usageAlertThresholdPct: 90
+    },
+    admins: [
+      {
+        name: 'Tanvir Hossain',
+        email: 'tanvir.admin@brac.net',
+        contactNumber: '01711002233',
+        role: 'LMS Admin',
+        invitationStatus: 'accepted'
+      }
+    ]
+  },
+  {
+    id: 'LMS-1972-06',
+    organizationId: 'tenant-brac',
+    organizationNumericId: '1972',
+    organizationName: 'BRAC',
+    status: 'Under Processing',
+    isDraft: false,
+    provisioningProgress: 40,
+    createdAt: '2025-02-23',
+    updatedAt: '2025-02-23',
+    createdBy: 'Tanvir Hossain',
+    basicInfo: {
+      lmsName: 'BRAC Health & Community Nutrition Portal',
+      programmeDepartment: 'Health',
+      summary: 'Shasthya Shebika community health worker diagnostic protocols, maternal health checklists, and infant nutrition tracking.',
+      goal: 'Equip 20,000 frontline health workers with digital health diagnostic skills.',
+      lmsType: 'Private',
+      urlDomain: 'health.learn.brac.net',
+      timezone: 'Asia/Dhaka',
+      logo: {
+        url: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=200&q=80',
+        fileName: 'health-logo.png'
+      }
+    },
+    resources: {
+      databaseSizeGb: 120,
+      fileStorageGb: 300,
+      usageAlertThresholdPct: 80
+    },
+    admins: [
+      {
+        name: 'Farhana Rahman',
+        email: 'farhana.health@brac.net',
+        contactNumber: '01715006677',
+        role: 'LMS Admin',
+        invitationStatus: 'pending'
+      }
+    ]
+  },
+  {
     id: 'LMS-5520-01',
     organizationId: 'tenant-lumina',
     organizationNumericId: '5520',
@@ -1780,6 +1898,7 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     isDraft: false,
     createdAt: '2024-04-10',
     updatedAt: '2024-04-10',
+    createdBy: 'Aria Vance',
     basicInfo: {
       lmsName: 'Spatial UI & Neural Dynamics Academy',
       programmeDepartment: 'Spatial UI & Generative Vision',
@@ -1813,6 +1932,7 @@ const INITIAL_LMS_INSTANCES: LmsInstance[] = [
     isDraft: false,
     createdAt: '2024-02-05',
     updatedAt: '2024-02-05',
+    createdBy: 'Clara Oswald',
     basicInfo: {
       lmsName: 'Enterprise Cloud & Zero Trust Security',
       programmeDepartment: 'Engineering',
@@ -2442,6 +2562,48 @@ export class LmsDataService {
     };
   });
 
+  // Global Modals Coordinator
+  showLayoutModal = signal(false);
+  showBackendConsole = signal(false);
+  showNewTenantModal = signal(false);
+  showSignOutModal = signal(false);
+
+  openLayoutModal() {
+    this.closeNavDropdown();
+    this.showLayoutModal.set(true);
+  }
+
+  closeLayoutModal() {
+    this.showLayoutModal.set(false);
+  }
+
+  openBackendConsole() {
+    this.closeNavDropdown();
+    this.showBackendConsole.set(true);
+  }
+
+  closeBackendConsole() {
+    this.showBackendConsole.set(false);
+  }
+
+  openNewTenantModal() {
+    this.closeNavDropdown();
+    this.showNewTenantModal.set(true);
+  }
+
+  closeNewTenantModal() {
+    this.showNewTenantModal.set(false);
+  }
+
+  openSignOutModal() {
+    this.closeNavDropdown();
+    this.showSignOutModal.set(true);
+  }
+
+  closeSignOutModal() {
+    this.showSignOutModal.set(false);
+  }
+
   // Global Unified Dropdown Coordinator across Header and Top-Menu Navigation
   activeNavDropdown = signal<string | null>(null);
 
@@ -2890,7 +3052,10 @@ export class LmsDataService {
   }
 
   // Hook to simulate activation of an LMS instance (§6.4, §9.4)
-  activateLmsInstance(lmsId: string) {
+  activateLmsInstance(lmsId: string): boolean {
+    const target = this.lmsInstances().find(l => l.id === lmsId);
+    if (!target) return false;
+
     this.lmsInstances.update(list => list.map(lms => {
       if (lms.id === lmsId) {
         return {
@@ -2905,9 +3070,108 @@ export class LmsDataService {
 
     this.logAction(
       'LMS Instance Activated',
-      `LMS Instance ID ${lmsId} status transitioned to "Active"`,
+      `LMS "${target.basicInfo.lmsName}" (ID: ${lmsId}) is activated`,
       'success'
     );
+    return true;
+  }
+
+  // Update an existing LMS instance with validation (§4.2, §4.3)
+  updateLmsInstance(lmsId: string, updatedData: Partial<LmsInstance>): { success: boolean; error?: string } {
+    const currentList = this.lmsInstances();
+    const existing = currentList.find(l => l.id === lmsId);
+    if (!existing) {
+      return { success: false, error: 'LMS instance not found' };
+    }
+
+    // Check LMS name uniqueness within organization if changed
+    if (updatedData.basicInfo?.lmsName && updatedData.basicInfo.lmsName.trim() !== existing.basicInfo.lmsName) {
+      const isUnique = this.isLmsNameUniqueInOrg(updatedData.basicInfo.lmsName.trim(), existing.organizationId, lmsId);
+      if (!isUnique) {
+        return { success: false, error: `An LMS instance named "${updatedData.basicInfo.lmsName}" already exists in this organization.` };
+      }
+    }
+
+    // Check domain uniqueness within organization if changed
+    if (updatedData.basicInfo?.urlDomain && updatedData.basicInfo.urlDomain.trim() !== existing.basicInfo.urlDomain) {
+      const isDomainUnique = this.isLmsDomainUniqueInOrg(updatedData.basicInfo.urlDomain.trim(), existing.organizationId, lmsId);
+      if (!isDomainUnique) {
+        return { success: false, error: `The domain "${updatedData.basicInfo.urlDomain}" is already in use by another LMS instance.` };
+      }
+    }
+
+    const mergedInstance: LmsInstance = {
+      ...existing,
+      ...updatedData,
+      id: existing.id, // ID is strictly immutable
+      organizationId: existing.organizationId, // Immutable
+      organizationNumericId: existing.organizationNumericId,
+      organizationName: existing.organizationName,
+      createdAt: existing.createdAt, // Immutable
+      updatedAt: new Date().toISOString().split('T')[0],
+      basicInfo: {
+        ...existing.basicInfo,
+        ...(updatedData.basicInfo || {})
+      },
+      resources: {
+        ...existing.resources,
+        ...(updatedData.resources || {})
+      },
+      admins: updatedData.admins || existing.admins
+    };
+
+    this.lmsInstances.update(list => list.map(l => l.id === lmsId ? mergedInstance : l));
+
+    this.logAction(
+      'LMS Details Updated',
+      `Updated configuration for LMS "${mergedInstance.basicInfo.lmsName}" (${lmsId})`,
+      'info'
+    );
+
+    return { success: true };
+  }
+
+  // Check if LMS name is unique within the given Organization
+  isLmsNameUniqueInOrg(name: string, orgId?: string, excludeLmsId?: string): boolean {
+    const targetOrgId = orgId || this.activeTenantId();
+    const cleanName = name.toLowerCase().trim();
+    return !this.lmsInstances().some(l => 
+      l.organizationId === targetOrgId &&
+      l.id !== excludeLmsId &&
+      l.basicInfo.lmsName.toLowerCase().trim() === cleanName
+    );
+  }
+
+  // Check if LMS domain is unique within the given Organization
+  isLmsDomainUniqueInOrg(domain: string, orgId?: string, excludeLmsId?: string): boolean {
+    const targetOrgId = orgId || this.activeTenantId();
+    const cleanDomain = domain.toLowerCase().trim().replace(/^https?:\/\//, '');
+    return !this.lmsInstances().some(l => 
+      l.organizationId === targetOrgId &&
+      l.id !== excludeLmsId &&
+      l.basicInfo.urlDomain.toLowerCase().trim().replace(/^https?:\/\//, '') === cleanDomain
+    );
+  }
+
+  // Get list of distinct LMS Admins for the specified or active organization
+  getOrgLmsAdmins(orgId?: string): { name: string; email: string; contactNumber?: string }[] {
+    const targetOrgId = orgId || this.activeTenantId();
+    const orgLms = this.lmsInstances().filter(l => l.organizationId === targetOrgId);
+    const map = new Map<string, { name: string; email: string; contactNumber?: string }>();
+
+    orgLms.forEach(lms => {
+      lms.admins.forEach(admin => {
+        if (admin.name && admin.email) {
+          map.set(admin.email.toLowerCase(), {
+            name: admin.name,
+            email: admin.email,
+            contactNumber: admin.contactNumber
+          });
+        }
+      });
+    });
+
+    return Array.from(map.values());
   }
 
   // Trigger notice email to LMS admin

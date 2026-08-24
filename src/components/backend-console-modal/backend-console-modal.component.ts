@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, output, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, output, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LmsApiService, BackendHealth } from '../../services/lms-api.service';
@@ -8,8 +8,8 @@ import { LmsDataService } from '../../services/lms-data.service';
   selector: 'app-backend-console-modal',
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-modal-backdrop">
-      <div class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl p-6 animate-modal-card max-h-[90vh] flex flex-col">
+    <div (click)="onBackdropClick($event)" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-modal-backdrop">
+      <div (click)="$event.stopPropagation()" class="bg-base-100 rounded-3xl border border-base-300 shadow-2xl w-full max-w-3xl p-6 animate-modal-card max-h-[90vh] flex flex-col">
         
         <!-- Header -->
         <div class="flex items-center justify-between pb-4 border-b border-base-300">
@@ -300,5 +300,14 @@ export class BackendConsoleModalComponent {
         this.isLoading.set(false);
       }, 200);
     }
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    this.close.emit();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscapePress() {
+    this.close.emit();
   }
 }
