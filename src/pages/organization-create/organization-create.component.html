@@ -9,19 +9,28 @@
           Organizations
         </a>
         <span class="text-text-secondary text-xs">/</span>
-        <span class="text-xs font-semibold text-tenant-600 dark:text-tenant-400">Creation Wizard</span>
+        <span class="text-xs font-semibold text-tenant-600 dark:text-tenant-400">
+          @if (isEditMode()) { Edit Organization } @else { Creation Wizard }
+        </span>
       </div>
       <h1 class="text-2xl font-bold text-text-primary tracking-tight">
-        @if (currentStep() === 1) { Create Organization – Basic Information }
-        @else if (currentStep() === 2) { Create Organization – Resource Allocation }
-        @else if (currentStep() === 3) { Create Organization – Admin Setup }
-        @else { Create Organization – Preview & Confirm }
+        @if (isEditMode()) {
+          @if (currentStep() === 1) { Edit Organization – Basic Information }
+          @else if (currentStep() === 2) { Edit Organization – Resource Allocation }
+          @else if (currentStep() === 3) { Edit Organization – Admin Setup }
+          @else { Edit Organization – Preview & Confirm }
+        } @else {
+          @if (currentStep() === 1) { Create Organization – Basic Information }
+          @else if (currentStep() === 2) { Create Organization – Resource Allocation }
+          @else if (currentStep() === 3) { Create Organization – Admin Setup }
+          @else { Create Organization – Preview & Confirm }
+        }
       </h1>
       <p class="text-xs text-text-secondary mt-0.5">
         @if (currentStep() === 1) { This steps capture the basic information of the organization. }
         @else if (currentStep() === 2) { Allocate storage from the available platform capacity. }
         @else if (currentStep() === 3) { Review administrator credentials and dispatch setup notifications. }
-        @else { Review all organization parameters before provisioning under in-progress status. }
+        @else { Review all organization parameters before saving. }
       </p>
     </div>
 
@@ -1196,9 +1205,13 @@
             type="button" 
             id="btn-create-organization"
             (click)="onCreateOrganization()" 
-            class="px-6 py-3 rounded-xl btn-gradient text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg active:scale-[0.98]">
-            <span class="material-symbols-outlined text-base">rocket_launch</span>
-            <span>Create Organization</span>
+            class="px-6 py-3 rounded-xl btn-gradient text-white text-xs font-bold flex items-center gap-2 transition-all shadow-lg active:scale-[0.98] cursor-pointer">
+            <span class="material-symbols-outlined text-base">
+              @if (isEditMode()) { check_circle } @else { rocket_launch }
+            </span>
+            <span>
+              @if (isEditMode()) { Update Organization } @else { Create Organization }
+            </span>
           </button>
         </div>
       </div>

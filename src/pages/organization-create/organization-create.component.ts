@@ -78,8 +78,10 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
   // Admin notification email test status
   adminEmailSent = signal<boolean>(false);
 
-  // Draft mode tracking
+  // Draft & Edit mode tracking
   activeDraftId = signal<string | null>(null);
+  isEditMode = signal<boolean>(false);
+  editingOrgId = signal<string | null>(null);
 
   // Available LMS Instances for Custom batching
   availableLmsNodes = [
@@ -93,10 +95,14 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
     this.ensureActiveTenantTheme();
     this.initForms();
     
-    // Check if resuming an existing draft via query param ?draftId=...
+    // Check if editing an existing organization or resuming a draft via query params
     this.route.queryParams.subscribe(params => {
-      if (params['draftId']) {
-        this.loadDraft(params['draftId']);
+      const qEditId = params['editOrgId'] || params['editId'];
+      const qDraftId = params['draftId'];
+      if (qEditId) {
+        this.loadOrganizationForEdit(qEditId);
+      } else if (qDraftId) {
+        this.loadDraft(qDraftId);
       } else {
         // Generate new random 4-digit unique numeric ID
         const generatedId = this.lms.generateUniqueOrgId();
@@ -216,6 +222,66 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
       district: ''
     });
     this.basicInfoForm.get('district')?.markAsUntouched();
+  }
+
+  loadOrganizationForEdit(orgId: string) {
+    const org = this.lms.tenants().find(t => t.id === orgId || t.numericId === orgId);
+    if (!org) {
+      this.lms.showToast(`Organization with ID "${orgId}" not found.`, 'warning', 4000);
+      return;
+    }
+
+    this.isEditMode.set(true);
+    this.editingOrgId.set(org.id);
+
+    if (org.address?.division) {
+      this.selectedDivision.set(org.address.division);
+    }
+
+    // Patch basic info
+    this.basicInfoForm.patchValue({
+      organizationName: org.name,
+      organizationId: org.numericId || org.id,
+      websiteUrl: org.websiteUrl || '',
+      tagline: org.branding?.tagline || '',
+      description: org.description || '',
+      organizationEmail: org.adminEmail || org.adminInfo?.contactEmail || '',
+      timezone: org.timezone || 'Asia/Dhaka',
+      line1: org.address?.line1 || '',
+      line2: org.address?.line2 || '',
+      division: org.address?.division || '',
+      district: org.address?.district || '',
+      postalCode: org.address?.postalCode || '',
+      adminName: org.adminInfo?.adminName || '',
+      contactNumber: org.adminInfo?.contactNumber || '',
+      contactEmail: org.adminInfo?.contactEmail || org.adminEmail || ''
+    });
+
+    if (org.branding?.logoUrl) {
+      this.logoPreview.set(org.branding.logoUrl);
+      this.logoFileName.set('organization-logo.png');
+    }
+
+    // Patch resources
+    if (org.resourceAllocation) {
+      this.resourcesForm.patchValue({
+        databaseSizeGb: org.resourceAllocation.databaseSizeGb || 250,
+        fileStorageGb: org.resourceAllocation.fileStorageGb || 500,
+        usageAlertThresholdPct: org.resourceAllocation.usageAlertThresholdPct || 80,
+        dataSharingMode: org.resourceAllocation.dataSharingMode || 'Yes – Shared'
+      });
+    }
+
+    // Mark all steps as accessible in edit mode
+    this.completedSteps.set(new Set([1, 2, 3]));
+
+    this.lms.showToast(
+      `Loaded details for "${org.name}". You can modify parameters across all steps.`,
+      'info',
+      4500,
+      'Edit Organization Mode',
+      'EDIT MODE'
+    );
   }
 
   loadDraft(draftId: string) {
@@ -541,8 +607,53 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
     this.lms.showToast(`"Organization Setup In-Progress" notification dispatched to ${adminEmail}`, 'info', 4500, 'Step 3: Email Dispatched', 'STEP 3 / 4');
   }
 
-  // 7. Step 4 Terminal Action: Create Organization (§6.2)
+  // 7. Step 4 Terminal Action: Create or Update Organization (§6.2)
   onCreateOrganization() {
+    if (this.isEditMode() && this.editingOrgId()) {
+      const existing = this.lms.tenants().find(t => t.id === this.editingOrgId());
+      if (existing) {
+        const bValues = this.basicInfoForm.getRawValue();
+        const rValues = this.resourcesForm.getRawValue();
+
+        const updatedTenant = {
+          ...existing,
+          name: bValues.organizationName || existing.name,
+          websiteUrl: bValues.websiteUrl || existing.websiteUrl,
+          adminEmail: bValues.contactEmail || bValues.organizationEmail || existing.adminEmail,
+          timezone: bValues.timezone || existing.timezone,
+          description: bValues.description || existing.description,
+          address: {
+            line1: bValues.line1 || existing.address?.line1 || '',
+            line2: bValues.line2 || existing.address?.line2 || '',
+            division: bValues.division || existing.address?.division || '',
+            district: bValues.district || existing.address?.district || '',
+            postalCode: bValues.postalCode || existing.address?.postalCode || ''
+          },
+          adminInfo: {
+            adminName: bValues.adminName || existing.adminInfo?.adminName || '',
+            contactNumber: bValues.contactNumber || existing.adminInfo?.contactNumber || '',
+            contactEmail: bValues.contactEmail || existing.adminInfo?.contactEmail || ''
+          },
+          resourceAllocation: {
+            databaseSizeGb: Number(rValues.databaseSizeGb) || existing.resourceAllocation?.databaseSizeGb || 250,
+            fileStorageGb: Number(rValues.fileStorageGb) || existing.resourceAllocation?.fileStorageGb || 500,
+            usageAlertThresholdPct: Number(rValues.usageAlertThresholdPct) || existing.resourceAllocation?.usageAlertThresholdPct || 80,
+            dataSharingMode: rValues.dataSharingMode || existing.resourceAllocation?.dataSharingMode || 'Yes – Shared'
+          },
+          branding: {
+            ...existing.branding,
+            tagline: bValues.tagline || existing.branding.tagline,
+            logoUrl: this.logoPreview() || existing.branding.logoUrl
+          }
+        };
+
+        this.lms.updateTenant(updatedTenant);
+        this.lms.showToast(`Organization "${updatedTenant.name}" has been updated successfully!`, 'success', 5000, 'Step 4 Complete: Organization Updated', 'SAVED');
+        this.router.navigate(['/tenants']);
+        return;
+      }
+    }
+
     const draft = this.constructDraftObject();
     const createdTenant = this.lms.createOrganizationFromWizard(draft);
 

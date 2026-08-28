@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
 import { TIMEZONE_OPTIONS, TimezoneOption } from '../../models/organization.model';
-import { LmsBasicInfo, LmsResourceAllocation, LmsAdminInfo, LmsDraft, LmsType } from '../../models/lms-instance.model';
+import { LmsBasicInfo, LmsResourceAllocation, LmsAdminInfo, LmsDraft, LmsType, LmsInstance } from '../../models/lms-instance.model';
 
 export type WizardStep = 1 | 2 | 3 | 4;
 
@@ -54,6 +54,7 @@ export class LmsCreateComponent implements OnInit {
   adminName = signal<string>('');
   adminEmail = signal<string>('');
   adminContactNumber = signal<string>('');
+  coAdmins = signal<LmsAdminInfo[]>([]);
   adminList = signal<LmsAdminInfo[]>([]);
   adminEmailSent = signal<boolean>(false);
 
@@ -65,8 +66,10 @@ export class LmsCreateComponent implements OnInit {
   coAdminRole = signal<string>('LMS Co-Admin');
   coAdminErrors = signal<Record<string, string>>({});
 
-  // Draft tracking
+  // Draft & Edit tracking
   draftId = signal<string | null>(null);
+  isEditMode = signal<boolean>(false);
+  editingLmsId = signal<string | null>(null);
 
   // Validation errors map & Alert banner
   errors = signal<Record<string, string>>({});
@@ -107,17 +110,19 @@ export class LmsCreateComponent implements OnInit {
   ngOnInit() {
     this.ensureActiveTenantTheme();
 
-    // Set default timezone from parent organization
-    if (this.parentOrg().timezone) {
-      this.selectedTimezone.set(this.parentOrg().timezone);
-    }
-
-    // Check if resuming draft from query params
+    // Check if editing an existing LMS instance or resuming draft from query params
     this.route.queryParams.subscribe(params => {
+      const qEditId = params['editLmsId'] || params['editId'];
       const qDraftId = params['draftId'];
-      if (qDraftId) {
+      if (qEditId) {
+        this.loadLmsForEdit(qEditId);
+      } else if (qDraftId) {
         this.loadDraft(qDraftId);
       } else {
+        // Set default timezone from parent organization
+        if (this.parentOrg().timezone) {
+          this.selectedTimezone.set(this.parentOrg().timezone);
+        }
         // Pre-fill suggested default allocation based on available capacity
         this.initDefaultAllocations();
         this.showStepAlert(1, 'entered');
@@ -183,6 +188,67 @@ export class LmsCreateComponent implements OnInit {
     }
   }
 
+  // Load LMS Instance for editing
+  loadLmsForEdit(lmsId: string) {
+    const instance = this.lms.lmsInstances().find(l => l.id === lmsId);
+    if (!instance) {
+      this.lms.showToast(`LMS instance "${lmsId}" not found.`, 'warning', 4000);
+      return;
+    }
+
+    this.isEditMode.set(true);
+    this.editingLmsId.set(instance.id);
+
+    // If the instance belongs to another organization, ensure parent org is active
+    if (instance.organizationId && instance.organizationId !== this.parentOrg().id) {
+      this.lms.activeTenantId.set(instance.organizationId);
+    }
+
+    // Basic Info
+    if (instance.basicInfo) {
+      this.lmsName.set(instance.basicInfo.lmsName || '');
+      this.programmeDepartment.set(instance.basicInfo.programmeDepartment || '');
+      this.summary.set(instance.basicInfo.summary || '');
+      this.goal.set(instance.basicInfo.goal || '');
+      this.lmsType.set(instance.basicInfo.lmsType || 'Private');
+      this.urlDomain.set(instance.basicInfo.urlDomain || '');
+      this.selectedTimezone.set(instance.basicInfo.timezone || this.parentOrg().timezone || 'Asia/Dhaka');
+      if (instance.basicInfo.logo) {
+        this.logoUrl.set(instance.basicInfo.logo.url || '');
+        this.logoFileName.set(instance.basicInfo.logo.fileName || '');
+      }
+    }
+
+    // Resources
+    if (instance.resources) {
+      this.databaseSizeGb.set(instance.resources.databaseSizeGb);
+      this.fileStorageGb.set(instance.resources.fileStorageGb);
+      this.usageAlertThresholdPct.set(instance.resources.usageAlertThresholdPct || 80);
+    }
+
+    // Admins
+    if (instance.admins && instance.admins.length > 0) {
+      this.adminList.set(JSON.parse(JSON.stringify(instance.admins)));
+      this.adminName.set(instance.admins[0].name || '');
+      this.adminEmail.set(instance.admins[0].email || '');
+      this.adminContactNumber.set(instance.admins[0].contactNumber || '');
+      this.coAdmins.set(JSON.parse(JSON.stringify(instance.admins.slice(1))));
+    } else {
+      this.coAdmins.set([]);
+    }
+
+    // Enable navigation across all steps
+    this.completedSteps.set(new Set([1, 2, 3]));
+
+    this.lms.showToast(
+      `Loaded details for "${instance.basicInfo.lmsName}". You can modify parameters across all steps.`,
+      'info',
+      4500,
+      'Edit LMS Mode',
+      'EDIT MODE'
+    );
+  }
+
   // Load draft data
   loadDraft(id: string) {
     const draft = this.lms.getLmsDraft(id);
@@ -218,6 +284,9 @@ export class LmsCreateComponent implements OnInit {
       this.adminName.set(draft.admins[0].name || '');
       this.adminEmail.set(draft.admins[0].email || '');
       this.adminContactNumber.set(draft.admins[0].contactNumber || '');
+      this.coAdmins.set(JSON.parse(JSON.stringify(draft.admins.slice(1))));
+    } else {
+      this.coAdmins.set([]);
     }
 
     // Set step
@@ -469,18 +538,28 @@ export class LmsCreateComponent implements OnInit {
       invitationStatus: 'pending'
     };
 
-    if (this.adminList().length === 0) {
-      this.adminList.set([primaryAdmin]);
-    } else {
-      this.adminList.update(list => {
-        const copy = [...list];
-        copy[0] = primaryAdmin;
-        return copy;
-      });
-    }
+    this.adminList.set([primaryAdmin, ...this.coAdmins()]);
 
     this.formErrorAlert.set(null);
     return true;
+  }
+
+  getAllAdmins(): LmsAdminInfo[] {
+    const list: LmsAdminInfo[] = [];
+    const name = this.adminName().trim();
+    const email = this.adminEmail().trim();
+    const phone = this.adminContactNumber().trim();
+
+    if (name || email) {
+      list.push({
+        name: name || 'LMS Admin',
+        email: email || '',
+        contactNumber: phone || 'N/A',
+        role: 'LMS Admin',
+        invitationStatus: 'pending'
+      });
+    }
+    return [...list, ...this.coAdmins()];
   }
 
   openAddCoAdminModal() {
@@ -520,7 +599,7 @@ export class LmsCreateComponent implements OnInit {
       const primaryEmail = this.adminEmail().trim().toLowerCase();
       if (primaryEmail && email === primaryEmail) {
         errors['email'] = 'This email is already assigned as the Primary Admin.';
-      } else if (this.adminList().some(a => a.email.toLowerCase() === email)) {
+      } else if (this.coAdmins().some(a => a.email.toLowerCase() === email)) {
         errors['email'] = 'This administrator has already been added.';
       }
     }
@@ -542,7 +621,8 @@ export class LmsCreateComponent implements OnInit {
       invitationStatus: 'pending'
     };
 
-    this.adminList.update(list => [...list, newAdmin]);
+    this.coAdmins.update(list => [...list, newAdmin]);
+    this.adminList.set(this.getAllAdmins());
     this.showCoAdminModal.set(false);
     this.lms.showToast(`Co-Administrator "${name}" added successfully.`, 'success', 3500, 'Admin Assigned');
   }
@@ -551,16 +631,21 @@ export class LmsCreateComponent implements OnInit {
     this.openAddCoAdminModal();
   }
 
+  removeCoAdmin(index: number) {
+    const removedAdmin = this.coAdmins()[index];
+    this.coAdmins.update(list => list.filter((_, i) => i !== index));
+    this.adminList.set(this.getAllAdmins());
+    if (removedAdmin) {
+      this.lms.showToast(`Removed "${removedAdmin.name}" from co-administrators.`, 'info', 3000);
+    }
+  }
+
   removeAdmin(index: number) {
     if (index === 0) {
       this.lms.showToast('The primary LMS Administrator cannot be removed.', 'warning', 3500, 'Primary Admin Locked');
       return;
     }
-    const removedAdmin = this.adminList()[index];
-    this.adminList.update(list => list.filter((_, i) => i !== index));
-    if (removedAdmin) {
-      this.lms.showToast(`Removed "${removedAdmin.name}" from instance administrators.`, 'info', 3000);
-    }
+    this.removeCoAdmin(index - 1);
   }
 
   triggerAdminNoticeEmail() {
@@ -663,6 +748,7 @@ export class LmsCreateComponent implements OnInit {
       this.adminName.set('');
       this.adminEmail.set('');
       this.adminContactNumber.set('');
+      this.coAdmins.set([]);
       this.adminList.set([]);
       this.adminEmailSent.set(false);
     }
@@ -709,13 +795,7 @@ export class LmsCreateComponent implements OnInit {
         fileStorageGb: this.fileStorageGb(),
         usageAlertThresholdPct: this.usageAlertThresholdPct()
       },
-      admins: this.adminList().length > 0 ? this.adminList() : (this.adminName() ? [{
-        name: this.adminName(),
-        email: this.adminEmail(),
-        contactNumber: this.adminContactNumber(),
-        role: 'LMS Admin',
-        invitationStatus: 'pending'
-      }] : [])
+      admins: this.getAllAdmins()
     };
 
     this.lms.saveLmsDraft(draftPayload);
@@ -738,6 +818,48 @@ export class LmsCreateComponent implements OnInit {
 
   finalizeCreation() {
     this.isSubmitting.set(true);
+
+    if (this.isEditMode() && this.editingLmsId()) {
+      const updateData: Partial<LmsInstance> = {
+        basicInfo: {
+          lmsName: this.lmsName(),
+          programmeDepartment: this.programmeDepartment(),
+          summary: this.summary(),
+          goal: this.goal(),
+          lmsType: this.lmsType(),
+          urlDomain: this.urlDomain(),
+          timezone: this.selectedTimezone(),
+          logo: this.logoUrl() ? { url: this.logoUrl(), fileName: this.logoFileName() } : undefined
+        },
+        resources: {
+          databaseSizeGb: this.databaseSizeGb() || 50,
+          fileStorageGb: this.fileStorageGb() || 100,
+          usageAlertThresholdPct: this.usageAlertThresholdPct() || 80
+        },
+        admins: this.getAllAdmins()
+      };
+
+      setTimeout(() => {
+        const result = this.lms.updateLmsInstance(this.editingLmsId()!, updateData);
+        this.isSubmitting.set(false);
+        this.showConfirmModal.set(false);
+
+        if (result.success) {
+          this.lms.showToast(
+            `LMS "${this.lmsName()}" has been updated successfully!`,
+            'success',
+            5000,
+            'Step 4 Complete: LMS Updated',
+            'SAVED'
+          );
+          this.router.navigate(['/lms']);
+        } else {
+          this.formErrorAlert.set(result.error || 'Failed to update LMS instance.');
+          this.lms.showToast(result.error || 'Failed to update LMS instance.', 'warning', 5000);
+        }
+      }, 500);
+      return;
+    }
 
     const draftPayload: LmsDraft = {
       id: this.draftId() || `LMS-${this.parentOrg().numericId || 'ORG'}-${Math.floor(10 + Math.random() * 90)}`,
@@ -763,13 +885,7 @@ export class LmsCreateComponent implements OnInit {
         fileStorageGb: this.fileStorageGb() || 100,
         usageAlertThresholdPct: this.usageAlertThresholdPct() || 80
       },
-      admins: this.adminList().length > 0 ? this.adminList() : [{
-        name: this.adminName(),
-        email: this.adminEmail(),
-        contactNumber: this.adminContactNumber(),
-        role: 'LMS Admin',
-        invitationStatus: 'pending'
-      }]
+      admins: this.getAllAdmins()
     };
 
     // Simulate microservice creation latency

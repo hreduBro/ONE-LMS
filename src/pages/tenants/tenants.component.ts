@@ -400,7 +400,7 @@ export class TenantsComponent {
 
   openEditModal(tenant: Tenant, event?: Event) {
     if (event) event.stopPropagation();
-    this.editingTenant.set(JSON.parse(JSON.stringify(tenant)));
+    this.router.navigate(['/tenants/create'], { queryParams: { editOrgId: tenant.id } });
   }
 
   saveTenantEdit() {

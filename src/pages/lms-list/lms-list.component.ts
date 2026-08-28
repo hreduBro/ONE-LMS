@@ -421,6 +421,13 @@ export class LmsListComponent {
     });
   }
 
+  openEditLms(instance: LmsInstance, event?: MouseEvent) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.router.navigate(['/lms/create'], { queryParams: { editLmsId: instance.id } });
+  }
+
   closeLmsDetails() {
     this.selectedLms.set(null);
     this.isEditingDetails.set(false);
