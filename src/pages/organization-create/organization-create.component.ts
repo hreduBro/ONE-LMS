@@ -12,11 +12,13 @@ import {
   CustomDataSharingBatch
 } from '../../models/organization.model';
 
+import { CustomSelectComponent } from '../../components/custom-select/custom-select.component';
+
 export type WizardStep = 1 | 2 | 3 | 4;
 
 @Component({
   selector: 'app-organization-create',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, CustomSelectComponent],
   templateUrl: './organization-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -45,6 +47,12 @@ export class OrganizationCreateComponent implements OnInit, OnDestroy {
   timezoneOptions = TIMEZONE_OPTIONS;
   divisionsList = DIVISIONS_LIST;
   selectedDivision = signal<string>('');
+  
+  dataSharingOptions = [
+    { value: 'Yes – Shared', label: 'Yes – Shared', sublabel: 'Repository shared across all LMS under this org', icon: 'share' },
+    { value: 'No – Segregated', label: 'No – Segregated', sublabel: 'Data segregated across any LMS under this org', icon: 'lock' },
+    { value: 'Custom', label: 'Custom', sublabel: 'Configure custom data sharing batches & groups', icon: 'hub' }
+  ];
   
   districtsList = computed(() => {
     const div = this.selectedDivision();

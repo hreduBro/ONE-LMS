@@ -3,15 +3,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LmsDataService } from '../../services/lms-data.service';
 import { LiveWebinar } from '../../models/lms.model';
+import { CustomSelectComponent } from '../../components/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-webinars',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './webinars.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WebinarsComponent {
   lms = inject(LmsDataService);
+
+  platformOptions = [
+    { value: 'Zoom', label: 'Zoom', icon: 'videocam' },
+    { value: 'MS Teams', label: 'MS Teams', icon: 'groups' },
+    { value: 'Google Meet', label: 'Google Meet', icon: 'video_call' },
+    { value: 'WebRTC', label: 'In-App WebRTC', icon: 'cast' }
+  ];
 
   showScheduleModal = signal<boolean>(false);
   activeVirtualRoom = signal<LiveWebinar | null>(null);

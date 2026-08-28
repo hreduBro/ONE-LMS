@@ -250,19 +250,14 @@
 
           <!-- Timezone (Dropdown with 50 items, default Dhaka) -->
           <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">
-              Timezone
-              <span class="text-[10px] text-text-secondary font-normal ml-1">(Suggested: Dhaka UTC+06:00)</span>
-            </label>
-            <select 
+            <app-custom-select
               formControlName="timezone"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all">
-              @for (tz of timezoneOptions; track tz.display) {
-                <option [value]="tz.stored">
-                  {{ tz.display }}
-                </option>
-              }
-            </select>
+              label="Timezone"
+              hint="(Suggested: Dhaka UTC+06:00)"
+              placeholder="Select Timezone..."
+              [options]="timezoneOptions"
+              [searchable]="true"
+              leadingIcon="schedule" />
           </div>
 
           <!-- Organization Email -->
@@ -419,19 +414,13 @@
               </label>
               <span class="text-[10px] text-tenant-600 dark:text-tenant-400 font-semibold font-mono">8 Divisions</span>
             </div>
-            <select 
+            <app-custom-select
               formControlName="division"
-              (change)="onDivisionChange($any($event.target).value)"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
-              [ngClass]="isFieldInvalid(basicInfoForm, 'division') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'">
-              <option value="" disabled selected>Select Division</option>
-              @for (div of divisionsList; track div) {
-                <option [value]="div">{{ div }}</option>
-              }
-            </select>
-            @if (isFieldInvalid(basicInfoForm, 'division')) {
-              <p class="text-[11px] text-rose-500 mt-1">Division is required.</p>
-            }
+              placeholder="Select Division"
+              [options]="divisionsList"
+              [searchable]="true"
+              leadingIcon="map"
+              [error]="isFieldInvalid(basicInfoForm, 'division') ? 'Division is required.' : ''" />
           </div>
 
           <!-- District * (Dependent on Division) (§3.2.2) -->
@@ -447,20 +436,13 @@
                 </span>
               }
             </div>
-            <select 
+            <app-custom-select
               formControlName="district"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border text-xs focus:outline-none focus:border-tenant-500 transition-all font-medium"
-              [ngClass]="isFieldInvalid(basicInfoForm, 'district') ? 'border-rose-500 bg-rose-50/20' : 'border-base-300'">
-              <option value="" disabled selected>
-                {{ selectedDivision() ? 'Select District (' + selectedDivision() + ')' : 'First select a Division above' }}
-              </option>
-              @for (dist of districtsList(); track dist) {
-                <option [value]="dist">{{ dist }}</option>
-              }
-            </select>
-            @if (isFieldInvalid(basicInfoForm, 'district')) {
-              <p class="text-[11px] text-rose-500 mt-1">District is required.</p>
-            }
+              [placeholder]="selectedDivision() ? 'Select District (' + selectedDivision() + ')' : 'First select a Division above'"
+              [options]="districtsList()"
+              [searchable]="true"
+              leadingIcon="location_on"
+              [error]="isFieldInvalid(basicInfoForm, 'district') ? 'District is required.' : ''" />
           </div>
 
           <!-- Postal Code * (Numeric only, <= 10 digits) -->
@@ -759,16 +741,12 @@
 
           <!-- Data Sharing Across LMS Instances * (§4.2.1) -->
           <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">
-              Data Sharing Across LMS Instances <span class="text-rose-500">*</span>
-            </label>
-            <select 
+            <app-custom-select
               formControlName="dataSharingMode"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none focus:border-tenant-500 transition-all font-semibold">
-              <option value="Yes – Shared">Yes – Shared (Repository shared across all LMS under this org)</option>
-              <option value="No – Segregated">No – Segregated (Data segregated across any LMS under this org)</option>
-              <option value="Custom">Custom (Configure custom data sharing batches & groups)</option>
-            </select>
+              label="Data Sharing Across LMS Instances"
+              [required]="true"
+              [options]="dataSharingOptions"
+              leadingIcon="hub" />
           </div>
 
         </div>

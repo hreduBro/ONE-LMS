@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LmsDataService } from '../../services/lms-data.service';
 import { User, UserRole } from '../../models/lms.model';
+import { CustomSelectComponent } from '../../components/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-users',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -17,6 +18,46 @@ export class UsersComponent {
   selectedDepartment = signal<string>('All');
   selectedRole = signal<string>('All');
   selectedCompliance = signal<string>('All');
+
+  roleOptions = [
+    { value: 'learner', label: 'Learner', sublabel: 'Standard student role' },
+    { value: 'instructor', label: 'Instructor', sublabel: 'Curriculum & course manager' },
+    { value: 'lms_admin', label: 'LMS Admin', sublabel: 'Manage LMS unit and learners' },
+    { value: 'system_admin', label: 'System Admin', sublabel: 'Full system authorization' }
+  ];
+
+  filterRoleOptions = [
+    { value: 'All', label: 'All Roles' },
+    { value: 'system_admin', label: 'System Admin' },
+    { value: 'lms_admin', label: 'LMS Admin' },
+    { value: 'instructor', label: 'Instructor' },
+    { value: 'learner', label: 'Learner' }
+  ];
+
+  filterComplianceOptions = [
+    { value: 'All', label: 'All Statuses' },
+    { value: 'Compliant', label: 'Compliant' },
+    { value: 'At Risk', label: 'At Risk' },
+    { value: 'Overdue', label: 'Overdue' }
+  ];
+
+  departmentFilterOptions = computed(() => {
+    const depts = this.lms.activeTenant().departments.map(d => ({ value: d, label: d }));
+    return [{ value: 'All', label: 'All Departments' }, ...depts];
+  });
+
+  departmentOptions = computed(() => {
+    return this.lms.activeTenant().departments.map(d => ({ value: d, label: d }));
+  });
+
+  courseOptions = computed(() => {
+    const courses = this.lms.tenantCourses().map(c => ({
+      value: c.id,
+      label: c.title,
+      sublabel: c.isMandatory ? 'Mandatory' : 'Elective'
+    }));
+    return [{ value: '', label: 'None (Browse later)' }, ...courses];
+  });
 
   // Pagination signals
   currentPage = signal<number>(1);

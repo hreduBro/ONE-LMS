@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { LmsDataService } from '../../services/lms-data.service';
 import { Course, CourseCategory, CourseLevel } from '../../models/lms.model';
+import { CustomSelectComponent } from '../../components/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-courses',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, CustomSelectComponent],
   templateUrl: './courses.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -27,6 +28,28 @@ export class CoursesComponent {
 
   categories: string[] = ['All', 'Compliance & Security', 'Engineering', 'Healthcare', 'Finance', 'AI & Data', 'Leadership'];
   levels: string[] = ['All', 'Beginner', 'Intermediate', 'Advanced'];
+
+  levelOptions = [
+    { value: 'All', label: 'All Levels' },
+    { value: 'Beginner', label: 'Beginner' },
+    { value: 'Intermediate', label: 'Intermediate' },
+    { value: 'Advanced', label: 'Advanced' }
+  ];
+
+  modalCategoryOptions = [
+    { value: 'Compliance & Security', label: 'Compliance & Security', icon: 'verified_user' },
+    { value: 'Engineering', label: 'Engineering', icon: 'code' },
+    { value: 'Healthcare', label: 'Healthcare', icon: 'medical_services' },
+    { value: 'Finance', label: 'Finance', icon: 'account_balance' },
+    { value: 'AI & Data', label: 'AI & Data', icon: 'psychology' },
+    { value: 'Leadership', label: 'Leadership', icon: 'groups' }
+  ];
+
+  modalLevelOptions = [
+    { value: 'Beginner', label: 'Beginner', sublabel: 'Foundational concepts' },
+    { value: 'Intermediate', label: 'Intermediate', sublabel: 'Practical application' },
+    { value: 'Advanced', label: 'Advanced', sublabel: 'Specialized deep dive' }
+  ];
 
   // New Course Builder form
   newCourse = {

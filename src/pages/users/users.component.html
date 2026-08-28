@@ -37,46 +37,30 @@
 
     <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
       <!-- Department Filter -->
-      <div class="flex items-center gap-1 text-xs">
-        <span class="text-text-secondary font-semibold">Dept:</span>
-        <select 
-          [ngModel]="selectedDepartment()" 
+      <div class="w-44">
+        <app-custom-select
+          [ngModel]="selectedDepartment()"
           (ngModelChange)="selectedDepartment.set($event); onFilterChange()"
-          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-          <option value="All">All Departments</option>
-          @for (dept of lms.activeTenant().departments; track dept) {
-            <option [value]="dept">{{ dept }}</option>
-          }
-        </select>
+          [options]="departmentFilterOptions()"
+          leadingIcon="corporate_fare" />
       </div>
 
       <!-- Role Filter -->
-      <div class="flex items-center gap-1 text-xs">
-        <span class="text-text-secondary font-semibold">Role:</span>
-        <select 
-          [ngModel]="selectedRole()" 
+      <div class="w-36">
+        <app-custom-select
+          [ngModel]="selectedRole()"
           (ngModelChange)="selectedRole.set($event); onFilterChange()"
-          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-          <option value="All">All Roles</option>
-          <option value="system_admin">System Admin</option>
-          <option value="lms_admin">LMS Admin</option>
-          <option value="instructor">Instructor</option>
-          <option value="learner">Learner</option>
-        </select>
+          [options]="filterRoleOptions"
+          leadingIcon="badge" />
       </div>
 
       <!-- Compliance Filter -->
-      <div class="flex items-center gap-1 text-xs">
-        <span class="text-text-secondary font-semibold">Compliance:</span>
-        <select 
-          [ngModel]="selectedCompliance()" 
+      <div class="w-36">
+        <app-custom-select
+          [ngModel]="selectedCompliance()"
           (ngModelChange)="selectedCompliance.set($event); onFilterChange()"
-          class="px-2.5 py-1.5 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-          <option value="All">All Statuses</option>
-          <option value="Compliant">Compliant</option>
-          <option value="At Risk">At Risk</option>
-          <option value="Overdue">Overdue</option>
-        </select>
+          [options]="filterComplianceOptions"
+          leadingIcon="verified_user" />
       </div>
     </div>
   </div>
@@ -278,42 +262,34 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">Department</label>
-            <select 
+            <app-custom-select
               [(ngModel)]="newUser.department" 
               name="dept"
-              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-              @for (dept of lms.activeTenant().departments; track dept) {
-                <option [value]="dept">{{ dept }}</option>
-              }
-            </select>
+              label="Department"
+              placeholder="Select Department"
+              [options]="departmentOptions()"
+              leadingIcon="corporate_fare" />
           </div>
 
           <div>
-            <label class="block text-xs font-semibold text-text-primary mb-1">Role Assignment</label>
-            <select 
+            <app-custom-select
               [(ngModel)]="newUser.role" 
               name="role"
-              class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-              <option value="learner">Learner</option>
-              <option value="instructor">Instructor</option>
-              <option value="lms_admin">LMS Admin</option>
-              <option value="system_admin">System Admin</option>
-            </select>
+              label="Role Assignment"
+              [options]="roleOptions"
+              leadingIcon="badge" />
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-semibold text-text-primary mb-1">Auto-Assign Initial Course</label>
-          <select 
+          <app-custom-select
             [(ngModel)]="newUser.assignCourseId" 
             name="assignCourse"
-            class="w-full px-3 py-2 rounded-xl bg-base-200 border border-base-300 text-xs focus:outline-none">
-            <option value="">None (Browse later)</option>
-            @for (course of lms.tenantCourses(); track course.id) {
-              <option [value]="course.id">{{ course.title }} ({{ course.isMandatory ? 'Mandatory' : 'Elective' }})</option>
-            }
-          </select>
+            label="Auto-Assign Initial Course"
+            placeholder="None (Browse later)"
+            [options]="courseOptions()"
+            [searchable]="true"
+            leadingIcon="menu_book" />
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-3 border-t border-base-300">

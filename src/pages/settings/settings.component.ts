@@ -6,10 +6,11 @@ import { LmsDataService } from '../../services/lms-data.service';
 import { LmsApiService } from '../../services/lms-api.service';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { Tenant, NavigationLayoutMode, HeaderDensity, ContentWidthMode, TenantBranding } from '../../models/lms.model';
+import { CustomSelectComponent } from '../../components/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-settings',
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, CustomSelectComponent],
   templateUrl: './settings.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -20,6 +21,14 @@ export class SettingsComponent {
 
   savedNotification = signal<boolean>(false);
   layoutPrefs = this.lms.adminLayoutPreferences;
+
+  ssoProviderOptions = [
+    { value: 'Okta', label: 'Okta Identity Cloud', icon: 'verified_user' },
+    { value: 'Azure AD', label: 'Microsoft Entra ID / Azure AD', icon: 'shield' },
+    { value: 'SAML 2.0', label: 'Generic SAML 2.0 Identity Provider', icon: 'key' },
+    { value: 'Google Workspace', label: 'Google Workspace SSO', icon: 'account_circle' },
+    { value: 'PingFederate', label: 'PingFederate / PingIdentity', icon: 'security' }
+  ];
 
   // Editable settings copy mapped to active LMS
   settingsForm = {
